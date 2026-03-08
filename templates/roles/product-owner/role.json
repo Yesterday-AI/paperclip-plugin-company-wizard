@@ -1,0 +1,12 @@
+{
+  "name": "product-owner",
+  "title": "Product Owner",
+  "paperclipRole": "pm",
+  "description": "Owns the product backlog, validates engineering output against goals, manages roadmap-to-issues pipeline.",
+  "reportsTo": "ceo",
+  "enhances": [
+    "Takes over roadmap-to-issues from CEO (CEO becomes fallback)",
+    "Takes over auto-assign from CEO (CEO becomes fallback)",
+    "Adds product-alignment review pass when pr-review module is active"
+  ]
+}

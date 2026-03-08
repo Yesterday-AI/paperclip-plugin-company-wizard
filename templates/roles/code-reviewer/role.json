@@ -1,0 +1,10 @@
+{
+  "name": "code-reviewer",
+  "title": "Code Reviewer",
+  "paperclipRole": "qa",
+  "description": "Reviews PRs for correctness, security, and code style.",
+  "reportsTo": "ceo",
+  "enhances": [
+    "Adds code-quality review pass when pr-review module is active"
+  ]
+}

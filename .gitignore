@@ -1,2 +1,12 @@
+# Company workspace folders
+companies/
+
+# Draft files & folders
+~*.md
+~*/
+
+# Node modules
 node_modules/
+
+# System files
 .DS_Store

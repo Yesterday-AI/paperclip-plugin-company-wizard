@@ -1,15 +1,19 @@
 {
   "name": "@yesterday-ai/paperclipper",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Bootstrap a Paperclip company workspace from modular templates. Company as code.",
   "type": "module",
   "bin": {
-    "clipper": "create-company.mjs"
+    "clipper": "dist/cli.mjs"
   },
   "files": [
-    "create-company.mjs",
+    "dist/",
     "templates/"
   ],
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "dev": "node --experimental-strip-types src/cli.jsx"
+  },
   "keywords": [
     "paperclip",
     "ai-agents",
@@ -24,6 +28,16 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ink": "^6.0.0",
+    "ink-select-input": "^6.0.0",
+    "ink-spinner": "^5.0.0",
+    "ink-text-input": "^6.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
   }
 }

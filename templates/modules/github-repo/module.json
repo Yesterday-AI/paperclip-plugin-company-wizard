@@ -1,0 +1,11 @@
+{
+  "name": "github-repo",
+  "capabilities": [],
+  "tasks": [
+    {
+      "title": "Initialize GitHub repository",
+      "assignTo": "engineer",
+      "description": "Create the GitHub repository, initialize with README, push initial commit to main, and set up branch protection if using PR workflow."
+    }
+  ]
+}

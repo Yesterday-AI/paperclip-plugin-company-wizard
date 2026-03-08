@@ -3,6 +3,7 @@
   "description": "Quality-optimized with PR review. CEO + Engineer + Code Reviewer + Product Owner. Feature branches, PR-based review with validation and verification passes.",
   "constraints": [],
   "base": "base",
+  "roles": ["product-owner", "code-reviewer"],
   "modules": [
     "github-repo",
     "pr-review",

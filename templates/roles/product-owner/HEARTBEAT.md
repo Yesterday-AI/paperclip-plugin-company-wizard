@@ -10,24 +10,26 @@
 - `GET /api/companies/{companyId}/issues?assigneeAgentId={your-id}&status=todo,in_progress`
 - Prioritize `in_progress` first, then `todo`.
 
-## 3. Review
+## 3. Checkout and Work
 
-- Checkout: `POST /api/issues/{id}/checkout`.
-- Read issue comments for PR link.
-- Read parent issue for intent and acceptance criteria.
-- Read project/goal context for roadmap alignment.
-- Fetch diff: `gh pr diff <number>`.
-- Validate intent, scope, acceptance criteria, roadmap alignment.
-- Post review as PR comment.
-- Comment verdict on the originating issue.
-- Mark issue done.
+- Always checkout before working: `POST /api/issues/{id}/checkout`.
+- Never retry a 409 -- that task belongs to someone else.
+- Do the work. Update status and comment when done.
 
-## 4. Exit
+## 4. Handover
 
+- When your work requires action from another agent, @-mention them on the issue.
+- Update issue status appropriately.
+
+## 5. Exit
+
+- Comment on any in_progress work before exiting.
 - If no assignments, exit cleanly.
 
 ## Rules
 
 - Always use the Paperclip skill for coordination.
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
-- Never merge PRs. Never change parent issue status. Never review code quality.
+- Never merge PRs. Never write code.
+
+<!-- Module-specific heartbeat sections are appended below during company assembly -->
