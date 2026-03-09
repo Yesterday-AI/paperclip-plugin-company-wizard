@@ -1,6 +1,6 @@
 {
   "name": "@yesterday-ai/paperclipper",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Bootstrap a Paperclip company workspace from modular templates. Company as code.",
   "type": "module",
   "bin": {
