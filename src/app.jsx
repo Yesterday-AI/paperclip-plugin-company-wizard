@@ -37,6 +37,7 @@ const STEPS = {
 export default function App({
   outputDir,
   templatesDir,
+  dryRun,
   apiEnabled,
   apiBaseUrl,
   model,
@@ -298,10 +299,18 @@ export default function App({
           baseName={baseName}
           moduleNames={selectedModules}
           roleNames={selectedRoles}
+          modules={modules}
           capabilities={capabilities}
           outputDir={companyDir}
           apiEnabled={apiEnabled}
-          onConfirm={() => setStep(STEPS.ASSEMBLE)}
+          dryRun={dryRun}
+          onConfirm={() => {
+            if (dryRun) {
+              exit();
+            } else {
+              setStep(STEPS.ASSEMBLE);
+            }
+          }}
           onCancel={() => {
             exit();
           }}

@@ -71,4 +71,4 @@ If `PAPERCLIP_APPROVAL_ID` is set:
 - Comment in concise markdown: status line + bullets + links.
 - Self-assign via checkout only when explicitly @-mentioned.
 
-<!-- Module-specific heartbeat sections are appended below during company assembly -->
+<!-- Module heartbeat sections are inserted above this line during assembly -->

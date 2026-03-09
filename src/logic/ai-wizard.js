@@ -272,38 +272,34 @@ function renderMarkdown(text) {
     .replace(/`(.+?)`/g, `${CYAN}$1${RESET}`);
 }
 
-function stripMarkdown(text) {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, "$1")
-    .replace(/\*(.+?)\*/g, "$1")
-    .replace(/`(.+?)`/g, "$1");
-}
-
 function ask(rl, question) {
   return new Promise((resolve) => {
+    // BG_HIGHLIGHT on the prompt line for live highlighting.
+    // The trailing RESET stops the background from bleeding into wrapped lines.
     rl.question(`${BG_HIGHLIGHT}${CLEAR_LINE}${DIM}${question}${RESET}${BG_HIGHLIGHT}${BOLD}`, (answer) => {
+      // Reset background immediately so it doesn't bleed further
+      process.stdout.write(RESET);
+      // Strip any control chars / rich-text artifacts from pasted input
+      const cleanAnswer = answer.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
       const cols = process.stdout.columns || 80;
-      const fullText = `${question}${answer}`;
+      const fullText = `${question}${cleanAnswer}`;
 
       // How many visual lines did the input + prompt occupy?
       const inputLines = Math.ceil(fullText.length / cols) || 1;
-      const totalUp = inputLines;
 
       // Move up over all lines, clear them
       let redraw = "";
-      for (let l = 0; l < totalUp; l++) {
+      for (let l = 0; l < inputLines; l++) {
         redraw += `\x1b[A${CLEAR_LINE}`;
       }
 
       // Redraw with background fill on every visual line
       for (let offset = 0; offset < fullText.length; offset += cols) {
-        const chunk = fullText.slice(offset, offset + cols);
-        const pad = " ".repeat(Math.max(0, cols - chunk.length));
         if (offset === 0) {
           // First line: dim prompt + bold answer
-          const promptPart = question;
-          const answerStart = answer.slice(0, cols - question.length);
-          redraw += `${BG_HIGHLIGHT}${DIM}${promptPart}${RESET}${BG_HIGHLIGHT}${BOLD}${answerStart}${pad}${RESET}\n`;
+          const answerStart = cleanAnswer.slice(0, cols - question.length);
+          const pad = " ".repeat(Math.max(0, cols - question.length - answerStart.length));
+          redraw += `${BG_HIGHLIGHT}${DIM}${question}${RESET}${BG_HIGHLIGHT}${BOLD}${answerStart}${pad}${RESET}\n`;
         } else {
           const answerChunk = fullText.slice(offset, offset + cols);
           const chunkPad = " ".repeat(Math.max(0, cols - answerChunk.length));
@@ -314,7 +310,7 @@ function ask(rl, question) {
       // Clear the leftover Enter line, then move back up
       redraw += `${CLEAR_LINE}\x1b[A\n`;
       process.stdout.write(redraw);
-      resolve(answer.trim());
+      resolve(cleanAnswer.trim());
     });
   });
 }
@@ -504,6 +500,7 @@ export async function aiWizardInterview(opts) {
       }
       rows.push([`${DIM}Goal${RESET}`, result.goal]);
 
+      const stripAnsi = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
       const labelWidth = 10;
       const maxValueLen = Math.max(...rows.map(([, v]) => v.length));
       const W = Math.max(labelWidth + maxValueLen + 4, 30);
@@ -511,7 +508,9 @@ export async function aiWizardInterview(opts) {
       log("");
       log(`  ${DIM}┌${"─".repeat(W)}┐${RESET}`);
       for (const [label, value] of rows) {
-        log(`  ${DIM}│${RESET}  ${label}${" ".repeat(labelWidth - 7)}${value.padEnd(W - labelWidth - 2)}${DIM}│${RESET}`);
+        const visualLen = stripAnsi(label).length;
+        const pad = " ".repeat(labelWidth - visualLen);
+        log(`  ${DIM}│${RESET}  ${label}${pad}${value.padEnd(W - labelWidth - 2)}${DIM}│${RESET}`);
       }
       log(`  ${DIM}└${"─".repeat(W)}┘${RESET}`);
       log("");

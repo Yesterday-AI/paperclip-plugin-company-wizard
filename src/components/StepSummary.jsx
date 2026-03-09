@@ -9,9 +9,11 @@ export default function StepSummary({
   baseName,
   moduleNames,
   roleNames,
+  modules,
   capabilities,
   outputDir,
   apiEnabled,
+  dryRun,
   onConfirm,
   onCancel,
 }) {
@@ -24,6 +26,20 @@ export default function StepSummary({
   });
 
   const allRoleNames = ["ceo", "engineer", ...roleNames];
+  const allRolesSet = new Set(allRoleNames);
+
+  // Find modules that will be skipped due to missing activatesWithRoles
+  const skippedModules = (modules || [])
+    .filter(
+      (m) =>
+        moduleNames.includes(m.name) &&
+        m.activatesWithRoles?.length &&
+        !m.activatesWithRoles.some((r) => allRolesSet.has(r))
+    )
+    .map((m) => ({
+      name: m.name,
+      needs: m.activatesWithRoles,
+    }));
 
   return (
     <Box flexDirection="column" gap={1}>
@@ -70,10 +86,26 @@ export default function StepSummary({
         </Box>
       ) : null}
 
-      <Box marginLeft={1}>
-        <Text bold>Create? </Text>
-        <Text dimColor>y/n</Text>
-      </Box>
+      {skippedModules.length > 0 ? (
+        <Box marginLeft={1} flexDirection="column">
+          {skippedModules.map((m) => (
+            <Text key={m.name} color="yellow">
+              ! {m.name} will be skipped (needs {m.needs.join(" or ")})
+            </Text>
+          ))}
+        </Box>
+      ) : null}
+
+      {dryRun ? (
+        <Box marginLeft={1}>
+          <Text dimColor>Dry run — press enter to exit, no files will be written.</Text>
+        </Box>
+      ) : (
+        <Box marginLeft={1}>
+          <Text bold>Create? </Text>
+          <Text dimColor>y/n</Text>
+        </Box>
+      )}
     </Box>
   );
 }

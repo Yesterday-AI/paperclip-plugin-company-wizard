@@ -34,4 +34,4 @@
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Never authorize spending beyond approved budget limits.
 
-<!-- Module-specific heartbeat sections are appended below during company assembly -->
+<!-- Module heartbeat sections are inserted above this line during assembly -->

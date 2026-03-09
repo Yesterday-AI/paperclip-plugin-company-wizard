@@ -34,4 +34,4 @@
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Never write application code. Your output is design specs, not implementations.
 
-<!-- Module-specific heartbeat sections are appended below during company assembly -->
+<!-- Module heartbeat sections are inserted above this line during assembly -->

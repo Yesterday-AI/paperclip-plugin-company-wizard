@@ -26,6 +26,7 @@ export default function StepPreset({ presets, onComplete }) {
   };
 
   const detail = highlighted?.description || "";
+  const constraints = highlighted?.constraints || [];
 
   return (
     <Box flexDirection="column">
@@ -53,6 +54,13 @@ export default function StepPreset({ presets, onComplete }) {
       {detail ? (
         <Box marginLeft={2} marginTop={1}>
           <Text dimColor>{detail}</Text>
+        </Box>
+      ) : null}
+      {constraints.length > 0 ? (
+        <Box marginLeft={2} marginTop={1} flexDirection="column">
+          {constraints.map((c, i) => (
+            <Text key={i} color="yellow">! {c}</Text>
+          ))}
         </Box>
       ) : null}
     </Box>

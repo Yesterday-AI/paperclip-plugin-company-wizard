@@ -28,6 +28,7 @@ const HELP = `
     --roles <a,b>              Comma-separated extra role names (added to preset)
 
   Infrastructure options:
+    --dry-run                  Show summary and exit without writing files
     --output <dir>             Output directory (default: ./companies/)
     --api                      Provision via Paperclip API after assembly
     --api-url <url>            Paperclip API URL (default: http://localhost:3100)
@@ -65,6 +66,7 @@ function parseArgs(argv) {
   const args = argv.slice(2);
   const config = {
     outputDir: join(process.cwd(), "companies"),
+    dryRun: false,
     apiEnabled: false,
     apiBaseUrl: "http://localhost:3100",
     model: null,
@@ -92,6 +94,9 @@ function parseArgs(argv) {
       case "--output":
         config.outputDir = resolve(next);
         i++;
+        break;
+      case "--dry-run":
+        config.dryRun = true;
         break;
       case "--api":
         config.apiEnabled = true;
@@ -245,6 +250,7 @@ if (config.aiDescription !== null) {
       await runHeadless({
         ...merged,
         templatesDir: TEMPLATES_DIR,
+        dryRun: config.dryRun,
       });
     } catch (err) {
       console.error("");
@@ -268,6 +274,7 @@ if (config.aiDescription !== null) {
     <App
       outputDir={config.outputDir}
       templatesDir={TEMPLATES_DIR}
+      dryRun={config.dryRun}
       apiEnabled={config.apiEnabled}
       apiBaseUrl={config.apiBaseUrl}
       model={config.model}

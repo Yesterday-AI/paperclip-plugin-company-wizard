@@ -32,4 +32,4 @@
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Never merge PRs. Never write code.
 
-<!-- Module-specific heartbeat sections are appended below during company assembly -->
+<!-- Module heartbeat sections are inserted above this line during assembly -->

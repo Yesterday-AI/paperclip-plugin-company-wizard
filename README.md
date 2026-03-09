@@ -24,6 +24,8 @@ Clipper is a CLI and template system for [Paperclip](https://github.com/papercli
 - [Quick Start](#quick-start)
 - [Install](#install)
 - [Usage](#usage)
+    - [Non-interactive mode](#non-interactive-mode)
+    - [AI wizard mode](#ai-wizard-mode)
 - [What You Get](#what-you-get)
 - [Architecture](#gracefully-optimistic-architecture)
 - [Presets](#presets)
@@ -32,6 +34,7 @@ Clipper is a CLI and template system for [Paperclip](https://github.com/papercli
 - [After Clipper](#after-clipper)
 - [Extending](#extending)
 - [How It Works](#how-it-works)
+- [Changelog](#changelog)
 - [Contributing](#contributing)
 
 <br>
@@ -114,6 +117,7 @@ $ clipper --api
 | Flag | Description | Default |
 | :--- | :---------- | :------ |
 | `--output <dir>` | Output directory for company workspaces | `./companies/` |
+| `--dry-run` | Show summary and exit without writing files | off |
 | `--api` | Provision via Paperclip API after file assembly | off |
 | `--api-url <url>` | Paperclip API URL (implies `--api`) | `http://localhost:3100` |
 | `--model <model>` | Default LLM model for all agents | adapter default |
@@ -220,7 +224,7 @@ With `--api`, everything is provisioned automatically. Without it, `BOOTSTRAP.md
 
 ## Gracefully Optimistic Architecture
 
-Capabilities extend, they don't require. Start with CEO + Engineer, add specialists as needed:
+Start with CEO + Engineer. Everything works. Add specialists and responsibilities shift automatically:
 
 | Capability | Primary Owner | Fallback | Module |
 | :--------- | :------------ | :------- | :----- |
@@ -241,7 +245,7 @@ Capabilities extend, they don't require. Start with CEO + Engineer, add speciali
 
 **How it works:** Primary owners get the full skill. Fallback owners get a safety-net variant that only activates when the primary is absent or stalled.
 
-> **Example:** With just CEO + Engineer, the CEO handles market analysis, hiring review, and backlog management alongside strategy. Add a Product Owner and those responsibilities shift automatically — the CEO's skills downgrade to fallback-only safety nets.
+> **Example:** CEO + Engineer only? The CEO handles market analysis, hiring review, and backlog management alongside strategy. Add a Product Owner and those responsibilities shift automatically — the CEO keeps a fallback safety net but steps back from day-to-day.
 
 <br>
 
@@ -504,9 +508,11 @@ templates/modules/<name>/
 ├── module.json                  # Name, capabilities, tasks, dependencies
 ├── skills/                      # Shared skills (used by any primary owner)
 │   └── <skill>.md
-├── agents/<role>/skills/        # Role-specific overrides and fallbacks
-│   ├── <skill>.md               # Override (replaces shared for this role)
-│   └── <skill>.fallback.md      # Fallback (safety-net for non-primary)
+├── agents/<role>/
+│   ├── skills/                  # Role-specific overrides and fallbacks
+│   │   ├── <skill>.md           # Override (replaces shared for this role)
+│   │   └── <skill>.fallback.md  # Fallback (safety-net for non-primary)
+│   └── heartbeat-section.md     # Optional: injected into role's HEARTBEAT.md
 └── docs/                        # Shared docs (→ docs/)
 ```
 
@@ -637,7 +643,8 @@ templates/roles/<name>/
 1. Copies base role files (CEO, Engineer) into `agents/`
 2. Copies selected extra roles into `agents/`
 3. For each module: resolves capability ownership, installs skills, copies docs
-4. Generates `BOOTSTRAP.md` with goal, project, agent paths, and initial tasks
+4. Injects module heartbeat sections into each role's `HEARTBEAT.md`
+5. Generates `BOOTSTRAP.md` with goal, project, agent paths, and initial tasks
 
 **Provisioning** (with `--api`):
 
@@ -646,6 +653,10 @@ templates/roles/<name>/
 3. Optionally starts CEO heartbeat (`--start`)
 
 <br>
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Contributing
 

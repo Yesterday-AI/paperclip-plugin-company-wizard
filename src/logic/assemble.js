@@ -82,11 +82,15 @@ export async function assembleCompany({
   templatesDir,
   onProgress = () => {},
 }) {
-  const dirName = toPascalCase(companyName);
-  const companyDir = join(outputDir, dirName);
+  const baseDirName = toPascalCase(companyName);
+  let dirName = baseDirName;
+  let companyDir = join(outputDir, dirName);
 
   if (await exists(companyDir)) {
-    throw new Error(`Company directory already exists: ${companyDir}`);
+    let idx = 2;
+    while (await exists(join(outputDir, `${baseDirName}${idx}`))) idx++;
+    dirName = `${baseDirName}${idx}`;
+    companyDir = join(outputDir, dirName);
   }
 
   // Determine all roles present
@@ -97,13 +101,20 @@ export async function assembleCompany({
   );
   for (const role of extraRoleNames) allRoles.add(role);
 
-  // 1. Copy base template roles
+  // 1. Copy base template roles (exclude .json metadata like role.json)
   for (const role of baseEntries) {
     if (!role.isDirectory()) continue;
-    await copyDir(
-      join(baseDir, role.name),
-      join(companyDir, "agents", role.name)
-    );
+    const roleSrc = join(baseDir, role.name);
+    const roleDest = join(companyDir, "agents", role.name);
+    await mkdir(roleDest, { recursive: true });
+    const entries = await readdir(roleSrc, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name));
+      } else if (!entry.name.endsWith(".json")) {
+        await copyFile(join(roleSrc, entry.name), join(roleDest, entry.name));
+      }
+    }
     onProgress(`+ agents/${role.name}/ (base)`);
   }
 
@@ -274,7 +285,54 @@ export async function assembleCompany({
     }
   }
 
-  // 4. Add shared doc references to all AGENTS.md files
+  // 4. Inject module heartbeat sections into HEARTBEAT.md files
+  //
+  // Convention-based: if a module provides agents/<role>/heartbeat-section.md,
+  // it gets appended to that role's HEARTBEAT.md (before the placeholder comment).
+  // This follows the same gracefully-optimistic pattern as skills — if the file
+  // exists the heartbeat extends, if not nothing breaks.
+  const HEARTBEAT_MARKER = "<!-- Module heartbeat sections are inserted above this line during assembly -->";
+  for (const moduleName of moduleNames) {
+    const moduleDir = join(templatesDir, "modules", moduleName);
+    if (!(await exists(moduleDir))) continue;
+
+    const moduleJson = await readJson(join(moduleDir, "module.json"));
+    // Skip gated modules that didn't activate
+    if (moduleJson?.activatesWithRoles?.length) {
+      const hasActivatingRole = moduleJson.activatesWithRoles.some((r) =>
+        allRoles.has(r)
+      );
+      if (!hasActivatingRole) continue;
+    }
+
+    const modAgentsDir = join(moduleDir, "agents");
+    if (!(await exists(modAgentsDir))) continue;
+
+    const modRoles = await readdir(modAgentsDir, { withFileTypes: true });
+    for (const modRole of modRoles) {
+      if (!modRole.isDirectory()) continue;
+      if (!allRoles.has(modRole.name)) continue;
+
+      const sectionFile = join(modAgentsDir, modRole.name, "heartbeat-section.md");
+      if (!(await exists(sectionFile))) continue;
+
+      const heartbeatPath = join(companyDir, "agents", modRole.name, "HEARTBEAT.md");
+      if (!(await exists(heartbeatPath))) continue;
+
+      const section = await readFile(sectionFile, "utf-8");
+      const heartbeat = await readFile(heartbeatPath, "utf-8");
+
+      // Insert before the marker comment, or append at end if marker not found
+      const updated = heartbeat.includes(HEARTBEAT_MARKER)
+        ? heartbeat.replace(HEARTBEAT_MARKER, section.trim() + "\n\n" + HEARTBEAT_MARKER)
+        : heartbeat.trimEnd() + "\n\n" + section.trim() + "\n";
+
+      await writeFile(heartbeatPath, updated);
+      onProgress(`+ agents/${modRole.name}/HEARTBEAT.md (${moduleName}, heartbeat section)`);
+    }
+  }
+
+  // 5. Add shared doc references to all AGENTS.md files
   const finalDocsDir = join(companyDir, "docs");
   if (await exists(finalDocsDir)) {
     const docs = await readdir(finalDocsDir);
@@ -295,7 +353,7 @@ export async function assembleCompany({
     }
   }
 
-  // 5. Generate BOOTSTRAP.md
+  // 6. Generate BOOTSTRAP.md
   const rolesList = [...allRoles];
   const formatRole = (r) =>
     r.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");

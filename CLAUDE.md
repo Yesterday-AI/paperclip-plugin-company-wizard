@@ -53,9 +53,11 @@ templates/
 │       ├── module.json                # capabilities[], activatesWithRoles[], tasks[]
 │       ├── skills/                    # Shared primary skills (any owner can use)
 │       │   └── <skill>.md
-│       ├── agents/<role>/skills/      # Role-specific overrides + fallback variants
-│       │   ├── <skill>.md             # Override (replaces shared for this role)
-│       │   └── <skill>.fallback.md    # Fallback (reduced scope for non-primary)
+│       ├── agents/<role>/
+│       │   ├── skills/                # Role-specific overrides + fallback variants
+│       │   │   ├── <skill>.md         # Override (replaces shared for this role)
+│       │   │   └── <skill>.fallback.md # Fallback (reduced scope for non-primary)
+│       │   └── heartbeat-section.md   # Optional: injected into role's HEARTBEAT.md
 │       └── docs/                      # Shared docs injected into all agents
 ├── presets/         # Curated module+role combinations (fast, quality, startup, research, full)
 └── ai-wizard/       # Configurable prompts for --ai mode
@@ -74,9 +76,16 @@ For a capability's primary skill, assembly checks two locations in order:
 
 This avoids duplicating identical skill files across roles. Most capabilities use a single shared primary skill. Role-specific overrides exist only when a role brings a genuinely different approach (e.g., UX Researcher does user-focused market analysis). Fallback variants are always role-specific.
 
+### Heartbeat Injection
+
+Convention-based: if a module provides `agents/<role>/heartbeat-section.md`, assembly injects it into that role's HEARTBEAT.md before the `<!-- Module-specific ... -->` marker comment. Multiple modules can inject into the same role — sections are appended in module order. Follows the same gracefully-optimistic pattern as skills: file exists → heartbeat extends, file absent → nothing breaks.
+
+Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assign` (CEO fallback + PO primary), `roadmap-to-issues` (CEO fallback + PO primary).
+
 ### Key Concepts
 
 - **Headless mode** — When `--name` and `--preset` are both provided, the CLI skips the Ink wizard entirely and runs assembly + provisioning via `src/headless.js` with plain stdout. Available flags: `--name`, `--goal`, `--goal-description`, `--project`, `--project-description`, `--repo`, `--preset`, `--modules` (comma-separated), `--roles` (comma-separated).
+- **Dry run** — `--dry-run` shows the resolved summary (company, preset, modules, roles, capabilities) and exits without writing files. Works in all modes: interactive wizard (stops at summary), headless, and AI wizard.
 - **AI wizard mode** — Two sub-modes: `--ai` starts a 3-question interview (multi-turn conversation with Claude); `--ai "description"` does single-shot analysis. Both auto-select preset, modules, and roles. Requires `ANTHROPIC_API_KEY` env var. Explicit flags override AI choices. Uses `src/logic/ai-wizard.js`.
 - **Gracefully optimistic architecture** — Capabilities extend when roles are present, degrade gracefully when absent. A capability's `owners[]` chain determines primary/fallback assignment at assembly time.
 - **Shared vs role-specific skills** — Shared skills (`skills/`) work for any owner. Role-specific overrides (`agents/<role>/skills/`) exist only for genuinely different behavior. Fallbacks are always role-specific.

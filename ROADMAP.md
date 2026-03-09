@@ -21,14 +21,15 @@
 - Expand pr-review activatesWithRoles to include ui-designer, ux-researcher, qa, devops
 - Wire ui-designer, ux-researcher, qa, devops into pr-review module (design review, UX review, QA review, infra review skill files)
 - AI wizard mode — `--ai "description"` calls Claude API to auto-select preset, modules, and roles
+- Heartbeat injection — modules extend agent HEARTBEAT.md with recurring tasks via convention-based `heartbeat-section.md`
+- Auto-increment company directory name when directory already exists (Hyperion → Hyperion2 → Hyperion3)
+- Show preset constraints in interactive wizard — yellow warnings when a preset has limitations (e.g., "not suited for multiple engineers")
+- `activatesWithRoles` feedback — module descriptions show required roles, summary warns about modules that will be skipped
+- `--dry-run` flag — show summary and exit without writing files (works in all modes: interactive, headless, AI wizard)
 
 ## In Progress
 
 ## Backlog
-
-### Clipper CLI
-
-- [ ] `--dry-run` flag — show summary and exit without writing files
 
 ### Template System
 

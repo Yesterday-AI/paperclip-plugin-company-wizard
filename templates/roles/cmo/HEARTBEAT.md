@@ -34,4 +34,4 @@
 - Always include `X-Paperclip-Run-Id` header on mutating API calls.
 - Never commit to external spending or partnerships without board approval.
 
-<!-- Module-specific heartbeat sections are appended below during company assembly -->
+<!-- Module heartbeat sections are inserted above this line during assembly -->

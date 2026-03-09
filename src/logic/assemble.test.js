@@ -281,8 +281,8 @@ describe("assembleCompany", () => {
     assert.ok(progress.some((p) => p.includes("BOOTSTRAP.md")));
   });
 
-  it("throws if company directory already exists", async () => {
-    await assembleCompany({
+  it("appends incrementing index when company directory already exists", async () => {
+    const first = await assembleCompany({
       companyName: "DupeCo",
       baseName: "base",
       moduleNames: [],
@@ -290,19 +290,27 @@ describe("assembleCompany", () => {
       outputDir,
       templatesDir,
     });
+    assert.ok(first.companyDir.endsWith("DupeCo"));
 
-    await assert.rejects(
-      () =>
-        assembleCompany({
-          companyName: "DupeCo",
-          baseName: "base",
-          moduleNames: [],
-          extraRoleNames: [],
-          outputDir,
-          templatesDir,
-        }),
-      { message: /already exists/ }
-    );
+    const second = await assembleCompany({
+      companyName: "DupeCo",
+      baseName: "base",
+      moduleNames: [],
+      extraRoleNames: [],
+      outputDir,
+      templatesDir,
+    });
+    assert.ok(second.companyDir.endsWith("DupeCo2"));
+
+    const third = await assembleCompany({
+      companyName: "DupeCo",
+      baseName: "base",
+      moduleNames: [],
+      extraRoleNames: [],
+      outputDir,
+      templatesDir,
+    });
+    assert.ok(third.companyDir.endsWith("DupeCo3"));
   });
 
   it("converts company name to PascalCase directory", async () => {
@@ -368,6 +376,150 @@ describe("assembleCompany", () => {
     assert.ok(ceoSkills.includes("auto-assign.fallback.md"));
     // ceo should NOT get the primary auto-assign.md
     assert.ok(!ceoSkills.includes("auto-assign.md"));
+  });
+
+  it("injects heartbeat sections from modules into HEARTBEAT.md", async () => {
+    // Add heartbeat-section.md to the auto-assign module for ceo
+    const aaHeartbeatDir = join(templatesDir, "modules", "auto-assign", "agents", "ceo");
+    await mkdir(aaHeartbeatDir, { recursive: true });
+    await writeFile(
+      join(aaHeartbeatDir, "heartbeat-section.md"),
+      "## Assignment Check (Fallback)\n\nCheck for idle agents.\n"
+    );
+
+    // Add the marker comment to ceo HEARTBEAT.md
+    const ceoHeartbeat = join(templatesDir, "base", "ceo", "HEARTBEAT.md");
+    await writeFile(
+      ceoHeartbeat,
+      "# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n"
+    );
+
+    const { companyDir } = await assembleCompany({
+      companyName: "HeartbeatCo",
+      baseName: "base",
+      moduleNames: ["auto-assign"],
+      extraRoleNames: [],
+      outputDir,
+      templatesDir,
+    });
+
+    const heartbeat = await readFile(join(companyDir, "agents", "ceo", "HEARTBEAT.md"), "utf-8");
+    assert.ok(heartbeat.includes("## Assignment Check (Fallback)"), "should inject heartbeat section");
+    assert.ok(heartbeat.includes("Check for idle agents"), "should include section content");
+    assert.ok(heartbeat.includes("<!-- Module heartbeat"), "should preserve the marker for further injections");
+  });
+
+  it("injects heartbeat sections for multiple modules into same role", async () => {
+    // Create two modules with heartbeat sections for ceo
+    for (const mod of ["mod-a", "mod-b"]) {
+      const modDir = join(templatesDir, "modules", mod);
+      await mkdir(join(modDir, "agents", "ceo"), { recursive: true });
+      await writeJson(join(modDir, "module.json"), { name: mod, capabilities: [] });
+      await writeFile(
+        join(modDir, "agents", "ceo", "heartbeat-section.md"),
+        `## Section from ${mod}\n\nDo ${mod} things.\n`
+      );
+    }
+
+    // Add marker to ceo HEARTBEAT.md
+    await writeFile(
+      join(templatesDir, "base", "ceo", "HEARTBEAT.md"),
+      "# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n"
+    );
+
+    const { companyDir } = await assembleCompany({
+      companyName: "MultiHeartbeat",
+      baseName: "base",
+      moduleNames: ["mod-a", "mod-b"],
+      extraRoleNames: [],
+      outputDir,
+      templatesDir,
+    });
+
+    const heartbeat = await readFile(join(companyDir, "agents", "ceo", "HEARTBEAT.md"), "utf-8");
+    assert.ok(heartbeat.includes("## Section from mod-a"), "should have mod-a section");
+    assert.ok(heartbeat.includes("## Section from mod-b"), "should have mod-b section");
+    assert.ok(heartbeat.includes("<!-- Module heartbeat"), "should preserve marker after both injections");
+  });
+
+  it("skips heartbeat injection for roles not present in the company", async () => {
+    // auto-assign module has product-owner heartbeat section in fixtures
+    const poHeartbeatDir = join(templatesDir, "modules", "auto-assign", "agents", "product-owner");
+    await mkdir(poHeartbeatDir, { recursive: true });
+    await writeFile(
+      join(poHeartbeatDir, "heartbeat-section.md"),
+      "## PO Assignment Check\n\nAssign issues.\n"
+    );
+
+    const { companyDir } = await assembleCompany({
+      companyName: "NoPoCo",
+      baseName: "base",
+      moduleNames: ["auto-assign"],
+      extraRoleNames: [], // no product-owner
+      outputDir,
+      templatesDir,
+    });
+
+    // CEO heartbeat should NOT have PO section
+    const ceoHb = await readFile(join(companyDir, "agents", "ceo", "HEARTBEAT.md"), "utf-8");
+    assert.ok(!ceoHb.includes("PO Assignment Check"), "should not inject PO section into CEO");
+  });
+
+  it("skips heartbeat injection for gated modules that didn't activate", async () => {
+    // gated-mod requires "designer" role
+    const gatedDir = join(templatesDir, "modules", "gated-mod");
+    await mkdir(join(gatedDir, "agents", "ceo"), { recursive: true });
+    await writeFile(
+      join(gatedDir, "agents", "ceo", "heartbeat-section.md"),
+      "## Gated Section\n\nShould not appear.\n"
+    );
+
+    await writeFile(
+      join(templatesDir, "base", "ceo", "HEARTBEAT.md"),
+      "# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n"
+    );
+
+    const { companyDir } = await assembleCompany({
+      companyName: "GatedHeartbeat",
+      baseName: "base",
+      moduleNames: ["gated-mod"],
+      extraRoleNames: [], // no designer
+      outputDir,
+      templatesDir,
+    });
+
+    const heartbeat = await readFile(join(companyDir, "agents", "ceo", "HEARTBEAT.md"), "utf-8");
+    assert.ok(!heartbeat.includes("Gated Section"), "should not inject from gated module");
+  });
+
+  it("reports heartbeat injection in onProgress callback", async () => {
+    const aaHeartbeatDir = join(templatesDir, "modules", "auto-assign", "agents", "ceo");
+    await mkdir(aaHeartbeatDir, { recursive: true });
+    await writeFile(
+      join(aaHeartbeatDir, "heartbeat-section.md"),
+      "## Assignment Check\n\nDo assignments.\n"
+    );
+
+    await writeFile(
+      join(templatesDir, "base", "ceo", "HEARTBEAT.md"),
+      "# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n"
+    );
+
+    const progress = [];
+    await assembleCompany({
+      companyName: "ProgressHeartbeat",
+      baseName: "base",
+      moduleNames: ["auto-assign"],
+      extraRoleNames: [],
+      outputDir,
+      templatesDir,
+      onProgress: (line) => progress.push(line),
+    });
+
+    assert.ok(
+      progress.some((p) => p.includes("HEARTBEAT.md") && p.includes("auto-assign") && p.includes("heartbeat section")),
+      "should report heartbeat injection in progress"
+    );
   });
 
   it("resolves capability:* task assignments to the primary owner role", async () => {

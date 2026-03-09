@@ -12,11 +12,17 @@ export default function StepModules({ modules, preselected, onComplete }) {
     [modules]
   );
 
-  const items = modules.map((m) => ({
-    value: m.name,
-    label: m.name,
-    description: m.description || undefined,
-  }));
+  const items = modules.map((m) => {
+    const desc = m.description || "";
+    const gated = m.activatesWithRoles?.length
+      ? `Needs role: ${m.activatesWithRoles.join(" or ")}`
+      : "";
+    return {
+      value: m.name,
+      label: m.name,
+      description: desc && gated ? `${desc} — ${gated}` : desc || gated || undefined,
+    };
+  });
 
   return (
     <MultiSelect

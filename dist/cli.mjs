@@ -39214,6 +39214,7 @@ function StepPreset({ presets, onComplete }) {
     return dot > 0 ? desc.slice(0, dot + 1) : desc;
   };
   const detail = highlighted?.description || "";
+  const constraints = highlighted?.constraints || [];
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(Box_default, { flexDirection: "column", children: [
     /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(Box_default, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { color: "cyan", bold: true, children: "? " }),
@@ -39235,7 +39236,11 @@ function StepPreset({ presets, onComplete }) {
         }
       }
     ) }),
-    detail ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Box_default, { marginLeft: 2, marginTop: 1, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { dimColor: true, children: detail }) }) : null
+    detail ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Box_default, { marginLeft: 2, marginTop: 1, children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Text, { dimColor: true, children: detail }) }) : null,
+    constraints.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Box_default, { marginLeft: 2, marginTop: 1, flexDirection: "column", children: constraints.map((c, i) => /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(Text, { color: "yellow", children: [
+      "! ",
+      c
+    ] }, i)) }) : null
   ] });
 }
 
@@ -39417,11 +39422,15 @@ function StepModules({ modules, preselected, onComplete }) {
     () => buildModuleDeps(modules),
     [modules]
   );
-  const items = modules.map((m) => ({
-    value: m.name,
-    label: m.name,
-    description: m.description || void 0
-  }));
+  const items = modules.map((m) => {
+    const desc = m.description || "";
+    const gated = m.activatesWithRoles?.length ? `Needs role: ${m.activatesWithRoles.join(" or ")}` : "";
+    return {
+      value: m.name,
+      label: m.name,
+      description: desc && gated ? `${desc} \u2014 ${gated}` : desc || gated || void 0
+    };
+  });
   return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
     MultiSelect,
     {
@@ -39492,9 +39501,11 @@ function StepSummary({
   baseName,
   moduleNames,
   roleNames,
+  modules,
   capabilities,
   outputDir,
   apiEnabled,
+  dryRun,
   onConfirm,
   onCancel
 }) {
@@ -39506,6 +39517,13 @@ function StepSummary({
     }
   });
   const allRoleNames = ["ceo", "engineer", ...roleNames];
+  const allRolesSet = new Set(allRoleNames);
+  const skippedModules = (modules || []).filter(
+    (m) => moduleNames.includes(m.name) && m.activatesWithRoles?.length && !m.activatesWithRoles.some((r) => allRolesSet.has(r))
+  ).map((m) => ({
+    name: m.name,
+    needs: m.activatesWithRoles
+  }));
   return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
     /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
       Box_default,
@@ -39559,7 +39577,14 @@ function StepSummary({
         ] }) : null
       ] }, cap.skill))
     ] }) : null,
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { marginLeft: 1, children: [
+    skippedModules.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Box_default, { marginLeft: 1, flexDirection: "column", children: skippedModules.map((m) => /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { color: "yellow", children: [
+      "! ",
+      m.name,
+      " will be skipped (needs ",
+      m.needs.join(" or "),
+      ")"
+    ] }, m.name)) }) : null,
+    dryRun ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Box_default, { marginLeft: 1, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: "Dry run \u2014 press enter to exit, no files will be written." }) }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { marginLeft: 1, children: [
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { bold: true, children: "Create? " }),
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: "y/n" })
     ] })
@@ -39652,10 +39677,14 @@ async function assembleCompany({
   onProgress = () => {
   }
 }) {
-  const dirName = toPascalCase(companyName);
-  const companyDir = join(outputDir, dirName);
+  const baseDirName = toPascalCase(companyName);
+  let dirName = baseDirName;
+  let companyDir = join(outputDir, dirName);
   if (await exists(companyDir)) {
-    throw new Error(`Company directory already exists: ${companyDir}`);
+    let idx = 2;
+    while (await exists(join(outputDir, `${baseDirName}${idx}`))) idx++;
+    dirName = `${baseDirName}${idx}`;
+    companyDir = join(outputDir, dirName);
   }
   const baseDir = join(templatesDir, baseName);
   const baseEntries = await readdir(baseDir, { withFileTypes: true });
@@ -39796,6 +39825,34 @@ Read and follow: \`$AGENT_HOME/skills/${skillFile}\`
           onProgress(`+ agents/${role.name}/skills/${skillFile} (${moduleName})`);
         }
       }
+    }
+  }
+  const HEARTBEAT_MARKER = "<!-- Module heartbeat sections are inserted above this line during assembly -->";
+  for (const moduleName of moduleNames) {
+    const moduleDir = join(templatesDir, "modules", moduleName);
+    if (!await exists(moduleDir)) continue;
+    const moduleJson = await readJson(join(moduleDir, "module.json"));
+    if (moduleJson?.activatesWithRoles?.length) {
+      const hasActivatingRole = moduleJson.activatesWithRoles.some(
+        (r) => allRoles.has(r)
+      );
+      if (!hasActivatingRole) continue;
+    }
+    const modAgentsDir = join(moduleDir, "agents");
+    if (!await exists(modAgentsDir)) continue;
+    const modRoles = await readdir(modAgentsDir, { withFileTypes: true });
+    for (const modRole of modRoles) {
+      if (!modRole.isDirectory()) continue;
+      if (!allRoles.has(modRole.name)) continue;
+      const sectionFile = join(modAgentsDir, modRole.name, "heartbeat-section.md");
+      if (!await exists(sectionFile)) continue;
+      const heartbeatPath = join(companyDir, "agents", modRole.name, "HEARTBEAT.md");
+      if (!await exists(heartbeatPath)) continue;
+      const section = await readFile(sectionFile, "utf-8");
+      const heartbeat = await readFile(heartbeatPath, "utf-8");
+      const updated = heartbeat.includes(HEARTBEAT_MARKER) ? heartbeat.replace(HEARTBEAT_MARKER, section.trim() + "\n\n" + HEARTBEAT_MARKER) : heartbeat.trimEnd() + "\n\n" + section.trim() + "\n";
+      await writeFile(heartbeatPath, updated);
+      onProgress(`+ agents/${modRole.name}/HEARTBEAT.md (${moduleName}, heartbeat section)`);
     }
   }
   const finalDocsDir = join(companyDir, "docs");
@@ -40471,6 +40528,7 @@ var STEPS = {
 function App2({
   outputDir,
   templatesDir,
+  dryRun,
   apiEnabled,
   apiBaseUrl,
   model,
@@ -40701,10 +40759,18 @@ function App2({
         baseName,
         moduleNames: selectedModules,
         roleNames: selectedRoles,
+        modules,
         capabilities,
         outputDir: companyDir,
         apiEnabled,
-        onConfirm: () => setStep(STEPS.ASSEMBLE),
+        dryRun,
+        onConfirm: () => {
+          if (dryRun) {
+            exit();
+          } else {
+            setStep(STEPS.ASSEMBLE);
+          }
+        },
         onCancel: () => {
           exit();
         }
@@ -40847,6 +40913,10 @@ async function runHeadless(opts) {
     }
   }
   log("");
+  if (opts.dryRun) {
+    log("Dry run \u2014 no files written.");
+    return;
+  }
   log("Assembling workspace...");
   const assemblyResult = await assembleCompany({
     companyName: opts.name,
@@ -41105,21 +41175,20 @@ function renderMarkdown(text) {
 function ask(rl, question) {
   return new Promise((resolve2) => {
     rl.question(`${BG_HIGHLIGHT}${CLEAR_LINE}${DIM}${question}${RESET}${BG_HIGHLIGHT}${BOLD}`, (answer) => {
+      process.stdout.write(RESET);
+      const cleanAnswer = answer.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
       const cols = process.stdout.columns || 80;
-      const fullText = `${question}${answer}`;
+      const fullText = `${question}${cleanAnswer}`;
       const inputLines = Math.ceil(fullText.length / cols) || 1;
-      const totalUp = inputLines;
       let redraw = "";
-      for (let l = 0; l < totalUp; l++) {
+      for (let l = 0; l < inputLines; l++) {
         redraw += `\x1B[A${CLEAR_LINE}`;
       }
       for (let offset = 0; offset < fullText.length; offset += cols) {
-        const chunk = fullText.slice(offset, offset + cols);
-        const pad = " ".repeat(Math.max(0, cols - chunk.length));
         if (offset === 0) {
-          const promptPart = question;
-          const answerStart = answer.slice(0, cols - question.length);
-          redraw += `${BG_HIGHLIGHT}${DIM}${promptPart}${RESET}${BG_HIGHLIGHT}${BOLD}${answerStart}${pad}${RESET}
+          const answerStart = cleanAnswer.slice(0, cols - question.length);
+          const pad = " ".repeat(Math.max(0, cols - question.length - answerStart.length));
+          redraw += `${BG_HIGHLIGHT}${DIM}${question}${RESET}${BG_HIGHLIGHT}${BOLD}${answerStart}${pad}${RESET}
 `;
         } else {
           const answerChunk = fullText.slice(offset, offset + cols);
@@ -41131,7 +41200,7 @@ function ask(rl, question) {
       redraw += `${CLEAR_LINE}\x1B[A
 `;
       process.stdout.write(redraw);
-      resolve2(answer.trim());
+      resolve2(cleanAnswer.trim());
     });
   });
 }
@@ -41275,13 +41344,16 @@ ${loadPromptFile(opts.templatesDir, "config-format.md")}`
         rows.push([`${CYAN}Roles${RESET}`, result.roles.join(", ")]);
       }
       rows.push([`${DIM}Goal${RESET}`, result.goal]);
+      const stripAnsi2 = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
       const labelWidth = 10;
       const maxValueLen = Math.max(...rows.map(([, v]) => v.length));
       const W = Math.max(labelWidth + maxValueLen + 4, 30);
       log("");
       log(`  ${DIM}\u250C${"\u2500".repeat(W)}\u2510${RESET}`);
       for (const [label, value] of rows) {
-        log(`  ${DIM}\u2502${RESET}  ${label}${" ".repeat(labelWidth - 7)}${value.padEnd(W - labelWidth - 2)}${DIM}\u2502${RESET}`);
+        const visualLen = stripAnsi2(label).length;
+        const pad = " ".repeat(labelWidth - visualLen);
+        log(`  ${DIM}\u2502${RESET}  ${label}${pad}${value.padEnd(W - labelWidth - 2)}${DIM}\u2502${RESET}`);
       }
       log(`  ${DIM}\u2514${"\u2500".repeat(W)}\u2518${RESET}`);
       log("");
@@ -41340,6 +41412,7 @@ var HELP = `
     --roles <a,b>              Comma-separated extra role names (added to preset)
 
   Infrastructure options:
+    --dry-run                  Show summary and exit without writing files
     --output <dir>             Output directory (default: ./companies/)
     --api                      Provision via Paperclip API after assembly
     --api-url <url>            Paperclip API URL (default: http://localhost:3100)
@@ -41375,6 +41448,7 @@ function parseArgs(argv) {
   const args = argv.slice(2);
   const config2 = {
     outputDir: join5(process.cwd(), "companies"),
+    dryRun: false,
     apiEnabled: false,
     apiBaseUrl: "http://localhost:3100",
     model: null,
@@ -41400,6 +41474,9 @@ function parseArgs(argv) {
       case "--output":
         config2.outputDir = resolve(next);
         i++;
+        break;
+      case "--dry-run":
+        config2.dryRun = true;
         break;
       case "--api":
         config2.apiEnabled = true;
@@ -41535,7 +41612,8 @@ if (config.aiDescription !== null) {
       };
       await runHeadless({
         ...merged,
-        templatesDir: TEMPLATES_DIR
+        templatesDir: TEMPLATES_DIR,
+        dryRun: config.dryRun
       });
     } catch (err) {
       console.error("");
@@ -41559,6 +41637,7 @@ if (config.aiDescription !== null) {
       {
         outputDir: config.outputDir,
         templatesDir: TEMPLATES_DIR,
+        dryRun: config.dryRun,
         apiEnabled: config.apiEnabled,
         apiBaseUrl: config.apiBaseUrl,
         model: config.model,

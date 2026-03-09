@@ -19,6 +19,7 @@ import { provisionCompany } from "./api/provision.js";
  * @param {string[]} opts.roles - Extra roles (on top of preset)
  * @param {string} opts.outputDir - Output directory
  * @param {string} opts.templatesDir - Templates directory
+ * @param {boolean} opts.dryRun - Show summary and exit without writing files
  * @param {boolean} opts.apiEnabled - Provision via API
  * @param {string} opts.apiBaseUrl - API base URL
  * @param {string|null} opts.model - LLM model
@@ -111,6 +112,11 @@ export async function runHeadless(opts) {
     }
   }
   log("");
+
+  if (opts.dryRun) {
+    log("Dry run — no files written.");
+    return;
+  }
 
   // Assemble
   log("Assembling workspace...");
