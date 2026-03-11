@@ -709,4 +709,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## License
 
-[MIT](LICENSE) &mdash; [Yesterday](https://yesterday.ai)
+[MIT](LICENSE) &mdash; [Yesterday](https://yesterday-ai.de)
