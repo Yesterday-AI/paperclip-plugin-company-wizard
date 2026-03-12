@@ -2,6 +2,8 @@
   "name": "ceo",
   "title": "CEO",
   "base": true,
+  "division": "leadership",
+  "tagline": "Sets the vision, delegates the work, unblocks the team",
   "paperclipRole": "ceo",
   "description": "Strategic leader. Sets goals, delegates work, manages approvals.",
   "adapter": {

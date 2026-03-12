@@ -1,6 +1,8 @@
 {
   "name": "product-owner",
   "title": "Product Owner",
+  "division": "product",
+  "tagline": "Owns what gets built and in what order",
   "paperclipRole": "pm",
   "description": "Owns the product backlog, validates engineering output against goals, manages backlog health pipeline.",
   "reportsTo": "ceo",

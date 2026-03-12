@@ -1,6 +1,8 @@
 {
   "name": "cfo",
   "title": "Chief Financial Officer",
+  "division": "leadership",
+  "tagline": "Guards the budget, tracks the burn",
   "paperclipRole": "cfo",
   "description": "Owns financial planning, budget tracking, cost analysis, and resource allocation.",
   "reportsTo": "ceo",

@@ -1,6 +1,8 @@
 {
   "name": "cmo",
   "title": "Chief Marketing Officer",
+  "division": "leadership",
+  "tagline": "Turns product value into market traction",
   "paperclipRole": "cmo",
   "description": "Owns marketing strategy, brand positioning, go-to-market planning, and growth metrics.",
   "reportsTo": "ceo",

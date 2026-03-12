@@ -1,6 +1,8 @@
 {
   "name": "qa",
   "title": "QA Engineer",
+  "division": "engineering",
+  "tagline": "Nothing ships without passing the gate",
   "paperclipRole": "qa",
   "description": "Owns test strategy, test automation, quality gates, and regression prevention.",
   "reportsTo": "ceo",

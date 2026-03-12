@@ -1,6 +1,8 @@
 {
   "name": "ui-designer",
   "title": "UI & Brand Designer",
+  "division": "design",
+  "tagline": "Makes it look right and feel consistent",
   "paperclipRole": "designer",
   "description": "Owns visual identity, UI design systems, and brand consistency. Creates design specs that engineers implement.",
   "reportsTo": "ceo",

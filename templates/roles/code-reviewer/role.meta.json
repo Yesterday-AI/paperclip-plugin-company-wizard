@@ -1,6 +1,8 @@
 {
   "name": "code-reviewer",
   "title": "Code Reviewer",
+  "division": "engineering",
+  "tagline": "Catches bugs before users do",
   "paperclipRole": "general",
   "description": "Reviews PRs for correctness, security, and code style.",
   "reportsTo": "ceo",

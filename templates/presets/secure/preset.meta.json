@@ -1,0 +1,21 @@
+{
+  "name": "secure",
+  "description": "Security-focused setup with threat modeling, security reviews, and quality gates. Includes PR review and full planning. Best for regulated industries, fintech, healthtech, or security-sensitive projects.",
+  "constraints": [],
+  "roles": [
+    "security-engineer",
+    "code-reviewer",
+    "product-owner"
+  ],
+  "modules": [
+    "vision-workshop",
+    "tech-stack",
+    "architecture-plan",
+    "security-audit",
+    "github-repo",
+    "pr-review",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

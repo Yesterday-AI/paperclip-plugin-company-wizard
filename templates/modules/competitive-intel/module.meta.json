@@ -1,0 +1,17 @@
+{
+  "name": "competitive-intel",
+  "capabilities": [
+    {
+      "skill": "competitive-tracking",
+      "owners": ["customer-success", "cmo", "product-owner", "ceo"],
+      "fallbackSkill": "competitive-tracking.fallback"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Build initial competitive landscape",
+      "assignTo": "capability:competitive-tracking",
+      "description": "Research key competitors: their positioning, strengths, weaknesses, pricing, and recent moves. Document a living competitive landscape in docs/COMPETITIVE-LANDSCAPE.md with actionable differentiation insights."
+    }
+  ]
+}

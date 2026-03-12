@@ -1,6 +1,8 @@
 {
   "name": "cto",
   "title": "Chief Technology Officer",
+  "division": "leadership",
+  "tagline": "Technical vision, engineering standards, unblocks the team",
   "paperclipRole": "cto",
   "description": "Technical leader. Owns architecture decisions, engineering standards, tech debt strategy, and unblocks engineers.",
   "reportsTo": "ceo",

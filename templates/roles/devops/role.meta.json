@@ -1,6 +1,8 @@
 {
   "name": "devops",
   "title": "DevOps Engineer",
+  "division": "engineering",
+  "tagline": "Keeps the pipeline green and the servers up",
   "paperclipRole": "devops",
   "description": "Owns infrastructure, CI/CD pipelines, deployment, monitoring, and platform reliability.",
   "reportsTo": "ceo",

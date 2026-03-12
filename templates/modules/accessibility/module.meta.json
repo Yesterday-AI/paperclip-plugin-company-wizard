@@ -1,0 +1,17 @@
+{
+  "name": "accessibility",
+  "capabilities": [
+    {
+      "skill": "accessibility-audit",
+      "owners": ["qa", "ui-designer", "engineer"],
+      "fallbackSkill": "accessibility-audit.fallback"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Conduct initial accessibility audit",
+      "assignTo": "capability:accessibility-audit",
+      "description": "Audit the project for WCAG 2.2 compliance: check semantic HTML, keyboard navigation, color contrast, ARIA usage, and screen reader compatibility. Document findings and remediation plan in docs/ACCESSIBILITY-AUDIT.md."
+    }
+  ]
+}
