@@ -80,7 +80,7 @@ clipper/
 ```
 
 Each module contains:
-- `module.json` — Capability ownership chains, activation rules, initial tasks, dependencies
+- `module.meta.json` — Capability ownership chains, activation rules, initial tasks, dependencies, permissions
 - `skills/<skill>.md` — Shared primary skill (used by any primary owner)
 - `agents/<role>/skills/` — Role-specific overrides and fallback variants
 - `docs/` — Shared documentation injected into all agents

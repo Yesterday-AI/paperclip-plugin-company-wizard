@@ -19,11 +19,11 @@ async function setupFixtures() {
   outputDir = join(tmpDir, 'output');
   await mkdir(outputDir, { recursive: true });
 
-  // Base template with ceo and engineer roles
-  const baseDir = join(templatesDir, 'base');
+  // Base roles in roles/ with base: true in role.meta.json
   for (const role of ['ceo', 'engineer']) {
-    const roleDir = join(baseDir, role);
+    const roleDir = join(templatesDir, 'roles', role);
     await mkdir(roleDir, { recursive: true });
+    await writeJson(join(roleDir, 'role.meta.json'), { name: role, base: true });
     await writeFile(
       join(roleDir, 'AGENTS.md'),
       `# ${role} agent\n\n## Skills\n\n<!-- Skills are appended here by modules during company assembly -->\n`,
@@ -32,9 +32,10 @@ async function setupFixtures() {
     await writeFile(join(roleDir, 'SOUL.md'), `# ${role} soul\n`);
   }
 
-  // Extra role template
+  // Extra role template (not base)
   const proleDir = join(templatesDir, 'roles', 'product-owner');
   await mkdir(proleDir, { recursive: true });
+  await writeJson(join(proleDir, 'role.meta.json'), { name: 'product-owner' });
   await writeFile(join(proleDir, 'AGENTS.md'), '# product-owner agent\n\n## Skills\n\n');
   await writeFile(join(proleDir, 'HEARTBEAT.md'), '# product-owner heartbeat\n');
   await writeFile(join(proleDir, 'SOUL.md'), '# product-owner soul\n');
@@ -45,7 +46,7 @@ async function setupFixtures() {
   await writeFile(join(ghDir, 'docs', 'git-workflow.md'), '# Git Workflow\n');
   await mkdir(join(ghDir, 'agents', 'engineer', 'skills'), { recursive: true });
   await writeFile(join(ghDir, 'agents', 'engineer', 'skills', 'git-workflow.md'), '# Git skill\n');
-  await writeJson(join(ghDir, 'module.json'), {
+  await writeJson(join(ghDir, 'module.meta.json'), {
     name: 'github-repo',
     capabilities: [],
     tasks: [{ title: 'Init repo', assignTo: 'engineer', description: 'Set up repo' }],
@@ -70,8 +71,9 @@ async function setupFixtures() {
   // Shared skill (primary, used by any owner without a role-specific override)
   await mkdir(join(aaDir, 'skills'), { recursive: true });
   await writeFile(join(aaDir, 'skills', 'auto-assign.md'), '# auto-assign shared primary\n');
-  await writeJson(join(aaDir, 'module.json'), {
+  await writeJson(join(aaDir, 'module.meta.json'), {
     name: 'auto-assign',
+    permissions: ['tasks:assign'],
     capabilities: [
       {
         skill: 'auto-assign',
@@ -84,7 +86,7 @@ async function setupFixtures() {
   // Module: gated-mod (has activatesWithRoles)
   const gatedDir = join(templatesDir, 'modules', 'gated-mod');
   await mkdir(gatedDir, { recursive: true });
-  await writeJson(join(gatedDir, 'module.json'), {
+  await writeJson(join(gatedDir, 'module.meta.json'), {
     name: 'gated-mod',
     activatesWithRoles: ['designer'],
     capabilities: [],
@@ -103,7 +105,6 @@ describe('assembleCompany', () => {
   it('copies base roles to agents/ directory', async () => {
     const { companyDir, allRoles } = await assembleCompany({
       companyName: 'Test Co',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -123,10 +124,9 @@ describe('assembleCompany', () => {
     assert.ok(engHeartbeat.includes('# engineer heartbeat'));
   });
 
-  it('copies extra roles from templates/roles/', async () => {
+  it('copies extra roles from roles/', async () => {
     const { allRoles, companyDir } = await assembleCompany({
       companyName: 'Test Co 2',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: ['product-owner'],
       outputDir,
@@ -147,7 +147,6 @@ describe('assembleCompany', () => {
     const progress = [];
     await assembleCompany({
       companyName: 'Test Co 3',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: ['nonexistent-role'],
       outputDir,
@@ -161,7 +160,6 @@ describe('assembleCompany', () => {
   it('copies module shared docs to docs/', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'DocTest',
-      baseName: 'base',
       moduleNames: ['github-repo'],
       extraRoleNames: [],
       outputDir,
@@ -175,7 +173,6 @@ describe('assembleCompany', () => {
   it('injects module skills into agent skills/ and appends to AGENTS.md', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'SkillTest',
-      baseName: 'base',
       moduleNames: ['github-repo'],
       extraRoleNames: [],
       outputDir,
@@ -197,7 +194,6 @@ describe('assembleCompany', () => {
   it('appends shared doc references to all AGENTS.md files', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'SharedDocs',
-      baseName: 'base',
       moduleNames: ['github-repo'],
       extraRoleNames: [],
       outputDir,
@@ -221,7 +217,6 @@ describe('assembleCompany', () => {
   it('generates BOOTSTRAP.md with company name and roles', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'Boot Co',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -239,7 +234,6 @@ describe('assembleCompany', () => {
     const { companyDir } = await assembleCompany({
       companyName: 'GoalCo',
       goal: { title: 'Ship MVP', description: 'Build and launch the MVP' },
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -256,7 +250,6 @@ describe('assembleCompany', () => {
     const { companyDir } = await assembleCompany({
       companyName: 'ProjCo',
       project: { name: 'my-app', repoUrl: 'https://github.com/test/my-app' },
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -271,7 +264,6 @@ describe('assembleCompany', () => {
   it('includes initial tasks in BOOTSTRAP.md from modules', async () => {
     const { companyDir, initialTasks } = await assembleCompany({
       companyName: 'TaskCo',
-      baseName: 'base',
       moduleNames: ['github-repo'],
       extraRoleNames: [],
       outputDir,
@@ -291,7 +283,6 @@ describe('assembleCompany', () => {
     const progress = [];
     await assembleCompany({
       companyName: 'ProgressCo',
-      baseName: 'base',
       moduleNames: ['github-repo'],
       extraRoleNames: [],
       outputDir,
@@ -310,7 +301,6 @@ describe('assembleCompany', () => {
   it('appends incrementing index when company directory already exists', async () => {
     const first = await assembleCompany({
       companyName: 'DupeCo',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -320,7 +310,6 @@ describe('assembleCompany', () => {
 
     const second = await assembleCompany({
       companyName: 'DupeCo',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -330,7 +319,6 @@ describe('assembleCompany', () => {
 
     const third = await assembleCompany({
       companyName: 'DupeCo',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -342,7 +330,6 @@ describe('assembleCompany', () => {
   it('converts company name to PascalCase directory', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'my cool company',
-      baseName: 'base',
       moduleNames: [],
       extraRoleNames: [],
       outputDir,
@@ -356,7 +343,6 @@ describe('assembleCompany', () => {
     const progress = [];
     await assembleCompany({
       companyName: 'MissingMod',
-      baseName: 'base',
       moduleNames: ['nonexistent-module'],
       extraRoleNames: [],
       outputDir,
@@ -371,7 +357,6 @@ describe('assembleCompany', () => {
     const progress = [];
     await assembleCompany({
       companyName: 'GatedCo',
-      baseName: 'base',
       moduleNames: ['gated-mod'],
       extraRoleNames: [],
       outputDir,
@@ -386,7 +371,6 @@ describe('assembleCompany', () => {
   it('assigns primary skill to capability owner and fallback to non-owner', async () => {
     const { companyDir } = await assembleCompany({
       companyName: 'CapCo',
-      baseName: 'base',
       moduleNames: ['auto-assign'],
       extraRoleNames: ['product-owner'],
       outputDir,
@@ -414,7 +398,7 @@ describe('assembleCompany', () => {
     );
 
     // Add the marker comment to ceo HEARTBEAT.md
-    const ceoHeartbeat = join(templatesDir, 'base', 'ceo', 'HEARTBEAT.md');
+    const ceoHeartbeat = join(templatesDir, 'roles', 'ceo', 'HEARTBEAT.md');
     await writeFile(
       ceoHeartbeat,
       '# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n',
@@ -422,7 +406,6 @@ describe('assembleCompany', () => {
 
     const { companyDir } = await assembleCompany({
       companyName: 'HeartbeatCo',
-      baseName: 'base',
       moduleNames: ['auto-assign'],
       extraRoleNames: [],
       outputDir,
@@ -446,7 +429,7 @@ describe('assembleCompany', () => {
     for (const mod of ['mod-a', 'mod-b']) {
       const modDir = join(templatesDir, 'modules', mod);
       await mkdir(join(modDir, 'agents', 'ceo'), { recursive: true });
-      await writeJson(join(modDir, 'module.json'), { name: mod, capabilities: [] });
+      await writeJson(join(modDir, 'module.meta.json'), { name: mod, capabilities: [] });
       await writeFile(
         join(modDir, 'agents', 'ceo', 'heartbeat-section.md'),
         `## Section from ${mod}\n\nDo ${mod} things.\n`,
@@ -455,13 +438,12 @@ describe('assembleCompany', () => {
 
     // Add marker to ceo HEARTBEAT.md
     await writeFile(
-      join(templatesDir, 'base', 'ceo', 'HEARTBEAT.md'),
+      join(templatesDir, 'roles', 'ceo', 'HEARTBEAT.md'),
       '# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n',
     );
 
     const { companyDir } = await assembleCompany({
       companyName: 'MultiHeartbeat',
-      baseName: 'base',
       moduleNames: ['mod-a', 'mod-b'],
       extraRoleNames: [],
       outputDir,
@@ -488,7 +470,6 @@ describe('assembleCompany', () => {
 
     const { companyDir } = await assembleCompany({
       companyName: 'NoPoCo',
-      baseName: 'base',
       moduleNames: ['auto-assign'],
       extraRoleNames: [], // no product-owner
       outputDir,
@@ -510,13 +491,12 @@ describe('assembleCompany', () => {
     );
 
     await writeFile(
-      join(templatesDir, 'base', 'ceo', 'HEARTBEAT.md'),
+      join(templatesDir, 'roles', 'ceo', 'HEARTBEAT.md'),
       '# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n',
     );
 
     const { companyDir } = await assembleCompany({
       companyName: 'GatedHeartbeat',
-      baseName: 'base',
       moduleNames: ['gated-mod'],
       extraRoleNames: [], // no designer
       outputDir,
@@ -536,14 +516,13 @@ describe('assembleCompany', () => {
     );
 
     await writeFile(
-      join(templatesDir, 'base', 'ceo', 'HEARTBEAT.md'),
+      join(templatesDir, 'roles', 'ceo', 'HEARTBEAT.md'),
       '# ceo heartbeat\n\n<!-- Module heartbeat sections are inserted above this line during assembly -->\n',
     );
 
     const progress = [];
     await assembleCompany({
       companyName: 'ProgressHeartbeat',
-      baseName: 'base',
       moduleNames: ['auto-assign'],
       extraRoleNames: [],
       outputDir,
@@ -564,8 +543,8 @@ describe('assembleCompany', () => {
 
   it('resolves capability:* task assignments to the primary owner role', async () => {
     // Add a task with capability: reference
-    const aaModuleJson = join(templatesDir, 'modules', 'auto-assign', 'module.json');
-    await writeJson(aaModuleJson, {
+    const aaModuleMeta = join(templatesDir, 'modules', 'auto-assign', 'module.meta.json');
+    await writeJson(aaModuleMeta, {
       name: 'auto-assign',
       capabilities: [{ skill: 'auto-assign', owners: ['product-owner', 'ceo'] }],
       tasks: [{ title: 'Configure auto-assign', assignTo: 'capability:auto-assign' }],
@@ -573,7 +552,6 @@ describe('assembleCompany', () => {
 
     const { initialTasks } = await assembleCompany({
       companyName: 'CapTaskCo',
-      baseName: 'base',
       moduleNames: ['auto-assign'],
       extraRoleNames: ['product-owner'],
       outputDir,

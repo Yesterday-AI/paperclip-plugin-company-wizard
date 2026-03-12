@@ -1,0 +1,20 @@
+{
+  "name": "gtm",
+  "description": "Go-to-market focused setup with competitive intelligence, market analysis, and brand identity. Includes CMO for marketing strategy and Customer Success for competitive tracking. Best for products entering or competing in established markets.",
+  "constraints": [],
+  "roles": [
+    "cmo",
+    "customer-success",
+    "product-owner"
+  ],
+  "modules": [
+    "vision-workshop",
+    "market-analysis",
+    "competitive-intel",
+    "brand-identity",
+    "github-repo",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

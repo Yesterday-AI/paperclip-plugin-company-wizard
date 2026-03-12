@@ -74,7 +74,6 @@ export default function App({
     description: initialProjectDescription || null,
     repoUrl: initialRepo || null,
   });
-  const [baseName, setBaseName] = useState('base');
   const [presetName, setPresetName] = useState('');
   const [selectedModules, setSelectedModules] = useState([]);
   const [preselectedModules, setPreselectedModules] = useState([]);
@@ -97,7 +96,6 @@ export default function App({
       // Apply preset immediately
       const preset = loadedPresets.find((p) => p.name === initialPreset);
       if (preset) {
-        setBaseName(preset.base || 'base');
         const mods = [...new Set([...(preset.modules || []), ...initialModules])];
         const roles = [...new Set([...(preset.roles || []), ...initialRoles])];
         setPresetName(preset.name);
@@ -127,7 +125,7 @@ export default function App({
   }, []);
 
   // Derived state
-  const allRolesSet = buildAllRoles(['ceo', 'engineer'], selectedRoles);
+  const allRolesSet = buildAllRoles(availableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
 
   const rolesData = new Map();
@@ -237,11 +235,9 @@ export default function App({
             onComplete={(preset) => {
               setPresetName(preset.name);
               if (preset.name === 'custom') {
-                setBaseName('base');
                 setPreselectedModules([]);
                 setPreselectedRoles([]);
               } else {
-                setBaseName(preset.base);
                 setPreselectedModules(preset.modules || []);
                 setSelectedModules(preset.modules || []);
                 setPreselectedRoles(preset.roles || []);
@@ -271,7 +267,7 @@ export default function App({
         <>
           <PrevSelections entries={prev.roles} />
           <StepRoles
-            roles={availableRoles.filter((r) => !r._base)}
+            roles={availableRoles.filter((r) => !r.base)}
             preselected={preselectedRoles}
             onComplete={(roles) => {
               setSelectedRoles(roles);
@@ -286,7 +282,7 @@ export default function App({
           companyName={companyName}
           goal={goal}
           project={project}
-          baseName={baseName}
+          presetName={presetName}
           moduleNames={selectedModules}
           roleNames={selectedRoles}
           modules={modules}
@@ -312,7 +308,6 @@ export default function App({
           companyName={companyName}
           goal={goal}
           project={project}
-          baseName={baseName}
           moduleNames={selectedModules}
           extraRoleNames={selectedRoles}
           outputDir={outputDir}

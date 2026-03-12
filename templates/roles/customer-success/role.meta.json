@@ -1,0 +1,17 @@
+{
+  "name": "customer-success",
+  "title": "Customer Success Manager",
+  "division": "product",
+  "tagline": "Keeps customers happy and churn low",
+  "paperclipRole": "general",
+  "description": "Owns customer health monitoring, feedback synthesis, churn prevention, and onboarding experience.",
+  "reportsTo": "ceo",
+  "enhances": [
+    "Takes over competitive-intel customer feedback analysis from CMO/CEO",
+    "Contributes customer insights to market-analysis",
+    "Adds customer-impact review pass when pr-review module is active"
+  ],
+  "adapter": {
+    "model": "claude-sonnet-4-6"
+  }
+}

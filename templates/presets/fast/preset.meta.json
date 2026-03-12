@@ -1,0 +1,13 @@
+{
+  "name": "fast",
+  "description": "Speed-optimized for solo engineer. CEO + one Engineer, commit directly on main, no PR review. Automatic issue generation and assignment.",
+  "constraints": [
+    "Not suited for more than one implementing engineer — lacks review process and parallel commits to main will cause conflicts."
+  ],
+  "modules": [
+    "github-repo",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "security-audit",
+  "capabilities": [
+    {
+      "skill": "threat-model",
+      "owners": ["security-engineer", "devops", "engineer"],
+      "fallbackSkill": "threat-model.fallback"
+    },
+    {
+      "skill": "security-review",
+      "owners": ["security-engineer", "devops", "engineer"],
+      "fallbackSkill": "security-review.fallback"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Conduct initial threat model",
+      "assignTo": "capability:threat-model",
+      "description": "Identify attack surfaces, trust boundaries, and data flows using STRIDE methodology. Document the threat model in docs/THREAT-MODEL.md with risk ratings and mitigation recommendations."
+    },
+    {
+      "title": "Perform initial security review",
+      "assignTo": "capability:security-review",
+      "description": "Audit the codebase for OWASP Top 10 vulnerabilities, dependency CVEs, secrets exposure, and configuration issues. Document findings in docs/SECURITY-REVIEW.md with severity ratings."
+    }
+  ]
+}

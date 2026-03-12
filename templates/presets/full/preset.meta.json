@@ -1,0 +1,21 @@
+{
+  "name": "full",
+  "description": "Full company setup with strategy, quality engineering, and team growth. All planning modules, PR review workflow, and hiring review. Best for serious projects.",
+  "constraints": [],
+  "roles": [
+    "product-owner",
+    "code-reviewer"
+  ],
+  "modules": [
+    "vision-workshop",
+    "market-analysis",
+    "hiring-review",
+    "tech-stack",
+    "architecture-plan",
+    "github-repo",
+    "pr-review",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "documentation",
+  "capabilities": [
+    {
+      "skill": "project-docs",
+      "owners": ["technical-writer", "engineer", "ceo"],
+      "fallbackSkill": "project-docs.fallback"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Create initial project documentation",
+      "assignTo": "capability:project-docs",
+      "description": "Write the foundational project documentation: README with setup instructions, architecture overview, API reference (if applicable), and contribution guide. Document in the project root and docs/ directory."
+    }
+  ]
+}

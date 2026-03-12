@@ -39383,9 +39383,9 @@ function resolveCapabilities(modules, selectedModules, allRoles) {
   }
   return resolved;
 }
-function buildAllRoles(baseRoles, extraRoleNames) {
-  const allRoles = new Set(baseRoles);
-  for (const role of extraRoleNames) allRoles.add(role);
+function buildAllRoles(availableRoles, extraRoleNames) {
+  const baseRoles = availableRoles.filter((r) => r.base).map((r) => r.name);
+  const allRoles = /* @__PURE__ */ new Set([...baseRoles, ...extraRoleNames]);
   return allRoles;
 }
 function buildModuleDeps(modules) {
@@ -39500,7 +39500,7 @@ function StepSummary({
   companyName,
   goal,
   project,
-  baseName,
+  presetName,
   moduleNames,
   roleNames,
   modules,
@@ -39535,7 +39535,7 @@ function StepSummary({
       goal?.description ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "", value: goal.description, dim: true }) : null,
       project?.name ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Project", value: project.name }) : null,
       project?.repoUrl ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Repo", value: project.repoUrl, dim: true }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Preset", value: baseName }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Preset", value: presetName || "custom" }),
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Modules", value: moduleNames.length > 0 ? moduleNames.join(", ") : "none" }),
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Roles", value: allRoleNames.map((r) => formatRoleName(r)).join(", ") }),
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Output", value: outputDir, dim: true }),
@@ -39650,7 +39650,6 @@ async function assembleCompany({
   companyName,
   goal = {},
   project = {},
-  baseName,
   moduleNames,
   extraRoleNames,
   outputDir,
@@ -39667,27 +39666,37 @@ async function assembleCompany({
     dirName = `${baseDirName}${idx}`;
     companyDir = join(outputDir, dirName);
   }
-  const baseDir = join(templatesDir, baseName);
-  const baseEntries = await readdir(baseDir, { withFileTypes: true });
-  const allRoles = new Set(baseEntries.filter((e) => e.isDirectory()).map((e) => e.name));
-  for (const role of extraRoleNames) allRoles.add(role);
-  for (const role of baseEntries) {
-    if (!role.isDirectory()) continue;
-    const roleSrc = join(baseDir, role.name);
-    const roleDest = join(companyDir, "agents", role.name);
+  const rolesDir = join(templatesDir, "roles");
+  const baseRoleNames = [];
+  if (await exists(rolesDir)) {
+    const roleDirs = await readdir(rolesDir, { withFileTypes: true });
+    for (const dir of roleDirs) {
+      if (!dir.isDirectory()) continue;
+      const roleMeta = await readJson(join(rolesDir, dir.name, "role.meta.json"));
+      if (roleMeta?.base) {
+        baseRoleNames.push(dir.name);
+      }
+    }
+  }
+  const allRoles = /* @__PURE__ */ new Set([...baseRoleNames, ...extraRoleNames]);
+  for (const roleName of baseRoleNames) {
+    const roleSrc = join(rolesDir, roleName);
+    const roleDest = join(companyDir, "agents", roleName);
     await mkdir(roleDest, { recursive: true });
     const entries = await readdir(roleSrc, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name), { skipExt: ".json" });
-      } else if (!entry.name.endsWith(".json")) {
+        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name), {
+          skipExt: ".meta.json"
+        });
+      } else if (!entry.name.endsWith(".meta.json")) {
         await copyFile(join(roleSrc, entry.name), join(roleDest, entry.name));
       }
     }
-    onProgress(`+ agents/${role.name}/ (base)`);
+    onProgress(`+ agents/${roleName}/ (base)`);
   }
   for (const roleName of extraRoleNames) {
-    const roleDir = join(templatesDir, "roles", roleName);
+    const roleDir = join(rolesDir, roleName);
     if (!await exists(roleDir)) {
       onProgress(`! role ${roleName} not found, skipping`);
       continue;
@@ -39708,7 +39717,7 @@ async function assembleCompany({
       onProgress(`! module ${moduleName} not found, skipping`);
       continue;
     }
-    const moduleJson = await readJson(join(moduleDir, "module.json"));
+    const moduleJson = await readJson(join(moduleDir, "module.meta.json"));
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));
       if (!hasActivatingRole) {
@@ -39811,7 +39820,7 @@ Read and follow: \`$AGENT_HOME/skills/${skillFile}\`
   for (const moduleName of moduleNames) {
     const moduleDir = join(templatesDir, "modules", moduleName);
     if (!await exists(moduleDir)) continue;
-    const moduleJson = await readJson(join(moduleDir, "module.json"));
+    const moduleJson = await readJson(join(moduleDir, "module.meta.json"));
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));
       if (!hasActivatingRole) continue;
@@ -39964,7 +39973,6 @@ function StepAssemble({
   companyName,
   goal,
   project,
-  baseName,
   moduleNames,
   extraRoleNames,
   outputDir,
@@ -39980,7 +39988,6 @@ function StepAssemble({
       companyName,
       goal,
       project,
-      baseName,
       moduleNames,
       extraRoleNames,
       outputDir,
@@ -40479,7 +40486,7 @@ async function loadPresets(templatesDir) {
   const dirs = await readdir2(presetsDir, { withFileTypes: true });
   for (const dir of dirs) {
     if (!dir.isDirectory()) continue;
-    const presetFile = join4(presetsDir, dir.name, "preset.json");
+    const presetFile = join4(presetsDir, dir.name, "preset.meta.json");
     if (await exists2(presetFile)) {
       presets.push(JSON.parse(await readFile2(presetFile, "utf-8")));
     }
@@ -40493,7 +40500,7 @@ async function loadModules(templatesDir) {
   const dirs = await readdir2(modulesDir, { withFileTypes: true });
   for (const dir of dirs) {
     if (!dir.isDirectory()) continue;
-    const moduleJson = await readJson2(join4(modulesDir, dir.name, "module.json"));
+    const moduleJson = await readJson2(join4(modulesDir, dir.name, "module.meta.json"));
     const readmePath = join4(modulesDir, dir.name, "README.md");
     let description = "";
     if (await exists2(readmePath)) {
@@ -40506,27 +40513,15 @@ async function loadModules(templatesDir) {
   return modules;
 }
 async function loadRoles(templatesDir) {
-  const roles = [];
-  const baseDir = join4(templatesDir, "base");
-  if (await exists2(baseDir)) {
-    const baseDirs = await readdir2(baseDir, { withFileTypes: true });
-    for (const dir of baseDirs) {
-      if (!dir.isDirectory()) continue;
-      const roleJson = await readJson2(join4(baseDir, dir.name, "role.json"));
-      if (roleJson) {
-        roles.push({ ...roleJson, _base: true });
-      }
-    }
-  }
   const rolesDir = join4(templatesDir, "roles");
-  if (await exists2(rolesDir)) {
-    const dirs = await readdir2(rolesDir, { withFileTypes: true });
-    for (const dir of dirs) {
-      if (!dir.isDirectory()) continue;
-      const roleJson = await readJson2(join4(rolesDir, dir.name, "role.json"));
-      if (roleJson) {
-        roles.push(roleJson);
-      }
+  const roles = [];
+  if (!await exists2(rolesDir)) return roles;
+  const dirs = await readdir2(rolesDir, { withFileTypes: true });
+  for (const dir of dirs) {
+    if (!dir.isDirectory()) continue;
+    const roleJson = await readJson2(join4(rolesDir, dir.name, "role.meta.json"));
+    if (roleJson) {
+      roles.push(roleJson);
     }
   }
   return roles;
@@ -40586,7 +40581,6 @@ function App2({
     description: initialProjectDescription || null,
     repoUrl: initialRepo || null
   });
-  const [baseName, setBaseName] = (0, import_react46.useState)("base");
   const [presetName, setPresetName] = (0, import_react46.useState)("");
   const [selectedModules, setSelectedModules] = (0, import_react46.useState)([]);
   const [preselectedModules, setPreselectedModules] = (0, import_react46.useState)([]);
@@ -40603,7 +40597,6 @@ function App2({
     if (initialPreset) {
       const preset = loadedPresets.find((p) => p.name === initialPreset);
       if (preset) {
-        setBaseName(preset.base || "base");
         const mods = [.../* @__PURE__ */ new Set([...preset.modules || [], ...initialModules])];
         const roles = [.../* @__PURE__ */ new Set([...preset.roles || [], ...initialRoles])];
         setPresetName(preset.name);
@@ -40627,7 +40620,7 @@ function App2({
       setStep(STEPS.ERROR);
     });
   }, []);
-  const allRolesSet = buildAllRoles(["ceo", "engineer"], selectedRoles);
+  const allRolesSet = buildAllRoles(availableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
   const rolesData = /* @__PURE__ */ new Map();
   for (const r of availableRoles) {
@@ -40725,11 +40718,9 @@ function App2({
           onComplete: (preset) => {
             setPresetName(preset.name);
             if (preset.name === "custom") {
-              setBaseName("base");
               setPreselectedModules([]);
               setPreselectedRoles([]);
             } else {
-              setBaseName(preset.base);
               setPreselectedModules(preset.modules || []);
               setSelectedModules(preset.modules || []);
               setPreselectedRoles(preset.roles || []);
@@ -40759,7 +40750,7 @@ function App2({
       /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepRoles,
         {
-          roles: availableRoles.filter((r) => !r._base),
+          roles: availableRoles.filter((r) => !r.base),
           preselected: preselectedRoles,
           onComplete: (roles) => {
             setSelectedRoles(roles);
@@ -40774,7 +40765,7 @@ function App2({
         companyName,
         goal,
         project,
-        baseName,
+        presetName,
         moduleNames: selectedModules,
         roleNames: selectedRoles,
         modules,
@@ -40800,7 +40791,6 @@ function App2({
         companyName,
         goal,
         project,
-        baseName,
         moduleNames: selectedModules,
         extraRoleNames: selectedRoles,
         outputDir,
@@ -40873,7 +40863,6 @@ async function runHeadless(opts) {
     loadModules(opts.templatesDir),
     loadRoles(opts.templatesDir)
   ]);
-  let baseName = "base";
   let presetModules = [];
   let presetRoles = [];
   if (opts.preset && opts.preset !== "custom") {
@@ -40883,7 +40872,6 @@ async function runHeadless(opts) {
       console.error(`Error: unknown preset "${opts.preset}". Available: ${names}`);
       process.exit(1);
     }
-    baseName = preset.base || "base";
     presetModules = preset.modules || [];
     presetRoles = preset.roles || [];
   }
@@ -40897,7 +40885,7 @@ async function runHeadless(opts) {
       process.exit(1);
     }
   }
-  const roleNames = new Set(allAvailableRoles.filter((r) => !r._base).map((r) => r.name));
+  const roleNames = new Set(allAvailableRoles.filter((r) => !r.base).map((r) => r.name));
   for (const role of selectedRoles) {
     if (!roleNames.has(role)) {
       const names = [...roleNames].join(", ");
@@ -40905,7 +40893,7 @@ async function runHeadless(opts) {
       process.exit(1);
     }
   }
-  const allRolesSet = buildAllRoles(["ceo", "engineer"], selectedRoles);
+  const allRolesSet = buildAllRoles(allAvailableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
   const rolesData = /* @__PURE__ */ new Map();
   for (const r of allAvailableRoles) {
@@ -40927,7 +40915,8 @@ async function runHeadless(opts) {
   if (project.repoUrl) log(`  Repo:     ${project.repoUrl}`);
   log(`  Preset:   ${opts.preset || "custom"}`);
   log(`  Modules:  ${selectedModules.join(", ") || "(none)"}`);
-  log(`  Roles:    ceo, engineer${selectedRoles.length ? ", " + selectedRoles.join(", ") : ""}`);
+  const baseRoleNames = allAvailableRoles.filter((r) => r.base).map((r) => r.name);
+  log(`  Roles:    ${[...baseRoleNames, ...selectedRoles].join(", ")}`);
   if (capabilities.length) {
     log(`  Capabilities:`);
     for (const cap of capabilities) {
@@ -40944,7 +40933,6 @@ async function runHeadless(opts) {
     companyName: opts.name,
     goal,
     project,
-    baseName,
     moduleNames: selectedModules,
     extraRoleNames: selectedRoles,
     outputDir: opts.outputDir,
@@ -41626,7 +41614,7 @@ if (config.aiDescription !== null) {
         loadModules(TEMPLATES_DIR),
         loadRoles(TEMPLATES_DIR)
       ]);
-      const optionalRoles = allRoles.filter((r) => !r._base);
+      const optionalRoles = allRoles.filter((r) => !r.base);
       let aiResult;
       if (config.aiDescription) {
         aiResult = await aiWizard({

@@ -2,6 +2,23 @@
 
 All notable changes to Clipper are documented here.
 
+## [0.3.7] — 2026-03-12
+
+### Changed
+
+- **Template metadata renamed** — All metadata files renamed from `*.json` to `*.meta.json` (`role.meta.json`, `module.meta.json`, `preset.meta.json`) for clearer separation from content files.
+- **Base roles consolidated** — `templates/base/` removed. CEO and Engineer now live in `templates/roles/` with a `"base": true` flag in their `role.meta.json`. The `baseName` parameter and preset `"base"` field are eliminated — base roles are discovered dynamically from metadata.
+- **`buildAllRoles()` signature** — Now accepts an array of role objects (with `base` flag) instead of a hardcoded string array. Callers no longer need to know which roles are base.
+
+### Added
+
+- **Module permissions** — `module.meta.json` supports a `permissions` field declaring Paperclip API permissions required by capability owners (e.g., `"permissions": ["tasks:assign"]` on auto-assign). Used during provisioning to grant agents the permissions their modules need.
+- **3 new roles** — `technical-writer` (developer docs, API refs, onboarding guides), `security-engineer` (threat modeling, OWASP, security reviews), `customer-success` (customer health, churn prevention, competitive intelligence from the customer perspective).
+- **4 new modules** — `security-audit` (threat model + security review capabilities), `documentation` (project docs capability), `competitive-intel` (competitive tracking capability), `accessibility` (WCAG 2.2 audit capability). All follow the gracefully-optimistic pattern with full owner chains and fallback skills.
+- **3 new presets** — `secure` (security-focused for regulated industries), `gtm` (go-to-market with competitive intel and brand identity), `content` (documentation and accessibility focused).
+- **`division` field on roles** — Functional grouping (`leadership`, `engineering`, `design`, `product`) for wizard display and AI selection.
+- **`tagline` field on roles** — One-liner personality summary for better wizard UX and AI wizard selection.
+
 ## [0.3.6] — 2026-03-11
 
 ### Added

@@ -1,0 +1,14 @@
+{
+  "name": "ux-researcher",
+  "title": "UX Researcher",
+  "division": "design",
+  "tagline": "Understands the user so the product doesn't have to guess",
+  "paperclipRole": "researcher",
+  "description": "Owns user experience research, usability analysis, and user journey mapping. Informs design and product decisions with user-centered insights.",
+  "reportsTo": "ceo",
+  "enhances": [
+    "Takes over market-analysis user research section from Product Owner/CEO",
+    "Takes over vision-workshop success metrics validation from CEO",
+    "Adds UX review pass when pr-review module is active"
+  ]
+}

@@ -6,7 +6,7 @@ export default function StepSummary({
   companyName,
   goal,
   project,
-  baseName,
+  presetName,
   moduleNames,
   roleNames,
   modules,
@@ -53,7 +53,7 @@ export default function StepSummary({
         {goal?.description ? <Row label="" value={goal.description} dim /> : null}
         {project?.name ? <Row label="Project" value={project.name} /> : null}
         {project?.repoUrl ? <Row label="Repo" value={project.repoUrl} dim /> : null}
-        <Row label="Preset" value={baseName} />
+        <Row label="Preset" value={presetName || 'custom'} />
         <Row label="Modules" value={moduleNames.length > 0 ? moduleNames.join(', ') : 'none'} />
         <Row label="Roles" value={allRoleNames.map((r) => formatRoleName(r)).join(', ')} />
         <Row label="Output" value={outputDir} dim />

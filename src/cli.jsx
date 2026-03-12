@@ -219,7 +219,7 @@ if (config.aiDescription !== null) {
         loadRoles(TEMPLATES_DIR),
       ]);
 
-      const optionalRoles = allRoles.filter((r) => !r._base);
+      const optionalRoles = allRoles.filter((r) => !r.base);
       let aiResult;
 
       if (config.aiDescription) {

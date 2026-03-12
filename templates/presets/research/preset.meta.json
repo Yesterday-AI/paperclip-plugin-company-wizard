@@ -1,0 +1,13 @@
+{
+  "name": "research",
+  "description": "Research and planning phase only. Vision, market analysis, and tech evaluation — no code, no repo. Use this to explore and validate before committing to build.",
+  "constraints": [
+    "No GitHub repo or code workflow. Add github-repo and backlog when ready to build."
+  ],
+  "modules": [
+    "vision-workshop",
+    "market-analysis",
+    "tech-stack",
+    "hiring-review"
+  ]
+}

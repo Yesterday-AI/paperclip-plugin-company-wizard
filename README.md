@@ -108,7 +108,7 @@ $ clipper --api
 | `--project <name>` | Project name | company name |
 | `--project-description <desc>` | Project description | _(wizard prompt)_ |
 | `--repo <url>` | GitHub repository URL | _(wizard prompt)_ |
-| `--preset <name>` | Preset: `fast`, `quality`, `rad`, `startup`, `research`, `full` | _(wizard prompt)_ |
+| `--preset <name>` | Preset: `fast`, `quality`, `rad`, `startup`, `research`, `full`, `secure`, `gtm`, `content` | _(wizard prompt)_ |
 | `--modules <a,b,c>` | Comma-separated module names (merged with preset) | _(wizard prompt)_ |
 | `--roles <a,b>` | Comma-separated extra role names (merged with preset) | _(wizard prompt)_ |
 
@@ -245,6 +245,11 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | `architecture-plan` | Engineer | CEO | architecture-plan |
 | `design-system` | UI Designer | Engineer | architecture-plan |
 | `pr-review` | Code Reviewer / Product Owner / UI Designer / UX Researcher / QA / DevOps | — | pr-review |
+| `threat-model` | Security Engineer &rarr; DevOps | Engineer | security-audit |
+| `security-review` | Security Engineer &rarr; DevOps | Engineer | security-audit |
+| `project-docs` | Technical Writer &rarr; Engineer | CEO | documentation |
+| `competitive-tracking` | Customer Success &rarr; CMO &rarr; Product Owner | CEO | competitive-intel |
+| `accessibility-audit` | QA &rarr; UI Designer | Engineer | accessibility |
 | `stall-detection` | CEO (always) | — | stall-detection |
 | `vision-workshop` | CEO (always) | — | vision-workshop |
 
@@ -264,6 +269,9 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`startup`** | + vision, market, hiring, tech, architecture | Strategy-first, grow organically |
 | **`research`** | vision, market, tech, hiring (no repo/code) | Planning phase only |
 | **`full`** | All modules + Product Owner + Code Reviewer | Full planning + quality engineering |
+| **`secure`** | + security-audit, + Security Engineer + Code Reviewer + PO | Regulated industries, fintech, healthtech |
+| **`gtm`** | + competitive-intel, brand-identity, + CMO + Customer Success + PO | Market-facing products, competitive positioning |
+| **`content`** | + documentation, accessibility, + Technical Writer + PO | Dev tools, documentation-heavy projects |
 
 > **`fast`** is for a single engineer — multiple engineers without review will cause conflicts.
 >
@@ -284,6 +292,12 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 
 **full** — Everything. Full strategic planning, quality engineering with PR review, team growth via hiring review. Product Owner and Code Reviewer included. Best for serious projects that need both strategy and engineering rigor.
 
+**secure** — Security-first. Threat modeling, security reviews, and quality gates on top of full planning and PR review. Security Engineer, Code Reviewer, and Product Owner included. Best for regulated industries, fintech, healthtech, or any project where security is a hard requirement.
+
+**gtm** — Go-to-market focused. Competitive intelligence, market analysis, and brand identity. CMO for marketing strategy, Customer Success for competitive tracking, Product Owner for backlog. Best for products entering or competing in established markets.
+
+**content** — Content and documentation focused. Technical Writer for developer docs and guides, accessibility for inclusive design, market analysis for positioning. Best for developer tools, documentation-heavy projects, or content-driven products.
+
 </details>
 
 <br>
@@ -301,6 +315,10 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`architecture-plan`** | Design system architecture + design system | Engineer + Designer (if present) |
 | **`brand-identity`** | Brand book, visual identity, design guidelines | Primary owner defines brand |
 | **`user-testing`** | Usability evaluations and findings | Primary owner runs evaluations |
+| **`competitive-intel`** | Competitive landscape analysis and tracking | Primary owner builds landscape |
+| **`documentation`** | Project docs, API refs, onboarding guides | Primary owner creates docs |
+| **`security-audit`** | Threat modeling and security code review | Primary owner conducts audit |
+| **`accessibility`** | WCAG 2.2 compliance audit and remediation | Primary owner runs audit |
 
 ### Engineering Workflow
 
@@ -417,6 +435,35 @@ Observability, error tracking, logging, alerting, and health checks. Requires `g
 - **Fallback:** Engineer sets up basic health checks and structured logging; DevOps owns full observability stack
 - **Doc:** `docs/monitoring-template.md`
 
+#### security-audit
+
+Threat modeling and security code review. Identifies attack surfaces, OWASP Top 10 vulnerabilities, and dependency CVEs.
+
+- **Capability:** `threat-model` — owners: `security-engineer` &rarr; `devops` &rarr; `engineer`
+- **Capability:** `security-review` — owners: `security-engineer` &rarr; `devops` &rarr; `engineer`
+- **Fallback:** DevOps focuses on infrastructure security; Engineer runs basic checks only
+
+#### documentation
+
+Project documentation: READMEs, API references, architecture overviews, onboarding guides.
+
+- **Capability:** `project-docs` — owners: `technical-writer` &rarr; `engineer` &rarr; `ceo`
+- **Fallback:** Engineer writes minimal README; CEO creates bare-bones project overview
+
+#### competitive-intel
+
+Living competitive landscape — competitor profiles that evolve over time with positioning, strengths, and differentiation insights.
+
+- **Capability:** `competitive-tracking` — owners: `customer-success` &rarr; `cmo` &rarr; `product-owner` &rarr; `ceo`
+- **Fallback:** CMO focuses on positioning angles; CEO creates brief overview only
+
+#### accessibility
+
+WCAG 2.2 compliance auditing: semantic HTML, keyboard navigation, color contrast, ARIA, screen reader compatibility.
+
+- **Capability:** `accessibility-audit` — owners: `qa` &rarr; `ui-designer` &rarr; `engineer`
+- **Fallback:** UI Designer focuses on visual accessibility; Engineer runs automated checks
+
 #### stall-detection
 
 Detects issues stuck in `in_progress` or `in_review` with no recent activity. Nudges the assigned agent, escalates to the board if nudging doesn't help.
@@ -442,6 +489,9 @@ Every company starts with **CEO** and **Engineer** (base roles). These optional 
 | **CFO** | `cfo` | CEO | Financial planning, budget tracking, cost analysis |
 | **DevOps Engineer** | `devops` | CEO | Takes over ci-cd and monitoring from Engineer |
 | **QA Engineer** | `qa` | CEO | Takes over user-testing, quality gates |
+| **Technical Writer** | `general` | CEO | Takes over documentation, adds doc review pass |
+| **Security Engineer** | `general` | CEO | Takes over security-audit, adds security review pass |
+| **Customer Success** | `general` | CEO | Takes over competitive-intel customer analysis |
 
 <details>
 <summary><strong>Role details</strong></summary>
@@ -481,6 +531,18 @@ Owns infrastructure, CI/CD pipelines, deployment, monitoring, and platform relia
 #### QA Engineer
 
 Owns test strategy, test automation, quality gates, and regression prevention. Prevention over detection.
+
+#### Technical Writer
+
+Owns developer documentation, API references, READMEs, and onboarding guides. Keeps docs accurate as the codebase evolves. Accuracy over completeness.
+
+#### Security Engineer
+
+Owns threat modeling, security code reviews, OWASP compliance, and secure coding standards. Finds vulnerabilities before attackers do. Security issues are always blocking.
+
+#### Customer Success Manager
+
+Owns customer health monitoring, feedback synthesis, churn prevention, and competitive intelligence from the customer perspective. Empathy-driven, data-backed.
 
 </details>
 
@@ -534,7 +596,7 @@ Follow the `BOOTSTRAP.md` file generated in the company directory. It lists ever
 
 ```text
 templates/modules/<name>/
-├── module.json                  # Name, capabilities, tasks, dependencies
+├── module.meta.json             # Name, capabilities, tasks, dependencies, permissions
 ├── skills/                      # Shared skills (used by any primary owner)
 │   └── <skill>.md
 ├── agents/<role>/
@@ -564,13 +626,14 @@ The naming convention is the contract: `UPPERCASE.md` from another module → al
 </details>
 
 <details>
-<summary><strong>module.json schema</strong></summary>
+<summary><strong>module.meta.json schema</strong></summary>
 
 ```json
 {
   "name": "my-module",
   "requires": ["other-module"],
   "activatesWithRoles": ["my-role"],
+  "permissions": ["tasks:assign"],
   "capabilities": [
     {
       "skill": "my-skill",
@@ -630,7 +693,7 @@ Example: market-analysis module
 
 ```text
 templates/roles/<name>/
-├── role.json        # Name, title, paperclipRole, reportsTo, adapter
+├── role.meta.json   # Name, title, base, paperclipRole, reportsTo, adapter
 ├── AGENTS.md
 ├── SOUL.md
 ├── HEARTBEAT.md
@@ -638,12 +701,15 @@ templates/roles/<name>/
 ```
 
 <details>
-<summary><strong>role.json schema</strong></summary>
+<summary><strong>role.meta.json schema</strong></summary>
 
 ```json
 {
   "name": "my-role",
   "title": "My Role",
+  "base": false,
+  "division": "engineering",
+  "tagline": "One-liner for wizard display and AI selection",
   "paperclipRole": "general",
   "description": "What this role does",
   "reportsTo": "ceo",
@@ -656,6 +722,9 @@ templates/roles/<name>/
 
 | Field | Description |
 | :---- | :---------- |
+| `base` | `true` for always-present roles (ceo, engineer). Omit or `false` for optional roles. |
+| `division` | Functional grouping: `leadership`, `engineering`, `design`, `product`. Used for wizard display and AI selection. |
+| `tagline` | One-liner personality summary for wizard UX and AI wizard selection. |
 | `paperclipRole` | Paperclip enum: `ceo`, `engineer`, `pm`, `qa`, `designer`, `cto`, `cmo`, `cfo`, `devops`, `researcher`, `general` |
 | `adapter` | Passed to `adapterConfig` during provisioning. `--model` CLI flag is fallback. |
 
@@ -663,12 +732,13 @@ templates/roles/<name>/
 
 ### Add a preset
 
+Create `templates/presets/<name>/preset.meta.json`:
+
 ```json
 {
   "name": "my-preset",
   "description": "What this preset is for",
   "constraints": [],
-  "base": "base",
   "roles": ["product-owner"],
   "modules": ["github-repo", "backlog"]
 }

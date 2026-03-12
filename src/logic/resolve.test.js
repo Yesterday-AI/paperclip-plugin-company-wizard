@@ -32,23 +32,29 @@ describe('formatRoleName', () => {
 // --- buildAllRoles ---
 
 describe('buildAllRoles', () => {
+  const availableRoles = [
+    { name: 'ceo', base: true },
+    { name: 'engineer', base: true },
+    { name: 'product-owner' },
+  ];
+
   it('returns a Set containing base roles', () => {
-    const result = buildAllRoles(['ceo', 'engineer'], []);
+    const result = buildAllRoles(availableRoles, []);
     assert.deepEqual(result, new Set(['ceo', 'engineer']));
   });
 
   it('adds extra roles to the set', () => {
-    const result = buildAllRoles(['ceo', 'engineer'], ['product-owner']);
+    const result = buildAllRoles(availableRoles, ['product-owner']);
     assert.deepEqual(result, new Set(['ceo', 'engineer', 'product-owner']));
   });
 
   it('deduplicates roles present in both base and extra', () => {
-    const result = buildAllRoles(['ceo', 'engineer'], ['ceo']);
+    const result = buildAllRoles(availableRoles, ['ceo']);
     assert.deepEqual(result, new Set(['ceo', 'engineer']));
     assert.equal(result.size, 2);
   });
 
-  it('works with empty base and extra', () => {
+  it('works with empty available roles and extra', () => {
     const result = buildAllRoles([], []);
     assert.deepEqual(result, new Set());
   });

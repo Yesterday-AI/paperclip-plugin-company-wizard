@@ -37,7 +37,6 @@ export async function runHeadless(opts) {
   ]);
 
   // Resolve preset
-  let baseName = 'base';
   let presetModules = [];
   let presetRoles = [];
 
@@ -48,7 +47,6 @@ export async function runHeadless(opts) {
       console.error(`Error: unknown preset "${opts.preset}". Available: ${names}`);
       process.exit(1);
     }
-    baseName = preset.base || 'base';
     presetModules = preset.modules || [];
     presetRoles = preset.roles || [];
   }
@@ -68,7 +66,7 @@ export async function runHeadless(opts) {
   }
 
   // Validate role names
-  const roleNames = new Set(allAvailableRoles.filter((r) => !r._base).map((r) => r.name));
+  const roleNames = new Set(allAvailableRoles.filter((r) => !r.base).map((r) => r.name));
   for (const role of selectedRoles) {
     if (!roleNames.has(role)) {
       const names = [...roleNames].join(', ');
@@ -78,7 +76,7 @@ export async function runHeadless(opts) {
   }
 
   // Build derived state
-  const allRolesSet = buildAllRoles(['ceo', 'engineer'], selectedRoles);
+  const allRolesSet = buildAllRoles(allAvailableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
 
   const rolesData = new Map();
@@ -105,7 +103,8 @@ export async function runHeadless(opts) {
   if (project.repoUrl) log(`  Repo:     ${project.repoUrl}`);
   log(`  Preset:   ${opts.preset || 'custom'}`);
   log(`  Modules:  ${selectedModules.join(', ') || '(none)'}`);
-  log(`  Roles:    ceo, engineer${selectedRoles.length ? ', ' + selectedRoles.join(', ') : ''}`);
+  const baseRoleNames = allAvailableRoles.filter((r) => r.base).map((r) => r.name);
+  log(`  Roles:    ${[...baseRoleNames, ...selectedRoles].join(', ')}`);
   if (capabilities.length) {
     log(`  Capabilities:`);
     for (const cap of capabilities) {
@@ -125,7 +124,6 @@ export async function runHeadless(opts) {
     companyName: opts.name,
     goal,
     project,
-    baseName,
     moduleNames: selectedModules,
     extraRoleNames: selectedRoles,
     outputDir: opts.outputDir,

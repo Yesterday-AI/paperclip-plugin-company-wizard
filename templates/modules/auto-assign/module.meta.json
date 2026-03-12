@@ -1,0 +1,11 @@
+{
+  "name": "auto-assign",
+  "permissions": ["tasks:assign"],
+  "capabilities": [
+    {
+      "skill": "auto-assign",
+      "owners": ["product-owner", "ceo"],
+      "fallbackSkill": "auto-assign.fallback"
+    }
+  ]
+}

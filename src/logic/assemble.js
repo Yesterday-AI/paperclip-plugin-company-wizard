@@ -64,7 +64,6 @@ export function toPascalCase(name) {
  * @param {string} opts.companyName
  * @param {object} opts.goal - { title, description }
  * @param {object} opts.project - { name, repoUrl }
- * @param {string} opts.baseName
  * @param {string[]} opts.moduleNames
  * @param {string[]} opts.extraRoleNames
  * @param {string} opts.outputDir
@@ -76,7 +75,6 @@ export async function assembleCompany({
   companyName,
   goal = {},
   project = {},
-  baseName,
   moduleNames,
   extraRoleNames,
   outputDir,
@@ -94,32 +92,44 @@ export async function assembleCompany({
     companyDir = join(outputDir, dirName);
   }
 
-  // Determine all roles present
-  const baseDir = join(templatesDir, baseName);
-  const baseEntries = await readdir(baseDir, { withFileTypes: true });
-  const allRoles = new Set(baseEntries.filter((e) => e.isDirectory()).map((e) => e.name));
-  for (const role of extraRoleNames) allRoles.add(role);
+  // Discover base roles from roles/ directory (those with base: true in role.meta.json)
+  const rolesDir = join(templatesDir, 'roles');
+  const baseRoleNames = [];
+  if (await exists(rolesDir)) {
+    const roleDirs = await readdir(rolesDir, { withFileTypes: true });
+    for (const dir of roleDirs) {
+      if (!dir.isDirectory()) continue;
+      const roleMeta = await readJson(join(rolesDir, dir.name, 'role.meta.json'));
+      if (roleMeta?.base) {
+        baseRoleNames.push(dir.name);
+      }
+    }
+  }
 
-  // 1. Copy base template roles (exclude .json metadata like role.json)
-  for (const role of baseEntries) {
-    if (!role.isDirectory()) continue;
-    const roleSrc = join(baseDir, role.name);
-    const roleDest = join(companyDir, 'agents', role.name);
+  // Determine all roles present
+  const allRoles = new Set([...baseRoleNames, ...extraRoleNames]);
+
+  // 1. Copy base roles (exclude .meta.json metadata)
+  for (const roleName of baseRoleNames) {
+    const roleSrc = join(rolesDir, roleName);
+    const roleDest = join(companyDir, 'agents', roleName);
     await mkdir(roleDest, { recursive: true });
     const entries = await readdir(roleSrc, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name), { skipExt: '.json' });
-      } else if (!entry.name.endsWith('.json')) {
+        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name), {
+          skipExt: '.meta.json',
+        });
+      } else if (!entry.name.endsWith('.meta.json')) {
         await copyFile(join(roleSrc, entry.name), join(roleDest, entry.name));
       }
     }
-    onProgress(`+ agents/${role.name}/ (base)`);
+    onProgress(`+ agents/${roleName}/ (base)`);
   }
 
-  // 2. Copy extra roles from templates/roles/
+  // 2. Copy extra roles from roles/
   for (const roleName of extraRoleNames) {
-    const roleDir = join(templatesDir, 'roles', roleName);
+    const roleDir = join(rolesDir, roleName);
     if (!(await exists(roleDir))) {
       onProgress(`! role ${roleName} not found, skipping`);
       continue;
@@ -143,7 +153,7 @@ export async function assembleCompany({
       continue;
     }
 
-    const moduleJson = await readJson(join(moduleDir, 'module.json'));
+    const moduleJson = await readJson(join(moduleDir, 'module.meta.json'));
 
     // Check activatesWithRoles
     if (moduleJson?.activatesWithRoles?.length) {
@@ -290,7 +300,7 @@ export async function assembleCompany({
     const moduleDir = join(templatesDir, 'modules', moduleName);
     if (!(await exists(moduleDir))) continue;
 
-    const moduleJson = await readJson(join(moduleDir, 'module.json'));
+    const moduleJson = await readJson(join(moduleDir, 'module.meta.json'));
     // Skip gated modules that didn't activate
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));

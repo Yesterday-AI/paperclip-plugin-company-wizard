@@ -24,10 +24,12 @@ export function resolveCapabilities(modules, selectedModules, allRoles) {
 
 /**
  * Build the full set of roles from base + extra.
+ * @param {Array<{name: string, base?: boolean}>} availableRoles - All loaded roles
+ * @param {string[]} extraRoleNames - Extra roles selected by user
  */
-export function buildAllRoles(baseRoles, extraRoleNames) {
-  const allRoles = new Set(baseRoles);
-  for (const role of extraRoleNames) allRoles.add(role);
+export function buildAllRoles(availableRoles, extraRoleNames) {
+  const baseRoles = availableRoles.filter((r) => r.base).map((r) => r.name);
+  const allRoles = new Set([...baseRoles, ...extraRoleNames]);
   return allRoles;
 }
 

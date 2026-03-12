@@ -1,0 +1,14 @@
+{
+  "name": "product-owner",
+  "title": "Product Owner",
+  "division": "product",
+  "tagline": "Owns what gets built and in what order",
+  "paperclipRole": "pm",
+  "description": "Owns the product backlog, validates engineering output against goals, manages backlog health pipeline.",
+  "reportsTo": "ceo",
+  "enhances": [
+    "Takes over backlog health from CEO (CEO becomes fallback)",
+    "Takes over auto-assign from CEO (CEO becomes fallback)",
+    "Adds product-alignment review pass when pr-review module is active"
+  ]
+}

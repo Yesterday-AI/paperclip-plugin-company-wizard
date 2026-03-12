@@ -22,7 +22,7 @@ export async function loadPresets(templatesDir) {
   const dirs = await readdir(presetsDir, { withFileTypes: true });
   for (const dir of dirs) {
     if (!dir.isDirectory()) continue;
-    const presetFile = join(presetsDir, dir.name, 'preset.json');
+    const presetFile = join(presetsDir, dir.name, 'preset.meta.json');
     if (await exists(presetFile)) {
       presets.push(JSON.parse(await readFile(presetFile, 'utf-8')));
     }
@@ -37,7 +37,7 @@ export async function loadModules(templatesDir) {
   const dirs = await readdir(modulesDir, { withFileTypes: true });
   for (const dir of dirs) {
     if (!dir.isDirectory()) continue;
-    const moduleJson = await readJson(join(modulesDir, dir.name, 'module.json'));
+    const moduleJson = await readJson(join(modulesDir, dir.name, 'module.meta.json'));
     const readmePath = join(modulesDir, dir.name, 'README.md');
     let description = '';
     if (await exists(readmePath)) {
@@ -51,31 +51,16 @@ export async function loadModules(templatesDir) {
 }
 
 export async function loadRoles(templatesDir) {
-  const roles = [];
-
-  // Load base roles (ceo, engineer, etc.)
-  const baseDir = join(templatesDir, 'base');
-  if (await exists(baseDir)) {
-    const baseDirs = await readdir(baseDir, { withFileTypes: true });
-    for (const dir of baseDirs) {
-      if (!dir.isDirectory()) continue;
-      const roleJson = await readJson(join(baseDir, dir.name, 'role.json'));
-      if (roleJson) {
-        roles.push({ ...roleJson, _base: true });
-      }
-    }
-  }
-
-  // Load optional roles
   const rolesDir = join(templatesDir, 'roles');
-  if (await exists(rolesDir)) {
-    const dirs = await readdir(rolesDir, { withFileTypes: true });
-    for (const dir of dirs) {
-      if (!dir.isDirectory()) continue;
-      const roleJson = await readJson(join(rolesDir, dir.name, 'role.json'));
-      if (roleJson) {
-        roles.push(roleJson);
-      }
+  const roles = [];
+  if (!(await exists(rolesDir))) return roles;
+
+  const dirs = await readdir(rolesDir, { withFileTypes: true });
+  for (const dir of dirs) {
+    if (!dir.isDirectory()) continue;
+    const roleJson = await readJson(join(rolesDir, dir.name, 'role.meta.json'));
+    if (roleJson) {
+      roles.push(roleJson);
     }
   }
 

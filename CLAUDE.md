@@ -46,11 +46,10 @@ node dist/cli.mjs --ai "A fintech startup building a payment API, focus on secur
 
 ```text
 templates/
-├── base/            # Always-present roles (ceo, engineer) with role.json + AGENTS.md
-├── roles/           # Optional roles (product-owner, code-reviewer, ui-designer, ux-researcher)
-├── modules/         # Composable capabilities with module.json
+├── roles/           # All roles with role.meta.json (base: true for always-present roles)
+├── modules/         # Composable capabilities with module.meta.json
 │   └── <module>/
-│       ├── module.json                # capabilities[], activatesWithRoles[], tasks[]
+│       ├── module.meta.json           # capabilities[], activatesWithRoles[], tasks[], permissions[]
 │       ├── skills/                    # Shared primary skills (any owner can use)
 │       │   └── <skill>.md
 │       ├── agents/<role>/
@@ -59,7 +58,7 @@ templates/
 │       │   │   └── <skill>.fallback.md # Fallback (reduced scope for non-primary)
 │       │   └── heartbeat-section.md   # Optional: injected into role's HEARTBEAT.md
 │       └── docs/                      # Shared docs injected into all agents
-├── presets/         # Curated module+role combinations (fast, quality, startup, research, full)
+├── presets/         # Curated module+role combinations with preset.meta.json
 └── ai-wizard/       # Configurable prompts for --ai mode
     ├── config-format.md       # JSON output format + selection rules
     ├── single-shot-system.md  # System prompt for --ai "description"
@@ -106,7 +105,9 @@ Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assi
 - **AI wizard mode** — Two sub-modes: `--ai` starts a 3-question interview (multi-turn conversation with Claude); `--ai "description"` does single-shot analysis. Both auto-select preset, modules, and roles. Requires `ANTHROPIC_API_KEY` env var. Explicit flags override AI choices. Uses `src/logic/ai-wizard.js`.
 - **Gracefully optimistic architecture** — Capabilities extend when roles are present, degrade gracefully when absent. A capability's `owners[]` chain determines primary/fallback assignment at assembly time.
 - **Shared vs role-specific skills** — Shared skills (`skills/`) work for any owner. Role-specific overrides (`agents/<role>/skills/`) exist only for genuinely different behavior. Fallbacks are always role-specific.
-- **role.json `adapter` field** — Per-agent model config (`model`, `effort`, etc.). `--model` CLI flag is a fallback.
+- **role.meta.json `adapter` field** — Per-agent model config (`model`, `effort`, etc.). `--model` CLI flag is a fallback.
+- **role.meta.json `base` field** — `true` for always-present roles (ceo, engineer). Base roles are auto-included in every company.
+- **module.meta.json `permissions` field** — Paperclip API permissions required by capability owners (e.g., `["tasks:assign"]` for auto-assign).
 - **toPascalCase** — Company and project names become PascalCase directory names ("Black Mesa" → "BlackMesa"). Special characters are stripped.
 - **BOOTSTRAP.md** — Generated guide describing what was assembled and how to provision manually if not using `--api`.
 
