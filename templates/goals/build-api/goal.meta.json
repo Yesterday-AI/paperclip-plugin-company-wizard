@@ -1,0 +1,88 @@
+{
+  "title": "Build a REST API",
+  "description": "Design and implement a REST API from schema to documentation. Cover data modeling, endpoint implementation, authentication, and auto-generated API docs.",
+  "milestones": [
+    {
+      "id": "schema-design",
+      "title": "Schema design",
+      "description": "Define the data model and database schema for the API.",
+      "completionCriteria": "Database schema is defined, migrations exist, and the schema can be applied to a fresh database."
+    },
+    {
+      "id": "endpoints",
+      "title": "Core endpoints",
+      "description": "Implement the CRUD endpoints for primary resources.",
+      "completionCriteria": "All core resource endpoints work with proper status codes, validation, and error handling."
+    },
+    {
+      "id": "auth",
+      "title": "Authentication and authorization",
+      "description": "Add authentication to protect endpoints and authorization to control access.",
+      "completionCriteria": "Unauthenticated requests are rejected. Users can only access resources they are authorized to see."
+    },
+    {
+      "id": "docs",
+      "title": "API documentation",
+      "description": "Generate and publish API documentation so consumers can integrate.",
+      "completionCriteria": "API docs are generated from source and accessible at a known URL."
+    }
+  ],
+  "issues": [
+    {
+      "title": "Define database schema and create migrations",
+      "description": "Design the data model for the API's primary resources. Create database migration files that can set up the schema from scratch. Include indexes for common query patterns.",
+      "priority": "high",
+      "milestone": "schema-design",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Scaffold API project and route structure",
+      "description": "Set up the API project with the chosen framework (Express, Fastify, Django, etc.). Create the route/controller structure with placeholder endpoints that return 501. Add health check endpoint at GET /health.",
+      "priority": "high",
+      "milestone": "endpoints",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Implement CRUD endpoints for primary resource",
+      "description": "Build full CRUD (Create, Read, Update, Delete) for the main resource. Include input validation, proper HTTP status codes (201 for create, 404 for not found, 422 for validation errors), and pagination for list endpoints.",
+      "priority": "high",
+      "milestone": "endpoints",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add request validation middleware",
+      "description": "Add middleware that validates request bodies and query parameters against defined schemas. Return clear 422 errors with field-level messages. Use a validation library (Zod, Joi, Pydantic, etc.).",
+      "priority": "medium",
+      "milestone": "endpoints",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add authentication middleware",
+      "description": "Implement authentication using JWT or session tokens. Add middleware that verifies tokens on protected routes and rejects unauthenticated requests with 401. Include a login/token endpoint.",
+      "priority": "high",
+      "milestone": "auth",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add role-based authorization",
+      "description": "Implement authorization so users can only access resources they own or are permitted to see. Add role checks where needed. Return 403 for unauthorized access attempts.",
+      "priority": "medium",
+      "milestone": "auth",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Generate API documentation",
+      "description": "Set up auto-generated API docs using OpenAPI/Swagger, or a similar tool. Annotate endpoints with descriptions, parameter types, and example responses. Serve docs at /api-docs or equivalent.",
+      "priority": "medium",
+      "milestone": "docs",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Write API integration tests",
+      "description": "Write integration tests that hit the API endpoints with real HTTP requests. Cover happy paths, validation errors, auth failures, and edge cases. Use a test database that is reset between runs.",
+      "priority": "medium",
+      "milestone": "endpoints",
+      "assignTo": "engineer"
+    }
+  ]
+}

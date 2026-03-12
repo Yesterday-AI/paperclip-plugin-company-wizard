@@ -1,0 +1,81 @@
+{
+  "title": "Set up CI/CD pipeline",
+  "description": "Establish a complete CI/CD pipeline: automated linting, testing, building, and deployment. Every push to main should be verified automatically, and deployments should be reproducible and low-risk.",
+  "milestones": [
+    {
+      "id": "linting",
+      "title": "Automated linting",
+      "description": "Enforce code quality standards automatically on every push.",
+      "completionCriteria": "Linter runs in CI and blocks merges on failure."
+    },
+    {
+      "id": "testing",
+      "title": "Automated testing",
+      "description": "Run the test suite automatically and report results.",
+      "completionCriteria": "Tests run in CI with pass/fail status reported on commits and PRs."
+    },
+    {
+      "id": "build",
+      "title": "Automated build",
+      "description": "Build artifacts are produced automatically and consistently.",
+      "completionCriteria": "Build step runs in CI and produces deployable artifacts."
+    },
+    {
+      "id": "deploy",
+      "title": "Automated deployment",
+      "description": "Deploy to staging or production with minimal manual intervention.",
+      "completionCriteria": "Pushes to main trigger automated deployment to at least one environment."
+    }
+  ],
+  "issues": [
+    {
+      "title": "Add linter and configure lint rules",
+      "description": "Install and configure a linter (ESLint, Ruff, golangci-lint, etc. depending on the stack). Use sensible defaults — focus on catching bugs, not style wars. Add a `lint` script to the project.",
+      "priority": "high",
+      "milestone": "linting",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add lint step to CI workflow",
+      "description": "Add a linting step to the CI pipeline. It should run on every push and PR. Fail the build on lint errors.",
+      "priority": "high",
+      "milestone": "linting",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add test runner and initial tests",
+      "description": "Set up a test runner (Jest, Vitest, pytest, go test, etc.). Write at least one meaningful test to verify the setup works. Add a `test` script to the project.",
+      "priority": "high",
+      "milestone": "testing",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add test step to CI workflow",
+      "description": "Add a testing step to the CI pipeline that runs the full test suite. Report results clearly — developers should know exactly what failed and why.",
+      "priority": "high",
+      "milestone": "testing",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Configure build step",
+      "description": "Add a build step that compiles/bundles the application into deployable artifacts. Ensure it runs in CI and outputs are consistent across environments.",
+      "priority": "medium",
+      "milestone": "build",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Set up deployment automation",
+      "description": "Configure automated deployment to at least one environment (staging or production). Use the CI pipeline to trigger deploys on successful builds from the main branch. Include a rollback strategy.",
+      "priority": "medium",
+      "milestone": "deploy",
+      "assignTo": "engineer"
+    },
+    {
+      "title": "Add deployment smoke tests",
+      "description": "After each deployment, run a basic smoke test to verify the application is healthy. Check key endpoints, verify the correct version is deployed, and alert on failure.",
+      "priority": "medium",
+      "milestone": "deploy",
+      "assignTo": "engineer"
+    }
+  ]
+}
