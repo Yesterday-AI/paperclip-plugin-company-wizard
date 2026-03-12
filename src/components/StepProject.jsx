@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
 
-export default function StepProject({ defaultName, companyDir, onComplete }) {
+export default function StepProject({ defaultName, onComplete }) {
   const [phase, setPhase] = useState('name'); // name → description → repo
   const [name, setName] = useState(defaultName);
   const [description, setDescription] = useState('');
@@ -26,8 +26,6 @@ export default function StepProject({ defaultName, companyDir, onComplete }) {
       repoUrl: val.trim() || null,
     });
   };
-
-  const projectPath = companyDir ? `${companyDir}/projects/${name || defaultName}` : null;
 
   return (
     <Box flexDirection="column">

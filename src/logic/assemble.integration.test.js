@@ -183,7 +183,7 @@ describe('assembleCompany integration (real templates)', () => {
 
   it('skips gated modules when required roles are absent', async () => {
     const progress = [];
-    const { companyDir } = await assembleCompany({
+    await assembleCompany({
       companyName: 'GatedInteg',
       moduleNames: ['pr-review'],
       extraRoleNames: [],
