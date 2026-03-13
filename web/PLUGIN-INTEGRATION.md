@@ -7,8 +7,8 @@
 
 **Plugin system is fully specified but not yet implemented.** It is explicitly post-V1. No SDK, no worker runtime, no UI slot mounting infrastructure, no example plugins exist yet.
 
-- Spec: `/Users/alex/Sync/home/alex/Code/WebDev/vendors/paperclip/doc/plugins/PLUGIN_SPEC.md`
-- Comparison: `/Users/alex/Sync/home/alex/Code/WebDev/vendors/paperclip/doc/plugins/ideas-from-opencode.md`
+- Spec: `doc/plugins/PLUGIN_SPEC.md` (Paperclip repo)
+- Comparison: `doc/plugins/ideas-from-opencode.md` (Paperclip repo)
 - PR reference: https://github.com/paperclipai/paperclip/pull/432
 
 ## Plugin Architecture Overview

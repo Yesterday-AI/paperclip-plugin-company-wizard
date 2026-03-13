@@ -40920,7 +40920,6 @@ function App2({
         StepProject,
         {
           defaultName: companyName,
-          companyDir,
           onComplete: (p) => {
             setProject(p);
             setStep(STEPS.PRESET);

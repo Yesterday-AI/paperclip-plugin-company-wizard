@@ -229,7 +229,6 @@ export default function App({
           <PrevSelections entries={prev.goal} />
           <StepProject
             defaultName={companyName}
-            companyDir={companyDir}
             onComplete={(p) => {
               setProject(p);
               setStep(STEPS.PRESET);
