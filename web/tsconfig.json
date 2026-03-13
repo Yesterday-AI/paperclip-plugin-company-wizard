@@ -17,5 +17,5 @@
     }
   },
   "include": ["src", "vite-env.d.ts"],
-  "exclude": ["src/data/vite-plugin-templates.ts"]
+  "exclude": ["src/data/vite-plugin-templates.ts", "src/data/vite-plugin-provision.ts"]
 }

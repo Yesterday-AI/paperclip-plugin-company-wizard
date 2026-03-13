@@ -66,6 +66,7 @@ export function toPascalCase(name) {
  * @param {object} opts.project - { name, repoUrl }
  * @param {string[]} opts.moduleNames
  * @param {string[]} opts.extraRoleNames
+ * @param {object|null} opts.goalTemplate - Selected goal template (from templates/goals/)
  * @param {string} opts.outputDir
  * @param {string} opts.templatesDir
  * @param {(line: string) => void} opts.onProgress
@@ -77,6 +78,7 @@ export async function assembleCompany({
   project = {},
   moduleNames,
   extraRoleNames,
+  goalTemplate = null,
   outputDir,
   templatesDir,
   onProgress = () => {},
@@ -417,6 +419,27 @@ export async function assembleCompany({
     bootstrap += `- **cwd**: \`${companyDir}\`\n\n`;
   }
 
+  // Goal template
+  if (goalTemplate) {
+    bootstrap += `## Starter Goal: ${goalTemplate.title}\n\n`;
+    bootstrap += `${goalTemplate.description}\n\n`;
+    if (goalTemplate.milestones?.length) {
+      bootstrap += `**Milestones:**\n`;
+      for (const m of goalTemplate.milestones) {
+        bootstrap += `- ${m.title}\n`;
+      }
+      bootstrap += `\n`;
+    }
+    if (goalTemplate.issues?.length) {
+      bootstrap += `**Issues:**\n`;
+      for (const issue of goalTemplate.issues) {
+        const assignLabel = issue.assignTo ? ` → ${issue.assignTo}` : '';
+        bootstrap += `- ${issue.title}${assignLabel}\n`;
+      }
+      bootstrap += `\n`;
+    }
+  }
+
   // Initial tasks
   if (initialTasks.length > 0) {
     bootstrap += `## Initial Tasks\n\n`;
@@ -452,5 +475,5 @@ export async function assembleCompany({
   await writeFile(join(companyDir, 'BOOTSTRAP.md'), bootstrap);
   onProgress('+ BOOTSTRAP.md');
 
-  return { companyDir, allRoles, initialTasks };
+  return { companyDir, allRoles, initialTasks, goalTemplate };
 }

@@ -11,6 +11,8 @@
   </p>
 </p>
 
+> **Development Preview:** A Paperclip plugin version of Clipper with a web UI is in active development. See [`web/README.md`](web/README.md) for details.
+
 ---
 
 Clipper is a CLI and template system for [Paperclip](https://github.com/paperclipai/paperclip) — the control plane for AI-agent companies. It assembles ready-to-run company workspaces by combining a base org (CEO + Engineer) with composable modules and optional specialist roles.

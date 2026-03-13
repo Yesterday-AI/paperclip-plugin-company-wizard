@@ -17,6 +17,10 @@ import {
   CheckCircle2,
   ChevronLeft,
 } from "lucide-react";
+import interviewSystemPrompt from "@/prompts/interview-system.md?raw";
+import singleShotSystemPrompt from "@/prompts/single-shot-system.md?raw";
+import promptMessages from "@/prompts/messages.json";
+import EXAMPLE_PROMPTS from "@/prompts/examples.json";
 
 interface Message {
   role: "user" | "assistant";
@@ -24,13 +28,6 @@ interface Message {
 }
 
 type InterviewPhase = "describe" | "interview" | "configuring" | "review";
-
-const EXAMPLE_PROMPTS = [
-  "A fintech startup building a payment API — strong engineering, code review, move fast",
-  "Marketing agency with 5 clients — content creation, social media, brand strategy",
-  "Research lab exploring LLM applications — papers, experiments, rapid prototyping",
-  "SaaS startup building project management tool — focus on quality and UX",
-];
 
 const LOADING_MESSAGES = [
   "Understanding your vision...",
@@ -209,41 +206,15 @@ export function StepAiWizard() {
     ].join("\n");
   };
 
-  const systemPrompt = `You are the Clipper AI Wizard — an expert at assembling AI agent teams. You're enthusiastic but concise. Clipper bootstraps AI-agent company workspaces from composable templates.
+  const systemPrompt = interviewSystemPrompt
+    .replace("{{CATALOG}}", buildCatalog())
+    .replace("{{CONFIG_FORMAT}}", promptMessages.configFormat);
 
-You are conducting a guided interview to understand what company to set up.
+  const singleShotPrompt = singleShotSystemPrompt
+    .replace("{{CATALOG}}", buildCatalog())
+    .replace("{{CONFIG_FORMAT}}", promptMessages.configFormat);
 
-${buildCatalog()}
-
-## Interview Rules
-
-- Ask exactly ONE question per turn. Keep it short and energetic (1-2 sentences). Use a conversational tone.
-- Do NOT output JSON during questions — just ask the question as plain text.
-- Tailor each question based on previous answers. Show you understood what they said.
-- After 3 questions, summarize what you understood in a brief, enthusiastic paragraph. End with: "Ready to generate your configuration?"
-- When the user confirms, output a human-readable recommendation with reasoning, then the JSON config.
-
-RECOMMENDATION format (when generating config):
-- One paragraph explaining your reasoning: why this preset, why these modules, why these roles.
-
-Then output the JSON (no markdown fences):
-{
-  "name": "CompanyName",
-  "goal": "Goal title",
-  "goalDescription": "One paragraph goal description",
-  "project": "Project name",
-  "preset": "preset-name",
-  "modules": ["all-modules-including-preset"],
-  "roles": ["extra-role-a"],
-  "reasoning": "Brief explanation"
-}
-
-Rules:
-- modules should list ALL modules to activate (including preset ones).
-- roles should only list EXTRA roles (not base roles).
-- Be pragmatic — don't over-engineer. Match the config to actual needs.`;
-
-  const callApi = async (allMessages: Message[]): Promise<string> => {
+  const callApi = async (allMessages: Message[], system?: string): Promise<string> => {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -255,7 +226,7 @@ Rules:
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1024,
-        system: systemPrompt,
+        system: system || systemPrompt,
         messages: allMessages.map((m) => ({ role: m.role, content: m.content })),
       }),
     });
@@ -300,7 +271,7 @@ Rules:
 
     try {
       const startMessages: Message[] = [
-        { role: "user", content: `Here's what I want to build:\n\n${desc}\n\nStart the interview. Ask your first question.` },
+        { role: "user", content: promptMessages.interviewStart.replace("{{DESCRIPTION}}", desc) },
       ];
       const reply = await callApi(startMessages);
       setMessages([startMessages[0], { role: "assistant", content: reply }]);
@@ -310,6 +281,41 @@ Rules:
       setPhase("describe");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const quickGenerate = async (description?: string) => {
+    const desc = description || state.aiDescription;
+    if (!desc.trim()) return;
+    if (!apiKey.trim()) {
+      dispatch({ type: "SET_ERROR", error: "Anthropic API Key is required for AI wizard mode." });
+      return;
+    }
+
+    if (description) {
+      dispatch({ type: "SET_AI_DESCRIPTION", value: description });
+    }
+    localStorage.setItem("anthropic_api_key", apiKey);
+    dispatch({ type: "SET_ERROR", error: null });
+
+    setConfigReady(false);
+    setPhase("configuring");
+
+    try {
+      const reply = await callApi(
+        [{ role: "user", content: promptMessages.singleShot.replace("{{DESCRIPTION}}", desc) }],
+        singleShotPrompt,
+      );
+      const config = tryExtractConfig(reply);
+      if (config) {
+        pendingConfigRef.current = config;
+        setConfigReady(true);
+      } else {
+        throw new Error("Could not parse configuration from AI response");
+      }
+    } catch (err) {
+      dispatch({ type: "SET_ERROR", error: err instanceof Error ? err.message : "AI wizard failed" });
+      setPhase("describe");
     }
   };
 
@@ -348,7 +354,7 @@ Rules:
 
     const apiMessages: Message[] = [
       ...messages,
-      { role: "user", content: "Generate the configuration now." },
+      { role: "user", content: promptMessages.generateConfig },
     ];
 
     try {
@@ -388,7 +394,7 @@ Rules:
         },
         project: {
           name: (config.project as string) || "",
-          description: "",
+          description: (config.projectDescription as string) || "",
           repoUrl: "",
         },
         presetName: state.presets.some((p) => p.name === config.preset)
@@ -396,6 +402,7 @@ Rules:
           : "custom",
         selectedModules: validModules,
         selectedRoles: validRoles,
+        aiExplanation: (config.explanation as string) || (config.reasoning as string) || "",
         step: "ai-wizard" as const,
       },
     });
@@ -477,11 +484,19 @@ Rules:
             Back
           </Button>
           <Button
+            variant="outline"
+            onClick={() => quickGenerate()}
+            disabled={!state.aiDescription.trim()}
+          >
+            <Zap className="h-4 w-4" />
+            Quick generate
+          </Button>
+          <Button
             onClick={() => startInterview()}
             disabled={!state.aiDescription.trim()}
           >
-            <Sparkles className="h-4 w-4" />
-            Start
+            <MessageSquare className="h-4 w-4" />
+            Interview
             <ArrowRight className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -516,15 +531,23 @@ Rules:
           </div>
         </div>
 
+        {state.aiExplanation && (
+          <div className="rounded-lg border border-foreground/10 bg-accent/50 px-4 py-3">
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              {state.aiExplanation}
+            </p>
+          </div>
+        )}
+
         <ConfigReview />
 
         <div className="flex justify-between">
           <Button
             variant="outline"
-            onClick={() => setPhase("interview")}
+            onClick={() => setPhase(messages.length > 0 ? "interview" : "describe")}
           >
             <ChevronLeft className="h-3.5 w-3.5" />
-            Back to interview
+            {messages.length > 0 ? "Back to interview" : "Back"}
           </Button>
           <Button onClick={() => dispatch({ type: "GO_TO", step: "provision" })}>
             <Sparkles className="h-4 w-4" />
@@ -600,14 +623,19 @@ Rules:
         )}
       </div>
 
-      {/* Generate CTA after 3 questions */}
-      {questionCount >= 3 && !loading && (
+      {/* Generate CTA — always visible, emphasized after 3 questions */}
+      {!loading && (
         <button
           onClick={requestConfig}
-          className="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-foreground/20 hover:border-foreground/40 hover:bg-accent/50 py-3 text-sm font-medium transition-colors"
+          className={cn(
+            "w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed py-3 text-sm font-medium transition-colors",
+            questionCount >= 3
+              ? "border-foreground/30 hover:border-foreground/50 hover:bg-accent/50"
+              : "border-border hover:border-foreground/20 hover:bg-accent/30 text-muted-foreground"
+          )}
         >
           <Sparkles className="h-4 w-4" />
-          Generate configuration
+          {questionCount >= 3 ? "Generate configuration" : "Skip — generate now"}
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
       )}

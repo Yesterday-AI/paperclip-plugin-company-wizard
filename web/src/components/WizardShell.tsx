@@ -10,7 +10,7 @@ import { StepSummary } from "./steps/StepSummary";
 import { StepAiWizard } from "./steps/StepAiWizard";
 import { StepProvision } from "./steps/StepProvision";
 import { StepDone } from "./steps/StepDone";
-import { ArrowLeft, Paperclip } from "lucide-react";
+import { ArrowLeft, Paperclip, Sun, Moon } from "lucide-react";
 import { Button } from "./ui/button";
 
 const STEP_COMPONENTS = {
@@ -53,6 +53,20 @@ function StepIndicator() {
   );
 }
 
+function ThemeToggle() {
+  const toggle = () => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  };
+
+  return (
+    <Button variant="ghost" size="icon" onClick={toggle} className="h-8 w-8">
+      <Sun className="h-4 w-4 dark:hidden" />
+      <Moon className="hidden h-4 w-4 dark:block" />
+    </Button>
+  );
+}
+
 export function WizardShell() {
   const state = useWizard();
   const dispatch = useWizardDispatch();
@@ -79,7 +93,10 @@ export function WizardShell() {
             <span className="font-semibold text-sm">Clipper</span>
           </div>
         </div>
-        <StepIndicator />
+        <div className="flex items-center gap-3">
+          <StepIndicator />
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* Content */}

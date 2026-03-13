@@ -39,8 +39,8 @@ function PathCard({
       <CardContent>
         <ul className="space-y-1.5">
           {details.map((d, i) => (
-            <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-              <span className="text-foreground/40 mt-1">-</span>
+            <li key={i} className="text-sm text-muted-foreground flex items-baseline gap-2">
+              <span className="text-foreground/40 shrink-0">-</span>
               {d}
             </li>
           ))}

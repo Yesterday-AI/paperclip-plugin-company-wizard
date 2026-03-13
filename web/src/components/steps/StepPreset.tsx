@@ -30,7 +30,7 @@ export function StepPreset() {
         </p>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3 max-h-[480px] overflow-y-auto pr-1">
         {state.presets.map((preset) => {
           const Icon = PRESET_ICONS[preset.name] || Settings;
           const selected = state.presetName === preset.name;

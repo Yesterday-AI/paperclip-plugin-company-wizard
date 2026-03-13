@@ -5,6 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn, toPascalCase } from "@/lib/utils";
 import {
+  HoverCardRoot,
+  HoverCardTrigger,
+  HoverCardContent,
+  HoverCardPortal,
+} from "@/components/ui/hover-card";
+import {
   Building2,
   Target,
   FolderGit2,
@@ -260,7 +266,7 @@ function RoleDetail({ role }: { role: RoleData }) {
 
 // --- Main component ---
 
-type EditingField = "name" | "goal" | "goalDesc" | "project" | "projectRepo" | null;
+type EditingField = "name" | "goal" | "goalDesc" | "project" | "projectDesc" | "projectRepo" | null;
 
 export function ConfigReview() {
   const state = useWizard();
@@ -393,11 +399,25 @@ export function ConfigReview() {
                   value={state.project.name}
                   onSave={(v) => {
                     dispatch({ type: "SET_PROJECT", project: { name: v } });
-                    setEditing("projectRepo");
+                    setEditing("projectDesc");
                   }}
                   onCancel={() => setEditing(null)}
                   placeholder="Project name"
                 />
+              ) : editing === "projectDesc" ? (
+                <div className="space-y-1">
+                  <span>{state.project.name || "(no project)"}</span>
+                  <InlineEdit
+                    value={state.project.description}
+                    onSave={(v) => {
+                      dispatch({ type: "SET_PROJECT", project: { description: v } });
+                      setEditing("projectRepo");
+                    }}
+                    onCancel={() => setEditing("projectRepo")}
+                    placeholder="Project description (optional)"
+                    multiline
+                  />
+                </div>
               ) : editing === "projectRepo" ? (
                 <div className="space-y-1">
                   <span>{state.project.name || "(no project)"}</span>
@@ -414,10 +434,15 @@ export function ConfigReview() {
               ) : (
                 <>
                   <span>{state.project.name || "(no project)"}</span>
+                  {state.project.description && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {state.project.description}
+                    </p>
+                  )}
                   {state.project.repoUrl && (
-                    <span className="text-xs text-muted-foreground ml-2">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {state.project.repoUrl}
-                    </span>
+                    </p>
                   )}
                 </>
               )}
@@ -431,17 +456,31 @@ export function ConfigReview() {
                 {state.modules.map((m) => {
                   const isActive = selectedModSet.has(m.name);
                   return (
-                    <button key={m.name} onClick={() => toggleModule(m.name)}>
-                      <Badge
-                        variant={isActive ? "secondary" : "outline"}
-                        className={cn(
-                          "text-xs cursor-pointer transition-colors",
-                          !isActive && "opacity-40"
-                        )}
-                      >
-                        {m.name}
-                      </Badge>
-                    </button>
+                    <HoverCardRoot key={m.name} openDelay={200} closeDelay={100}>
+                      <HoverCardTrigger asChild>
+                        <button onClick={() => toggleModule(m.name)}>
+                          <Badge
+                            variant={isActive ? "secondary" : "outline"}
+                            className={cn(
+                              "text-xs cursor-pointer transition-colors",
+                              !isActive && "opacity-40"
+                            )}
+                          >
+                            {m.name}
+                          </Badge>
+                        </button>
+                      </HoverCardTrigger>
+                      <HoverCardPortal>
+                        <HoverCardContent
+                          side="top"
+                          align="center"
+                          sideOffset={6}
+                          className="z-50 w-80 rounded-lg border bg-popover p-0 shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
+                        >
+                          <ModuleDetail mod={m} allRoleNames={allRoleNames} />
+                        </HoverCardContent>
+                      </HoverCardPortal>
+                    </HoverCardRoot>
                   );
                 })}
               </div>
@@ -464,23 +503,36 @@ export function ConfigReview() {
                   const isBase = role._base;
                   const isActive = isBase || selectedRoleSet.has(role.name);
                   return (
-                    <button
-                      key={role.name}
-                      onClick={() => toggleRole(role.name)}
-                      disabled={isBase}
-                    >
-                      <Badge
-                        variant={isActive ? "outline" : "secondary"}
-                        className={cn(
-                          "text-xs transition-colors",
-                          isBase && "cursor-default",
-                          !isBase && "cursor-pointer",
-                          !isActive && "opacity-40"
-                        )}
-                      >
-                        {role.title}
-                      </Badge>
-                    </button>
+                    <HoverCardRoot key={role.name} openDelay={200} closeDelay={100}>
+                      <HoverCardTrigger asChild>
+                        <button
+                          onClick={() => toggleRole(role.name)}
+                          disabled={isBase}
+                        >
+                          <Badge
+                            variant={isActive ? "outline" : "secondary"}
+                            className={cn(
+                              "text-xs transition-colors",
+                              isBase && "cursor-default",
+                              !isBase && "cursor-pointer",
+                              !isActive && "opacity-40"
+                            )}
+                          >
+                            {role.title}
+                          </Badge>
+                        </button>
+                      </HoverCardTrigger>
+                      <HoverCardPortal>
+                        <HoverCardContent
+                          side="top"
+                          align="center"
+                          sideOffset={6}
+                          className="z-50 w-80 rounded-lg border bg-popover p-0 shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
+                        >
+                          <RoleDetail role={role} />
+                        </HoverCardContent>
+                      </HoverCardPortal>
+                    </HoverCardRoot>
                   );
                 })}
               </div>

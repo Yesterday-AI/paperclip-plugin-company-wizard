@@ -8,6 +8,10 @@ export function StepProject() {
   const dispatch = useWizardDispatch();
 
   const handleNext = useCallback(() => {
+    // Default project name to company name if not provided
+    if (!state.project.name && state.companyName) {
+      dispatch({ type: "SET_PROJECT", project: { name: state.companyName } });
+    }
     dispatch({ type: "GO_TO", step: nextStep(state) });
   }, [state, dispatch]);
 
@@ -24,7 +28,7 @@ export function StepProject() {
         <div className="space-y-2">
           <label className="text-sm font-medium">Project name</label>
           <Input
-            placeholder="e.g. MyApp, Backend API"
+            placeholder={state.companyName || "e.g. MyApp, Backend API"}
             value={state.project.name}
             onChange={(e) => dispatch({ type: "SET_PROJECT", project: { name: e.target.value } })}
             onKeyDown={(e) => e.key === "Enter" && handleNext()}

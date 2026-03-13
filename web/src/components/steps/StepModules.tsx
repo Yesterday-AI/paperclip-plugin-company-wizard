@@ -55,10 +55,11 @@ export function StepModules() {
         </p>
       </div>
 
-      <div className="grid gap-2">
+      <div className="grid gap-2 max-h-[480px] overflow-y-auto pr-1">
         {state.modules.map((mod) => {
           const isSelected = selected.has(mod.name);
           const locked = isLocked(mod.name);
+          const capCount = mod.capabilities?.length ?? 0;
           return (
             <button
               key={mod.name}
@@ -74,7 +75,7 @@ export function StepModules() {
             >
               <div
                 className={cn(
-                  "h-5 w-5 rounded flex items-center justify-center shrink-0 border",
+                  "h-5 w-5 rounded flex items-center justify-center shrink-0 border mt-0.5",
                   isSelected
                     ? "bg-foreground border-foreground text-background"
                     : "border-input"
@@ -87,8 +88,8 @@ export function StepModules() {
                     <Check className="h-3 w-3" />
                   ))}
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-medium">{mod.name}</span>
                   {mod.activatesWithRoles && mod.activatesWithRoles.length > 0 && (
                     <Badge variant="outline" className="text-[10px]">
@@ -100,10 +101,29 @@ export function StepModules() {
                       {mod.tasks.length} tasks
                     </Badge>
                   )}
+                  {capCount > 0 && (
+                    <Badge variant="secondary" className="text-[10px]">
+                      {capCount} {capCount === 1 ? "capability" : "capabilities"}
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {mod.description}
                 </p>
+                {capCount > 0 && (
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+                    {mod.capabilities!.map((cap) => (
+                      <span key={cap.skill} className="text-[11px] text-muted-foreground/70">
+                        {cap.skill} <span className="text-muted-foreground/40">→ {cap.owners.join(", ")}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {mod.requires && mod.requires.length > 0 && (
+                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                    requires {mod.requires.join(", ")}
+                  </p>
+                )}
               </div>
             </button>
           );

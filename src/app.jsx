@@ -8,11 +8,12 @@ import StepProject from './components/StepProject.jsx';
 import StepPreset from './components/StepPreset.jsx';
 import StepModules from './components/StepModules.jsx';
 import StepRoles from './components/StepRoles.jsx';
+import StepGoalTemplates from './components/StepGoalTemplates.jsx';
 import StepSummary from './components/StepSummary.jsx';
 import StepAssemble from './components/StepAssemble.jsx';
 import StepProvision from './components/StepProvision.jsx';
 import StepDone from './components/StepDone.jsx';
-import { loadPresets, loadModules, loadRoles } from './logic/load-templates.js';
+import { loadPresets, loadModules, loadRoles, loadGoals } from './logic/load-templates.js';
 import { resolveCapabilities, buildAllRoles } from './logic/resolve.js';
 import { toPascalCase } from './logic/assemble.js';
 
@@ -23,6 +24,7 @@ const STEPS = {
   PROJECT: 'project',
   PRESET: 'preset',
   MODULES: 'modules',
+  GOAL_TEMPLATES: 'goal_templates',
   ROLES: 'roles',
   SUMMARY: 'summary',
   ASSEMBLE: 'assemble',
@@ -62,6 +64,7 @@ export default function App({
   const [presets, setPresets] = useState([]);
   const [modules, setModules] = useState([]);
   const [availableRoles, setAvailableRoles] = useState([]);
+  const [goalTemplates, setGoalTemplates] = useState([]);
 
   // User selections (pre-filled from flags where available)
   const [companyName, setCompanyName] = useState(initialName || '');
@@ -79,6 +82,7 @@ export default function App({
   const [preselectedModules, setPreselectedModules] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [preselectedRoles, setPreselectedRoles] = useState([]);
+  const [selectedGoalTemplate, setSelectedGoalTemplate] = useState(null);
 
   // Results
   const [assemblyResult, setAssemblyResult] = useState(null);
@@ -111,11 +115,17 @@ export default function App({
 
   // Load template data on mount
   useEffect(() => {
-    Promise.all([loadPresets(templatesDir), loadModules(templatesDir), loadRoles(templatesDir)])
-      .then(([p, m, r]) => {
+    Promise.all([
+      loadPresets(templatesDir),
+      loadModules(templatesDir),
+      loadRoles(templatesDir),
+      loadGoals(templatesDir),
+    ])
+      .then(([p, m, r, g]) => {
         setPresets(p);
         setModules(m);
         setAvailableRoles(r);
+        setGoalTemplates(g);
         setStep(resolveFirstStep(p));
       })
       .catch((err) => {
@@ -142,10 +152,11 @@ export default function App({
     [STEPS.PROJECT]: 3,
     [STEPS.PRESET]: 4,
     [STEPS.MODULES]: 5,
-    [STEPS.ROLES]: 6,
-    [STEPS.SUMMARY]: 7,
+    [STEPS.GOAL_TEMPLATES]: 6,
+    [STEPS.ROLES]: 7,
+    [STEPS.SUMMARY]: 8,
   };
-  const TOTAL_STEPS = 7;
+  const TOTAL_STEPS = 8;
   const currentStepNum = STEP_NUMBERS[step] || null;
 
   const handleError = (msg) => {
@@ -257,6 +268,19 @@ export default function App({
             preselected={preselectedModules}
             onComplete={(mods) => {
               setSelectedModules(mods);
+              setStep(STEPS.GOAL_TEMPLATES);
+            }}
+          />
+        </>
+      )}
+
+      {step === STEPS.GOAL_TEMPLATES && (
+        <>
+          <PrevSelections entries={prev.modules} />
+          <StepGoalTemplates
+            goalTemplates={goalTemplates}
+            onComplete={(template) => {
+              setSelectedGoalTemplate(template);
               setStep(STEPS.ROLES);
             }}
           />
@@ -287,6 +311,7 @@ export default function App({
           roleNames={selectedRoles}
           modules={modules}
           capabilities={capabilities}
+          goalTemplate={selectedGoalTemplate}
           outputDir={companyDir}
           apiEnabled={apiEnabled}
           dryRun={dryRun}
@@ -310,6 +335,7 @@ export default function App({
           project={project}
           moduleNames={selectedModules}
           extraRoleNames={selectedRoles}
+          goalTemplate={selectedGoalTemplate}
           outputDir={outputDir}
           templatesDir={templatesDir}
           onComplete={(result) => {
@@ -333,6 +359,7 @@ export default function App({
           allRoles={assemblyResult.allRoles}
           rolesData={rolesData}
           initialTasks={assemblyResult.initialTasks}
+          goalTemplate={selectedGoalTemplate}
           apiBaseUrl={apiBaseUrl}
           apiEmail={apiEmail}
           apiPassword={apiPassword}

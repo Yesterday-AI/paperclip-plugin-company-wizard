@@ -13,7 +13,7 @@
   "scripts": {
     "build": "node esbuild.config.mjs",
     "dev": "node --experimental-strip-types src/cli.jsx",
-    "test": "node --test src/logic/*.test.js",
+    "test": "node --test src/logic/*.test.js src/api/*.test.js",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/",

@@ -57,6 +57,7 @@ export interface WizardState {
 
   // AI wizard
   aiDescription: string;
+  aiExplanation: string;
   aiLoading: boolean;
 
   // Templates
@@ -178,6 +179,7 @@ const initialState: WizardState = {
   selectedModules: [],
   selectedRoles: [],
   aiDescription: "",
+  aiExplanation: "",
   aiLoading: false,
   presets: [],
   modules: [],
@@ -239,7 +241,6 @@ function reducer(state: WizardState, action: Action): WizardState {
         ...state,
         provisionResult: action.result,
         provisioning: false,
-        step: "done",
       };
     case "SET_ERROR":
       return { ...state, error: action.error, provisioning: false };

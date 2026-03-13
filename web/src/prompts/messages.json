@@ -1,0 +1,6 @@
+{
+  "interviewStart": "Here's what I want to build:\n\n{{DESCRIPTION}}\n\nStart the interview. Ask your first question.",
+  "singleShot": "{{DESCRIPTION}}",
+  "generateConfig": "Generate the configuration now.",
+  "configFormat": "{\n  \"name\": \"CompanyName\",\n  \"goal\": \"Goal title\",\n  \"goalDescription\": \"One paragraph goal description\",\n  \"project\": \"Project name\",\n  \"projectDescription\": \"Brief project description\",\n  \"preset\": \"preset-name\",\n  \"modules\": [\"all-modules-including-preset\"],\n  \"roles\": [\"extra-role-a\"],\n  \"explanation\": \"2-3 sentences explaining WHY this configuration fits the described company — what the chosen preset, modules, and roles enable and how they work together.\"\n}"
+}

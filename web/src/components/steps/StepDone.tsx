@@ -8,22 +8,40 @@ export function StepDone() {
   const state = useWizard();
   const dispatch = useWizardDispatch();
   const allRoles = getAllRoles(state);
+  const result = state.provisionResult;
 
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-3">
         <CheckCircle2 className="h-6 w-6 text-green-600 shrink-0 mt-0.5" />
         <div>
-          <h2 className="text-xl font-semibold tracking-tight">Company configured</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Company provisioned</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            <strong>{state.companyName}</strong> is ready. Run the CLI command from the
-            previous step to assemble files and provision via the Paperclip API.
+            <strong>{state.companyName}</strong> has been assembled and registered with Paperclip.
           </p>
         </div>
       </div>
 
       <Card>
         <CardContent className="pt-6 space-y-4">
+          {state.goal.title && (
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                Goal
+              </p>
+              <p className="text-sm">{state.goal.title}</p>
+            </div>
+          )}
+
+          {state.project.name && (
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                Project
+              </p>
+              <p className="text-sm">{state.project.name}</p>
+            </div>
+          )}
+
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
               Team ({allRoles.length} agents)
@@ -53,12 +71,30 @@ export function StepDone() {
             </div>
           </div>
 
+          {result?.issueIds && result.issueIds.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                Issues
+              </p>
+              <p className="text-sm">{result.issueIds.length} issues provisioned</p>
+            </div>
+          )}
+
           {state.presetName && (
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                 Preset
               </p>
               <p className="text-sm capitalize">{state.presetName}</p>
+            </div>
+          )}
+
+          {result?.companyId && (
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                Company ID
+              </p>
+              <p className="font-mono text-xs">{result.companyId}</p>
             </div>
           )}
         </CardContent>

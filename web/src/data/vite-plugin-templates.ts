@@ -33,14 +33,16 @@ export function templateLoaderPlugin(): Plugin {
     load(id) {
       if (id !== resolvedId) return;
 
-      const presets = loadJsonFiles(path.join(TEMPLATES_DIR, "presets"), "preset.json");
-      const modules = loadJsonFiles(path.join(TEMPLATES_DIR, "modules"), "module.json");
+      const presets = loadJsonFiles(path.join(TEMPLATES_DIR, "presets"), "preset.meta.json");
+      const modules = loadJsonFiles(path.join(TEMPLATES_DIR, "modules"), "module.meta.json");
 
-      const baseRoles = loadJsonFiles(path.join(TEMPLATES_DIR, "base"), "role.json").map(
-        (r: Record<string, unknown>) => ({ ...r, _base: true })
+      // Map "base" field to "_base" for web UI compatibility
+      const roles = loadJsonFiles(path.join(TEMPLATES_DIR, "roles"), "role.meta.json").map(
+        (r: Record<string, unknown>) => {
+          if (r.base) return { ...r, _base: true };
+          return r;
+        }
       );
-      const extraRoles = loadJsonFiles(path.join(TEMPLATES_DIR, "roles"), "role.json");
-      const roles = [...baseRoles, ...extraRoles];
 
       return `export const presets = ${JSON.stringify(presets)};
 export const modules = ${JSON.stringify(modules)};

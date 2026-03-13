@@ -11,6 +11,7 @@ export default function StepSummary({
   roleNames,
   modules,
   capabilities,
+  goalTemplate,
   outputDir,
   apiEnabled,
   dryRun,
@@ -56,6 +57,12 @@ export default function StepSummary({
         <Row label="Preset" value={presetName || 'custom'} />
         <Row label="Modules" value={moduleNames.length > 0 ? moduleNames.join(', ') : 'none'} />
         <Row label="Roles" value={allRoleNames.map((r) => formatRoleName(r)).join(', ')} />
+        {goalTemplate ? (
+          <Row
+            label="Starter"
+            value={`${goalTemplate.title} (${goalTemplate.issues?.length || 0} issues)`}
+          />
+        ) : null}
         <Row label="Output" value={outputDir} dim />
         {apiEnabled ? <Row label="API" value="enabled" color="green" /> : null}
       </Box>

@@ -26,6 +26,7 @@ const HELP = `
     --preset <name>            Preset: fast, quality, rad, startup, research, full
     --modules <a,b,c>          Comma-separated module names (added to preset)
     --roles <a,b>              Comma-separated extra role names (added to preset)
+    --goal-template <name>     Starter goal template (e.g., build-api, launch-mvp)
 
   Infrastructure options:
     --dry-run                  Show summary and exit without writing files
@@ -92,6 +93,7 @@ function parseArgs(argv) {
     preset: null,
     modules: [],
     roles: [],
+    goalTemplate: null,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -188,6 +190,10 @@ function parseArgs(argv) {
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean);
+        i++;
+        break;
+      case '--goal-template':
+        config.goalTemplate = next;
         i++;
         break;
       case '--help':

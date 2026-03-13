@@ -24,6 +24,7 @@ import { toPascalCase } from '../logic/assemble.js';
  * @param {Set<string>} opts.allRoles
  * @param {Map<string, object>} opts.rolesData - role name → role.json data
  * @param {Array} opts.initialTasks
+ * @param {object|null} opts.goalTemplate - Selected goal template (issues to provision under a separate goal)
  * @param {string|null} opts.model - LLM model fallback (overridden by role.json adapter.model)
  * @param {string|null} opts.remoteCompanyDir - override companyDir for API paths (Docker mount path)
  * @param {boolean} opts.startCeo - trigger CEO heartbeat after provisioning
@@ -40,6 +41,7 @@ export async function provisionCompany({
   allRoles,
   rolesData = new Map(),
   initialTasks = [],
+  goalTemplate = null,
   model = null,
   remoteCompanyDir = null,
   startCeo = false,
@@ -142,7 +144,42 @@ export async function provisionCompany({
     onProgress(`✓ Issue created: ${task.title}${assignLabel}`);
   }
 
-  // 6. Optionally start CEO heartbeat (with issue context for workspace resolution)
+  // 6. Create goal template goal and issues (if selected)
+  // Issues are left unassigned — auto-assign handles assignment.
+  let goalTemplateId = null;
+  const goalTemplateErrors = [];
+  if (goalTemplate) {
+    onProgress(`Creating starter goal: ${goalTemplate.title}...`);
+    const tg = await client.createGoal(companyId, {
+      title: goalTemplate.title,
+      description: goalTemplate.description,
+      level: 'company',
+    });
+    goalTemplateId = tg.id;
+    onProgress(`✓ Starter goal created: ${goalTemplate.title}`);
+
+    if (goalTemplate.issues?.length) {
+      for (const issue of goalTemplate.issues) {
+        try {
+          onProgress(`Creating issue: ${issue.title}...`);
+          const created = await client.createIssue(companyId, {
+            title: issue.title,
+            description: issue.description,
+            priority: issue.priority,
+            projectId,
+            goalId: goalTemplateId,
+          });
+          issueIds.push(created.id);
+          onProgress(`✓ Issue created: ${issue.title}`);
+        } catch (err) {
+          goalTemplateErrors.push({ title: issue.title, error: err.message });
+          onProgress(`! Failed to create issue: ${issue.title} — ${err.message}`);
+        }
+      }
+    }
+  }
+
+  // 7. Optionally start CEO heartbeat (with issue context for workspace resolution)
   let ceoStarted = false;
   if (startCeo) {
     const ceoAgentId = agentIds.get('ceo');
@@ -163,10 +200,12 @@ export async function provisionCompany({
   return {
     companyId,
     goalId,
+    goalTemplateId,
     projectId,
     projectCwd,
     agentIds,
     issueIds,
+    goalTemplateErrors,
     ceoStarted,
   };
 }

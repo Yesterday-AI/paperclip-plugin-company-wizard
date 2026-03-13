@@ -30,6 +30,8 @@ declare module "virtual:clipper-templates" {
     title: string;
     description: string;
     _base?: boolean;
+    division?: string;
+    tagline?: string;
     paperclipRole?: string;
     reportsTo?: string;
     adapter?: Record<string, unknown>;
