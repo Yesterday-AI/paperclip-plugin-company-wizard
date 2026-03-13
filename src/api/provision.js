@@ -11,10 +11,12 @@ import { toPascalCase } from '../logic/assemble.js';
  *   2. Company-level goal
  *   3. Project with local workspace (cwd → company dir)
  *   4. Agents (with per-role adapter config from role.json)
- *   5. Initial issues (linked to goal + project)
+ *   5. Initial issues — module tasks (modules with active goals are already excluded)
+ *   6. For each inline goal: sub-goal, optional project(s), milestones, issues
+ *      with hierarchical project resolution (milestone project → goal project → main project)
  *
  * @param {object} opts
- * @param {PaperclipClient} opts.client
+ * @param {import('./client.js').PaperclipClient} opts.client
  * @param {string} opts.companyName
  * @param {string} opts.companyDir - absolute path to assembled workspace
  * @param {object} opts.goal - { title, description }
@@ -23,8 +25,9 @@ import { toPascalCase } from '../logic/assemble.js';
  * @param {string|null} opts.repoUrl - GitHub repository URL
  * @param {Set<string>} opts.allRoles
  * @param {Map<string, object>} opts.rolesData - role name → role.json data
- * @param {Array} opts.initialTasks
- * @param {object|null} opts.goalTemplate - Selected goal template (issues to provision under a separate goal)
+ * @param {Array} opts.initialTasks - Module tasks (already filtered: modules with goals excluded)
+ * @param {Array} opts.goals - Inline goals from preset and/or modules (from collectGoals)
+ * @param {Map<string, object>} opts.roleAdapterOverrides - role name → adapter overrides from modules
  * @param {string|null} opts.model - LLM model fallback (overridden by role.json adapter.model)
  * @param {string|null} opts.remoteCompanyDir - override companyDir for API paths (Docker mount path)
  * @param {boolean} opts.startCeo - trigger CEO heartbeat after provisioning
@@ -41,7 +44,8 @@ export async function provisionCompany({
   allRoles,
   rolesData = new Map(),
   initialTasks = [],
-  goalTemplate = null,
+  goals = [],
+  roleAdapterOverrides = new Map(),
   model = null,
   remoteCompanyDir = null,
   startCeo = false,
@@ -101,6 +105,7 @@ export async function provisionCompany({
 
     // Role-specific adapter config from role.json, CLI --model as fallback
     const roleAdapter = roleData?.adapter || {};
+    const moduleOverrides = roleAdapterOverrides.get(role) || {};
     const agentModel = roleAdapter.model || model;
 
     // Resolve reportsTo from role.json role name → agent UUID
@@ -118,13 +123,14 @@ export async function provisionCompany({
         instructionsFilePath: join(apiCompanyDir, `agents/${role}/AGENTS.md`),
         ...(agentModel ? { model: agentModel } : {}),
         ...Object.fromEntries(Object.entries(roleAdapter).filter(([k]) => k !== 'model')),
+        ...moduleOverrides,
       },
     });
     agentIds.set(role, agent.id);
     onProgress(`✓ ${title} agent created`);
   }
 
-  // 5. Create initial issues (linked to goal + project, assigned to agents)
+  // 5. Create initial issues (module tasks — modules with goals already excluded by caller)
   const issueIds = [];
   let firstCeoIssueId = null;
   for (const task of initialTasks) {
@@ -145,80 +151,25 @@ export async function provisionCompany({
     onProgress(`✓ Issue created: ${task.title}${assignLabel}`);
   }
 
-  // 6. Create goal template goal, project, milestones (sub-goals), and issues (if selected)
-  let goalTemplateId = null;
-  const goalTemplateErrors = [];
-  if (goalTemplate) {
-    onProgress(`Creating starter goal: ${goalTemplate.title}...`);
-    const tg = await client.createGoal(companyId, {
-      title: goalTemplate.title,
-      description: goalTemplate.description,
-      level: 'company',
-      parentId: goalId,
+  // 6. Create inline goals (from preset and/or modules)
+  const goalErrors = [];
+  const goalResults = [];
+  for (const inlineGoal of goals) {
+    const result = await provisionInlineGoal({
+      client,
+      companyId,
+      parentGoalId: goalId,
+      mainProjectId: projectId,
+      inlineGoal,
+      agentIds,
+      apiCompanyDir,
+      onProgress,
     });
-    goalTemplateId = tg.id;
-    onProgress(`✓ Starter goal created: ${goalTemplate.title}`);
-
-    // 6a. Create a dedicated project for this goal template
-    const templateProjectCwd = join(apiCompanyDir, 'projects', toPascalCase(goalTemplate.title));
-    onProgress(`Creating project "${goalTemplate.title}"...`);
-    const templateProject = await client.createProject(companyId, {
-      name: goalTemplate.title,
-      description: goalTemplate.description,
-      goalIds: [goalTemplateId],
-      workspace: {
-        cwd: templateProjectCwd,
-        isPrimary: true,
-      },
-    });
-    const templateProjectId = templateProject.id;
-    onProgress(`✓ Project "${goalTemplate.title}" created`);
-
-    // 6b. Create milestones as sub-goals under the starter goal
-    const milestoneIds = new Map(); // milestone id string → API goal UUID
-    if (goalTemplate.milestones?.length) {
-      for (const milestone of goalTemplate.milestones) {
-        try {
-          onProgress(`Creating milestone: ${milestone.title}...`);
-          const mg = await client.createGoal(companyId, {
-            title: milestone.title,
-            description: milestone.description,
-            level: 'task',
-            parentId: goalTemplateId,
-          });
-          milestoneIds.set(milestone.id, mg.id);
-          onProgress(`✓ Milestone created: ${milestone.title}`);
-        } catch (err) {
-          goalTemplateErrors.push({ title: milestone.title, error: err.message });
-          onProgress(`! Failed to create milestone: ${milestone.title} — ${err.message}`);
-        }
-      }
-    }
-
-    // 6c. Create issues linked to milestones, project, and assigned to agents
-    if (goalTemplate.issues?.length) {
-      for (const issue of goalTemplate.issues) {
-        try {
-          const issueGoalId =
-            (issue.milestone && milestoneIds.get(issue.milestone)) || goalTemplateId;
-          const assigneeAgentId = issue.assignTo ? agentIds.get(issue.assignTo) || null : null;
-          onProgress(`Creating issue: ${issue.title}...`);
-          const created = await client.createIssue(companyId, {
-            title: issue.title,
-            description: issue.description,
-            priority: issue.priority,
-            projectId: templateProjectId,
-            goalId: issueGoalId,
-            assigneeAgentId,
-          });
-          issueIds.push(created.id);
-          const assignLabel = assigneeAgentId ? ` → ${issue.assignTo}` : '';
-          onProgress(`✓ Issue created: ${issue.title}${assignLabel}`);
-        } catch (err) {
-          goalTemplateErrors.push({ title: issue.title, error: err.message });
-          onProgress(`! Failed to create issue: ${issue.title} — ${err.message}`);
-        }
-      }
+    goalResults.push(result);
+    issueIds.push(...result.issueIds);
+    goalErrors.push(...result.errors);
+    if (!firstCeoIssueId) {
+      firstCeoIssueId = result.firstCeoIssueId;
     }
   }
 
@@ -244,12 +195,156 @@ export async function provisionCompany({
     companyId,
     issuePrefix: company.issuePrefix,
     goalId,
-    goalTemplateId,
+    goalResults,
     projectId,
     projectCwd,
     agentIds,
     issueIds,
-    goalTemplateErrors,
+    goalErrors,
     ceoStarted,
+  };
+}
+
+/**
+ * Provision a single inline goal: sub-goal, optional project, milestones, issues.
+ * Issues resolve to the nearest ancestor project:
+ *   milestone project → goal project → main project.
+ */
+async function provisionInlineGoal({
+  client,
+  companyId,
+  parentGoalId,
+  mainProjectId,
+  inlineGoal,
+  agentIds,
+  apiCompanyDir,
+  onProgress,
+}) {
+  const errors = [];
+  const issueIds = [];
+  let firstCeoIssueId = null;
+
+  // Create sub-goal under the company goal
+  onProgress(`Creating goal: ${inlineGoal.title}...`);
+  const tg = await client.createGoal(companyId, {
+    title: inlineGoal.title,
+    description: inlineGoal.description,
+    level: 'company',
+    parentId: parentGoalId,
+  });
+  const inlineGoalId = tg.id;
+  onProgress(`✓ Goal created: ${inlineGoal.title}`);
+
+  // Create goal-level project if project !== false (default: true)
+  const wantsProject = inlineGoal.project !== false;
+  let goalProjectId = null;
+  if (wantsProject) {
+    const goalProjectCwd = join(apiCompanyDir, 'projects', toPascalCase(inlineGoal.title));
+    onProgress(`Creating project "${inlineGoal.title}"...`);
+    const gp = await client.createProject(companyId, {
+      name: inlineGoal.title,
+      description: inlineGoal.description,
+      goalIds: [inlineGoalId],
+      workspace: {
+        cwd: goalProjectCwd,
+        isPrimary: true,
+      },
+    });
+    goalProjectId = gp.id;
+    onProgress(`✓ Project "${inlineGoal.title}" created`);
+  }
+
+  // Create milestones as sub-goals, with optional milestone-level projects
+  const milestoneIds = new Map(); // milestone id → API goal UUID
+  const milestoneProjectIds = new Map(); // milestone id → project UUID (if milestone has project)
+  if (inlineGoal.milestones?.length) {
+    for (const milestone of inlineGoal.milestones) {
+      try {
+        onProgress(`Creating milestone: ${milestone.title}...`);
+        const mg = await client.createGoal(companyId, {
+          title: milestone.title,
+          description: milestone.description,
+          level: 'task',
+          parentId: inlineGoalId,
+        });
+        milestoneIds.set(milestone.id, mg.id);
+        onProgress(`✓ Milestone created: ${milestone.title}`);
+
+        // Milestone-level project
+        if (milestone.project) {
+          const msCwd = join(apiCompanyDir, 'projects', toPascalCase(milestone.title));
+          onProgress(`Creating project "${milestone.title}"...`);
+          const mp = await client.createProject(companyId, {
+            name: milestone.title,
+            description: milestone.description,
+            goalIds: [mg.id],
+            workspace: { cwd: msCwd, isPrimary: true },
+          });
+          milestoneProjectIds.set(milestone.id, mp.id);
+          onProgress(`✓ Project "${milestone.title}" created`);
+        }
+      } catch (err) {
+        errors.push({ title: milestone.title, error: err.message });
+        onProgress(`! Failed to create milestone: ${milestone.title} — ${err.message}`);
+      }
+    }
+  }
+
+  // Create issues with hierarchical project resolution:
+  //   milestone project → goal project → main project
+  if (inlineGoal.issues?.length) {
+    for (const issue of inlineGoal.issues) {
+      try {
+        const issueGoalId = (issue.milestone && milestoneIds.get(issue.milestone)) || inlineGoalId;
+
+        // Resolve project: walk up — milestone project → goal project → main project
+        let issueProjectId;
+        if (issue.milestone && milestoneProjectIds.has(issue.milestone)) {
+          issueProjectId = milestoneProjectIds.get(issue.milestone);
+        } else if (goalProjectId) {
+          issueProjectId = goalProjectId;
+        } else {
+          issueProjectId = mainProjectId;
+        }
+
+        const isUserTask = issue.assignTo === 'user';
+        const assigneeAgentId =
+          issue.assignTo && !isUserTask ? agentIds.get(issue.assignTo) || null : null;
+        const assigneeUserId = isUserTask ? client.boardUserId || null : null;
+        onProgress(`Creating issue: ${issue.title}...`);
+        const created = await client.createIssue(companyId, {
+          title: issue.title,
+          description: issue.description,
+          priority: issue.priority,
+          projectId: issueProjectId,
+          goalId: issueGoalId,
+          assigneeAgentId,
+          assigneeUserId,
+        });
+        issueIds.push(created.id);
+        if (issue.assignTo === 'ceo' && !firstCeoIssueId) {
+          firstCeoIssueId = created.id;
+        }
+        const assignLabel = isUserTask
+          ? ' → board (human)'
+          : assigneeAgentId
+            ? ` → ${issue.assignTo}`
+            : '';
+        onProgress(`✓ Issue created: ${issue.title}${assignLabel}`);
+      } catch (err) {
+        errors.push({ title: issue.title, error: err.message });
+        onProgress(`! Failed to create issue: ${issue.title} — ${err.message}`);
+      }
+    }
+  }
+
+  return {
+    goalId: inlineGoalId,
+    goalProjectId,
+    milestoneIds,
+    milestoneProjectIds,
+    issueIds,
+    errors,
+    firstCeoIssueId,
   };
 }

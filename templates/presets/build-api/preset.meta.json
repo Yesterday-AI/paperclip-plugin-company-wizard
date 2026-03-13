@@ -1,0 +1,13 @@
+{
+  "name": "build-api",
+  "description": "Design and implement a REST API from schema to documentation. Data modeling, endpoint implementation, authentication, and auto-generated API docs.",
+  "constraints": [],
+  "modules": [
+    "build-api",
+    "github-repo",
+    "backlog",
+    "auto-assign",
+    "ci-cd",
+    "stall-detection"
+  ]
+}

@@ -9,7 +9,7 @@ export default function StepAssemble({
   project,
   moduleNames,
   extraRoleNames,
-  goalTemplate,
+  goals,
   outputDir,
   templatesDir,
   onComplete,
@@ -27,7 +27,7 @@ export default function StepAssemble({
       project,
       moduleNames,
       extraRoleNames,
-      goalTemplate,
+      goals,
       outputDir,
       templatesDir,
       onProgress: (line) => {

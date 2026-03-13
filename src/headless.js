@@ -1,5 +1,5 @@
 import { join, basename } from 'node:path';
-import { loadPresets, loadModules, loadRoles, loadGoals } from './logic/load-templates.js';
+import { loadPresets, loadModules, loadRoles, collectGoals } from './logic/load-templates.js';
 import { resolveCapabilities, buildAllRoles } from './logic/resolve.js';
 import { assembleCompany } from './logic/assemble.js';
 import { PaperclipClient } from './api/client.js';
@@ -18,7 +18,6 @@ import { provisionCompany } from './api/provision.js';
  * @param {string|null} opts.repo - GitHub repo URL
  * @param {string[]} opts.modules - Extra modules (on top of preset)
  * @param {string[]} opts.roles - Extra roles (on top of preset)
- * @param {string|null} opts.goalTemplate - Goal template name (from templates/goals/)
  * @param {string} opts.outputDir - Output directory
  * @param {string} opts.templatesDir - Templates directory
  * @param {boolean} opts.dryRun - Show summary and exit without writing files
@@ -31,11 +30,10 @@ export async function runHeadless(opts) {
   const log = (msg) => console.log(msg);
 
   // Load templates
-  const [presets, modules, allAvailableRoles, goalTemplates] = await Promise.all([
+  const [presets, modules, allAvailableRoles] = await Promise.all([
     loadPresets(opts.templatesDir),
     loadModules(opts.templatesDir),
     loadRoles(opts.templatesDir),
-    loadGoals(opts.templatesDir),
   ]);
 
   // Resolve preset
@@ -77,22 +75,11 @@ export async function runHeadless(opts) {
     }
   }
 
-  // Resolve goal template
-  let selectedGoalTemplate = null;
-  if (opts.goalTemplate) {
-    selectedGoalTemplate = goalTemplates.find((g) => g.name === opts.goalTemplate);
-    if (!selectedGoalTemplate) {
-      const names = goalTemplates.map((g) => g.name).join(', ');
-      console.error(
-        `Error: unknown goal template "${opts.goalTemplate}". Available: ${names || '(none)'}`,
-      );
-      process.exit(1);
-    }
-  }
-
   // Build derived state
   const allRolesSet = buildAllRoles(allAvailableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
+  const selectedPreset = presets.find((p) => p.name === opts.preset) || null;
+  const goals = collectGoals(selectedPreset, modules, new Set(selectedModules));
 
   const rolesData = new Map();
   for (const r of allAvailableRoles) {
@@ -120,10 +107,10 @@ export async function runHeadless(opts) {
   log(`  Modules:  ${selectedModules.join(', ') || '(none)'}`);
   const baseRoleNames = allAvailableRoles.filter((r) => r.base).map((r) => r.name);
   log(`  Roles:    ${[...baseRoleNames, ...selectedRoles].join(', ')}`);
-  if (selectedGoalTemplate) {
-    log(
-      `  Starter:  ${selectedGoalTemplate.title} (${selectedGoalTemplate.issues?.length || 0} issues)`,
-    );
+  if (goals.length) {
+    for (const g of goals) {
+      log(`  Goal:     ${g.title} (${g.issues?.length || 0} issues)`);
+    }
   }
   if (capabilities.length) {
     log(`  Capabilities:`);
@@ -146,7 +133,7 @@ export async function runHeadless(opts) {
     project,
     moduleNames: selectedModules,
     extraRoleNames: selectedRoles,
-    goalTemplate: selectedGoalTemplate,
+    goals,
     outputDir: opts.outputDir,
     templatesDir: opts.templatesDir,
     onProgress: (line) => log(`  ${line}`),
@@ -174,7 +161,8 @@ export async function runHeadless(opts) {
       allRoles: assemblyResult.allRoles,
       rolesData,
       initialTasks: assemblyResult.initialTasks,
-      goalTemplate: selectedGoalTemplate,
+      goals,
+      roleAdapterOverrides: assemblyResult.roleAdapterOverrides,
       model: opts.model,
       remoteCompanyDir: opts.apiWorkspaceRoot
         ? join(opts.apiWorkspaceRoot, basename(assemblyResult.companyDir))
@@ -187,7 +175,6 @@ export async function runHeadless(opts) {
     log('Provisioned:');
     log(`  Company:  ${provisionResult.companyId}`);
     if (provisionResult.goalId) log(`  Goal:     ${provisionResult.goalId}`);
-    if (provisionResult.goalTemplateId) log(`  Starter:  ${provisionResult.goalTemplateId}`);
     log(`  Project:  ${provisionResult.projectId}`);
     log(`  Workspace: ${provisionResult.projectCwd}`);
     for (const [role, id] of provisionResult.agentIds) {
@@ -196,11 +183,14 @@ export async function runHeadless(opts) {
     if (provisionResult.issueIds.length) {
       log(`  Issues:   ${provisionResult.issueIds.length} created`);
     }
-    if (provisionResult.goalTemplateErrors?.length) {
-      log(
-        `  Warnings: ${provisionResult.goalTemplateErrors.length} goal template issue(s) failed:`,
-      );
-      for (const e of provisionResult.goalTemplateErrors) {
+    if (provisionResult.goalResults?.length) {
+      for (const gr of provisionResult.goalResults) {
+        log(`  Goal:     ${gr.goalId} (${gr.issueIds.length} issues)`);
+      }
+    }
+    if (provisionResult.goalErrors?.length) {
+      log(`  Warnings: ${provisionResult.goalErrors.length} goal issue(s) failed:`);
+      for (const e of provisionResult.goalErrors) {
         log(`    ! ${e.title}: ${e.error}`);
       }
     }

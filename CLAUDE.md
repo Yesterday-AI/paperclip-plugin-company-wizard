@@ -24,7 +24,7 @@ node dist/cli.mjs --ai "A fintech startup building a payment API, focus on secur
 
 ## Architecture
 
-**Ink/React CLI** — The app is a React state machine rendered in the terminal via Ink. The wizard flows through steps: NAME → GOAL → PROJECT → PRESET → MODULES → ROLES → SUMMARY → ASSEMBLE → PROVISION → DONE.
+**Ink/React CLI** — The app is a React state machine rendered in the terminal via Ink. The wizard flows through steps: NAME → GOAL → PROJECT → PRESET → MODULES → ROLES → SUMMARY → ASSEMBLE → PROVISION → DONE. Goals are derived automatically from the selected preset and modules (no separate goal template selection step).
 
 **Build** — esbuild bundles all JSX + deps into a single `dist/cli.mjs`. The banner injects a shebang and `createRequire` shim for CJS dependencies. `react-devtools-core` is aliased to an empty shim.
 
@@ -38,9 +38,9 @@ node dist/cli.mjs --ai "A fintech startup building a payment API, focus on secur
 - `src/components/MultiSelect.jsx` — Reusable multi-select (used by StepModules, StepRoles)
 - `src/logic/assemble.js` — File assembly: copies templates, resolves capabilities, generates BOOTSTRAP.md
 - `src/logic/resolve.js` — Capability resolution, role formatting
-- `src/logic/load-templates.js` — Loads presets, modules, roles from templates/
+- `src/logic/load-templates.js` — Loads presets, modules, roles from templates/. Exports `collectGoals()` (collects inline goals from preset + modules) and `modulesWithActiveGoals()` (determines which modules have active goals so their tasks can be skipped).
 - `src/api/client.js` — Paperclip REST API client (auto-detects auth: no-op for local_trusted, Better Auth sign-in for authenticated instances)
-- `src/api/provision.js` — Orchestrates API provisioning: Company → Goal → Project → Agents → Issues → CEO heartbeat
+- `src/api/provision.js` — Orchestrates API provisioning: Company → Goal → Project → Agents → Issues → Inline goals (sub-goals + projects + milestones + issues) → CEO heartbeat
 
 ### Template System
 
@@ -49,7 +49,7 @@ templates/
 ├── roles/           # All roles with role.meta.json (base: true for always-present roles)
 ├── modules/         # Composable capabilities with module.meta.json
 │   └── <module>/
-│       ├── module.meta.json           # capabilities[], activatesWithRoles[], tasks[], permissions[]
+│       ├── module.meta.json           # capabilities[], activatesWithRoles[], tasks[], permissions[], adapterOverrides?, goal?
 │       ├── skills/                    # Shared primary skills (any owner can use)
 │       │   └── <skill>.md
 │       ├── agents/<role>/
@@ -58,7 +58,7 @@ templates/
 │       │   │   └── <skill>.fallback.md # Fallback (reduced scope for non-primary)
 │       │   └── heartbeat-section.md   # Optional: injected into role's HEARTBEAT.md
 │       └── docs/                      # Shared docs injected into all agents
-├── presets/         # Curated module+role combinations with preset.meta.json
+├── presets/         # Curated module+role combinations with preset.meta.json (may include goals[])
 └── ai-wizard/       # Configurable prompts for --ai mode
     ├── config-format.md       # JSON output format + selection rules
     ├── single-shot-system.md  # System prompt for --ai "description"
@@ -100,6 +100,9 @@ Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assi
 
 ### Key Concepts
 
+- **Inline goals** — Goals live inside presets (`goals: []` array) or modules (`goal: {}` single object). `collectGoals()` merges them at runtime. When a module has an active goal, its `tasks` array is skipped (the goal's issues are the comprehensive replacement). Goals support `project: boolean` (default true) to control whether a dedicated Paperclip project is created. Milestones can also have `project: true` for milestone-level projects.
+- **Hierarchical project resolution** — Issues resolve to the nearest ancestor project: milestone project → goal project → main project. Gracefully deterministic: if no milestone or goal project exists, issues fall back to the main project.
+- **`assignTo: "user"`** — Issues with `assignTo: "user"` are assigned to the board user via `assigneeUserId` (resolved during `client.connect()`). For `local_trusted` instances the user is `"local-board"`; for authenticated instances the signed-in user's ID.
 - **Headless mode** — When `--name` and `--preset` are both provided, the CLI skips the Ink wizard entirely and runs assembly + provisioning via `src/headless.js` with plain stdout. Available flags: `--name`, `--goal`, `--goal-description`, `--project`, `--project-description`, `--repo`, `--preset`, `--modules` (comma-separated), `--roles` (comma-separated).
 - **Dry run** — `--dry-run` shows the resolved summary (company, preset, modules, roles, capabilities) and exits without writing files. Works in all modes: interactive wizard (stops at summary), headless, and AI wizard.
 - **AI wizard mode** — Two sub-modes: `--ai` starts a 3-question interview (multi-turn conversation with Claude); `--ai "description"` does single-shot analysis. Both auto-select preset, modules, and roles. Requires `ANTHROPIC_API_KEY` env var. Explicit flags override AI choices. Uses `src/logic/ai-wizard.js`.
@@ -108,12 +111,13 @@ Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assi
 - **role.meta.json `adapter` field** — Per-agent model config (`model`, `effort`, etc.). `--model` CLI flag is a fallback.
 - **role.meta.json `base` field** — `true` for always-present roles (ceo, engineer). Base roles are auto-included in every company.
 - **module.meta.json `permissions` field** — Paperclip API permissions required by capability owners (e.g., `["tasks:assign"]` for auto-assign).
+- **module.meta.json `adapterOverrides` field** — Adapter config keys (e.g., `{ "chrome": true }`) applied to all capability owner roles during provisioning. Collected per-role at assembly time, merged into agent `adapterConfig` at provisioning. Keeps role templates clean — modules declare what they need.
 - **toPascalCase** — Company and project names become PascalCase directory names ("Black Mesa" → "BlackMesa"). Special characters are stripped.
 - **BOOTSTRAP.md** — Generated guide describing what was assembled and how to provision manually if not using `--api`.
 
 ### Paperclip API Flow (--api)
 
-Creates in order: Company → Goal → Project (with workspace cwd) → Agents (with absolute instructionsFilePath) → Issues (linked to goal+project) → optional CEO heartbeat (`--start`).
+Connects to Paperclip API (auto-detects auth mode, resolves `boardUserId`). Creates in order: Company → Goal → Project (with workspace cwd + goalIds) → Agents (with absolute instructionsFilePath, adapter config incl. chrome/model) → Module task issues (main project, skipping modules with active goals) → Inline goals (sub-goal + optional dedicated project + milestones + issues with hierarchical project resolution; `assignTo: "user"` issues get `assigneeUserId`) → optional CEO heartbeat (`--start`).
 
 ## Ink/React Considerations
 

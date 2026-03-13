@@ -8,12 +8,11 @@ import StepProject from './components/StepProject.jsx';
 import StepPreset from './components/StepPreset.jsx';
 import StepModules from './components/StepModules.jsx';
 import StepRoles from './components/StepRoles.jsx';
-import StepGoalTemplates from './components/StepGoalTemplates.jsx';
 import StepSummary from './components/StepSummary.jsx';
 import StepAssemble from './components/StepAssemble.jsx';
 import StepProvision from './components/StepProvision.jsx';
 import StepDone from './components/StepDone.jsx';
-import { loadPresets, loadModules, loadRoles, loadGoals } from './logic/load-templates.js';
+import { loadPresets, loadModules, loadRoles, collectGoals } from './logic/load-templates.js';
 import { resolveCapabilities, buildAllRoles } from './logic/resolve.js';
 import { toPascalCase } from './logic/assemble.js';
 
@@ -24,7 +23,6 @@ const STEPS = {
   PROJECT: 'project',
   PRESET: 'preset',
   MODULES: 'modules',
-  GOAL_TEMPLATES: 'goal_templates',
   ROLES: 'roles',
   SUMMARY: 'summary',
   ASSEMBLE: 'assemble',
@@ -54,7 +52,6 @@ export default function App({
   initialPreset = null,
   initialModules = [],
   initialRoles = [],
-  initialGoalTemplate = null,
 }) {
   const { exit } = useApp();
 
@@ -65,8 +62,6 @@ export default function App({
   const [presets, setPresets] = useState([]);
   const [modules, setModules] = useState([]);
   const [availableRoles, setAvailableRoles] = useState([]);
-  const [goalTemplates, setGoalTemplates] = useState([]);
-
   // User selections (pre-filled from flags where available)
   const [companyName, setCompanyName] = useState(initialName || '');
   const [goal, setGoal] = useState({
@@ -83,27 +78,18 @@ export default function App({
   const [preselectedModules, setPreselectedModules] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [preselectedRoles, setPreselectedRoles] = useState([]);
-  const [selectedGoalTemplate, setSelectedGoalTemplate] = useState(null);
 
   // Results
   const [assemblyResult, setAssemblyResult] = useState(null);
   const [provisionResult, setProvisionResult] = useState(null);
 
   // Determine the first step that needs user input
-  function resolveFirstStep(loadedPresets, loadedGoals) {
+  function resolveFirstStep(loadedPresets) {
     if (!companyName) return STEPS.NAME;
     if (!goal.title && !initialGoal) return STEPS.GOAL;
     // If goal was set via flag, project name defaults to company name
     if (!project.name && !initialProjectName) {
       setProject((p) => ({ ...p, name: companyName }));
-    }
-    let goalTemplateResolved = false;
-    if (initialGoalTemplate) {
-      const tmpl = loadedGoals.find((g) => g.name === initialGoalTemplate);
-      if (tmpl) {
-        setSelectedGoalTemplate(tmpl);
-        goalTemplateResolved = true;
-      }
     }
     if (initialPreset) {
       // Apply preset immediately
@@ -116,8 +102,7 @@ export default function App({
         setSelectedModules(mods);
         setPreselectedRoles(roles);
         setSelectedRoles(roles);
-        // Skip goal template selection only if one was successfully resolved
-        return goalTemplateResolved ? STEPS.SUMMARY : STEPS.GOAL_TEMPLATES;
+        return STEPS.SUMMARY;
       }
     }
     return STEPS.PRESET;
@@ -125,18 +110,12 @@ export default function App({
 
   // Load template data on mount
   useEffect(() => {
-    Promise.all([
-      loadPresets(templatesDir),
-      loadModules(templatesDir),
-      loadRoles(templatesDir),
-      loadGoals(templatesDir),
-    ])
-      .then(([p, m, r, g]) => {
+    Promise.all([loadPresets(templatesDir), loadModules(templatesDir), loadRoles(templatesDir)])
+      .then(([p, m, r]) => {
         setPresets(p);
         setModules(m);
         setAvailableRoles(r);
-        setGoalTemplates(g);
-        setStep(resolveFirstStep(p, g));
+        setStep(resolveFirstStep(p));
       })
       .catch((err) => {
         setError(err.message);
@@ -155,6 +134,10 @@ export default function App({
 
   const companyDir = companyName ? `${outputDir}/${toPascalCase(companyName)}` : '';
 
+  // Derive inline goals from selected preset + modules
+  const selectedPreset = presets.find((p) => p.name === presetName) || null;
+  const goals = collectGoals(selectedPreset, modules, new Set(selectedModules));
+
   // Map steps to user-visible step numbers (wizard steps only)
   const STEP_NUMBERS = {
     [STEPS.NAME]: 1,
@@ -162,11 +145,10 @@ export default function App({
     [STEPS.PROJECT]: 3,
     [STEPS.PRESET]: 4,
     [STEPS.MODULES]: 5,
-    [STEPS.GOAL_TEMPLATES]: 6,
-    [STEPS.ROLES]: 7,
-    [STEPS.SUMMARY]: 8,
+    [STEPS.ROLES]: 6,
+    [STEPS.SUMMARY]: 7,
   };
-  const TOTAL_STEPS = 8;
+  const TOTAL_STEPS = 7;
   const currentStepNum = STEP_NUMBERS[step] || null;
 
   const handleError = (msg) => {
@@ -199,11 +181,6 @@ export default function App({
       ['Company', companyName],
       ...(goal.title ? [['Goal', goal.title]] : []),
       ...(presetName ? [['Preset', presetName]] : []),
-    ],
-    goalTemplates: [
-      ['Company', companyName],
-      ...(presetName ? [['Preset', presetName]] : []),
-      ...(selectedModules.length ? [['Modules', selectedModules.join(', ')]] : []),
     ],
     roles: [
       ['Company', companyName],
@@ -282,21 +259,7 @@ export default function App({
             preselected={preselectedModules}
             onComplete={(mods) => {
               setSelectedModules(mods);
-              setStep(STEPS.GOAL_TEMPLATES);
-            }}
-          />
-        </>
-      )}
-
-      {step === STEPS.GOAL_TEMPLATES && (
-        <>
-          <PrevSelections entries={prev.goalTemplates} />
-          <StepGoalTemplates
-            goalTemplates={goalTemplates}
-            onComplete={(template) => {
-              setSelectedGoalTemplate(template);
-              // Skip ROLES only when preset was provided via CLI flag (not interactive)
-              setStep(initialPreset ? STEPS.SUMMARY : STEPS.ROLES);
+              setStep(STEPS.ROLES);
             }}
           />
         </>
@@ -326,7 +289,7 @@ export default function App({
           roleNames={selectedRoles}
           modules={modules}
           capabilities={capabilities}
-          goalTemplate={selectedGoalTemplate}
+          goals={goals}
           outputDir={companyDir}
           apiEnabled={apiEnabled}
           dryRun={dryRun}
@@ -350,7 +313,7 @@ export default function App({
           project={project}
           moduleNames={selectedModules}
           extraRoleNames={selectedRoles}
-          goalTemplate={selectedGoalTemplate}
+          goals={goals}
           outputDir={outputDir}
           templatesDir={templatesDir}
           onComplete={(result) => {
@@ -374,7 +337,8 @@ export default function App({
           allRoles={assemblyResult.allRoles}
           rolesData={rolesData}
           initialTasks={assemblyResult.initialTasks}
-          goalTemplate={selectedGoalTemplate}
+          goals={goals}
+          roleAdapterOverrides={assemblyResult.roleAdapterOverrides}
           apiBaseUrl={apiBaseUrl}
           apiEmail={apiEmail}
           apiPassword={apiPassword}

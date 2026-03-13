@@ -1,0 +1,17 @@
+{
+  "name": "website-relaunch",
+  "description": "Relaunch an existing website with external design assets. Site audit, design ingestion, implementation, content migration, QA, and go-live. Includes a user-assigned issue for design handoff.",
+  "constraints": [],
+  "roles": [
+    "ui-designer",
+    "product-owner"
+  ],
+  "modules": [
+    "website-relaunch",
+    "github-repo",
+    "pr-review",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

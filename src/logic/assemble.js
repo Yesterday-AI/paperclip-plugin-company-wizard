@@ -8,6 +8,7 @@ import {
   writeFile,
 } from 'node:fs/promises';
 import { join } from 'node:path';
+import { modulesWithActiveGoals } from './load-templates.js';
 
 async function exists(p) {
   try {
@@ -66,11 +67,11 @@ export function toPascalCase(name) {
  * @param {object} opts.project - { name, repoUrl }
  * @param {string[]} opts.moduleNames
  * @param {string[]} opts.extraRoleNames
- * @param {object|null} opts.goalTemplate - Selected goal template (from templates/goals/)
+ * @param {Array} opts.goals - Inline goals from preset/modules (from collectGoals)
  * @param {string} opts.outputDir
  * @param {string} opts.templatesDir
  * @param {(line: string) => void} opts.onProgress
- * @returns {Promise<{companyDir: string, allRoles: Set<string>, initialTasks: Array}>}
+ * @returns {Promise<{companyDir: string, allRoles: Set<string>, initialTasks: Array, roleAdapterOverrides: Map<string, object>}>}
  */
 export async function assembleCompany({
   companyName,
@@ -78,7 +79,7 @@ export async function assembleCompany({
   project = {},
   moduleNames,
   extraRoleNames,
-  goalTemplate = null,
+  goals = [],
   outputDir,
   templatesDir,
   onProgress = () => {},
@@ -167,6 +168,8 @@ export async function assembleCompany({
 
   // 3. Apply modules with capability-aware skill assignment
   const initialTasks = [];
+  const roleAdapterOverrides = new Map(); // role name → merged adapter overrides from modules
+  const skipTaskModules = modulesWithActiveGoals(goals);
   for (const moduleName of moduleNames) {
     const moduleDir = join(templatesDir, 'modules', moduleName);
     if (!(await exists(moduleDir))) {
@@ -185,8 +188,8 @@ export async function assembleCompany({
       }
     }
 
-    // Collect initial tasks
-    if (moduleJson?.tasks?.length) {
+    // Collect initial tasks (skip modules whose goal is active — goal issues replace tasks)
+    if (moduleJson?.tasks?.length && !skipTaskModules.has(moduleName)) {
       for (const task of moduleJson.tasks) {
         let assignee = task.assignTo;
         if (assignee?.startsWith('capability:')) {
@@ -218,6 +221,21 @@ export async function assembleCompany({
         if (primaryOwner) {
           capabilityOwners.set(cap.skill, { primary: primaryOwner, cap });
         }
+      }
+    }
+
+    // Collect adapter overrides for capability owners
+    if (moduleJson?.adapterOverrides && capabilityOwners.size > 0) {
+      const ownerRoles = new Set();
+      for (const { primary, cap } of capabilityOwners.values()) {
+        ownerRoles.add(primary);
+        for (const r of cap.owners) {
+          if (allRoles.has(r)) ownerRoles.add(r);
+        }
+      }
+      for (const role of ownerRoles) {
+        const existing = roleAdapterOverrides.get(role) || {};
+        roleAdapterOverrides.set(role, { ...existing, ...moduleJson.adapterOverrides });
       }
     }
 
@@ -419,20 +437,20 @@ export async function assembleCompany({
     bootstrap += `- **cwd**: \`${companyDir}\`\n\n`;
   }
 
-  // Goal template
-  if (goalTemplate) {
-    bootstrap += `## Starter Goal: ${goalTemplate.title}\n\n`;
-    bootstrap += `${goalTemplate.description}\n\n`;
-    if (goalTemplate.milestones?.length) {
+  // Inline goals (from preset and/or modules)
+  for (const ig of goals) {
+    bootstrap += `## Goal: ${ig.title}\n\n`;
+    bootstrap += `${ig.description}\n\n`;
+    if (ig.milestones?.length) {
       bootstrap += `**Milestones:**\n`;
-      for (const m of goalTemplate.milestones) {
-        bootstrap += `- ${m.title}\n`;
+      for (const m of ig.milestones) {
+        bootstrap += `- ${m.title}${m.project ? ' (+ project)' : ''}\n`;
       }
       bootstrap += `\n`;
     }
-    if (goalTemplate.issues?.length) {
+    if (ig.issues?.length) {
       bootstrap += `**Issues:**\n`;
-      for (const issue of goalTemplate.issues) {
+      for (const issue of ig.issues) {
         const assignLabel = issue.assignTo ? ` → ${issue.assignTo}` : '';
         bootstrap += `- ${issue.title}${assignLabel}\n`;
       }
@@ -467,8 +485,8 @@ export async function assembleCompany({
   if (goal?.title) {
     bootstrap += `${stepN++}. Create the goal: "${goal.title}"\n`;
   }
-  if (goalTemplate) {
-    bootstrap += `${stepN++}. Create the starter goal "${goalTemplate.title}" and its issues listed above\n`;
+  for (const ig of goals) {
+    bootstrap += `${stepN++}. Create the goal "${ig.title}" and its issues listed above\n`;
   }
   if (initialTasks.length > 0) {
     bootstrap += `${stepN++}. Create the initial issues listed above\n`;
@@ -478,5 +496,5 @@ export async function assembleCompany({
   await writeFile(join(companyDir, 'BOOTSTRAP.md'), bootstrap);
   onProgress('+ BOOTSTRAP.md');
 
-  return { companyDir, allRoles, initialTasks };
+  return { companyDir, allRoles, initialTasks, roleAdapterOverrides };
 }

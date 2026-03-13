@@ -1,13 +1,6 @@
-import { describe, it, beforeEach, afterEach } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
-import { loadGoals, validateGoalTemplate } from './load-templates.js';
-
-async function writeJson(path, data) {
-  await writeFile(path, JSON.stringify(data, null, 2));
-}
+import { validateGoalTemplate, collectGoals, modulesWithActiveGoals } from './load-templates.js';
 
 describe('validateGoalTemplate', () => {
   it('accepts a valid minimal goal (title + description only)', () => {
@@ -126,71 +119,74 @@ describe('validateGoalTemplate', () => {
   });
 });
 
-describe('loadGoals', () => {
-  let tmpDir;
-  let templatesDir;
-
-  beforeEach(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'load-goals-test-'));
-    templatesDir = tmpDir;
+describe('collectGoals', () => {
+  it('returns empty array when no preset goals or module goals', () => {
+    const goals = collectGoals(null, [], new Set());
+    assert.deepStrictEqual(goals, []);
   });
 
-  afterEach(async () => {
-    await rm(tmpDir, { recursive: true, force: true });
+  it('collects goals from preset', () => {
+    const preset = {
+      name: 'startup',
+      goals: [
+        { title: 'Launch MVP', description: 'Ship it' },
+        { title: 'Scale', description: 'Grow' },
+      ],
+    };
+    const goals = collectGoals(preset, [], new Set());
+    assert.equal(goals.length, 2);
+    assert.equal(goals[0].title, 'Launch MVP');
+    assert.equal(goals[0]._source, 'preset:startup');
+    assert.equal(goals[1]._source, 'preset:startup');
   });
 
-  it('returns empty array when goals directory does not exist', async () => {
-    const result = await loadGoals(templatesDir);
-    assert.deepStrictEqual(result, []);
-  });
-
-  it('loads valid goal templates from subdirectories', async () => {
-    const goalDir = join(templatesDir, 'goals', 'mvp');
-    await mkdir(goalDir, { recursive: true });
-    await writeJson(join(goalDir, 'goal.meta.json'), {
-      title: 'Ship MVP',
-      description: 'Launch v1.',
-      milestones: [{ id: 'build', title: 'Build it' }],
-      issues: [{ title: 'Set up repo', milestone: 'build' }],
-    });
-
-    const goals = await loadGoals(templatesDir);
+  it('collects goal from selected module', () => {
+    const modules = [
+      { name: 'ci-cd', goal: { title: 'CI/CD Setup', description: 'Automate' } },
+      { name: 'backlog', description: 'no goal here' },
+    ];
+    const goals = collectGoals(null, modules, new Set(['ci-cd', 'backlog']));
     assert.equal(goals.length, 1);
-    assert.equal(goals[0].name, 'mvp');
-    assert.equal(goals[0].title, 'Ship MVP');
-    assert.equal(goals[0].milestones.length, 1);
-    assert.equal(goals[0].issues.length, 1);
+    assert.equal(goals[0].title, 'CI/CD Setup');
+    assert.equal(goals[0]._source, 'module:ci-cd');
+    assert.equal(goals[0]._module, 'ci-cd');
   });
 
-  it('skips directories without goal.meta.json', async () => {
-    const goalDir = join(templatesDir, 'goals', 'empty');
-    await mkdir(goalDir, { recursive: true });
-
-    const goals = await loadGoals(templatesDir);
+  it('skips module goals for unselected modules', () => {
+    const modules = [{ name: 'ci-cd', goal: { title: 'CI/CD Setup', description: 'Automate' } }];
+    const goals = collectGoals(null, modules, new Set([]));
     assert.equal(goals.length, 0);
   });
 
-  it('throws on invalid goal template during load', async () => {
-    const goalDir = join(templatesDir, 'goals', 'bad');
-    await mkdir(goalDir, { recursive: true });
-    await writeJson(join(goalDir, 'goal.meta.json'), { title: 'Missing desc' });
+  it('combines preset and module goals', () => {
+    const preset = {
+      name: 'quality',
+      goals: [{ title: 'Preset Goal', description: 'From preset' }],
+    };
+    const modules = [{ name: 'ci-cd', goal: { title: 'Module Goal', description: 'From module' } }];
+    const goals = collectGoals(preset, modules, new Set(['ci-cd']));
+    assert.equal(goals.length, 2);
+    assert.equal(goals[0]._source, 'preset:quality');
+    assert.equal(goals[1]._source, 'module:ci-cd');
+  });
+});
 
-    await assert.rejects(() => loadGoals(templatesDir), /missing or invalid "description"/);
+describe('modulesWithActiveGoals', () => {
+  it('returns empty set when no module goals', () => {
+    const goals = [{ title: 'A', _source: 'preset:fast' }];
+    const result = modulesWithActiveGoals(goals);
+    assert.equal(result.size, 0);
   });
 
-  it('loads multiple goal templates', async () => {
-    for (const name of ['alpha', 'beta']) {
-      const goalDir = join(templatesDir, 'goals', name);
-      await mkdir(goalDir, { recursive: true });
-      await writeJson(join(goalDir, 'goal.meta.json'), {
-        title: `Goal ${name}`,
-        description: `Description for ${name}`,
-      });
-    }
-
-    const goals = await loadGoals(templatesDir);
-    assert.equal(goals.length, 2);
-    const names = goals.map((g) => g.name).sort();
-    assert.deepStrictEqual(names, ['alpha', 'beta']);
+  it('returns module names that have active goals', () => {
+    const goals = [
+      { title: 'A', _source: 'module:ci-cd', _module: 'ci-cd' },
+      { title: 'B', _source: 'preset:fast' },
+      { title: 'C', _source: 'module:website-relaunch', _module: 'website-relaunch' },
+    ];
+    const result = modulesWithActiveGoals(goals);
+    assert.equal(result.size, 2);
+    assert.ok(result.has('ci-cd'));
+    assert.ok(result.has('website-relaunch'));
   });
 });

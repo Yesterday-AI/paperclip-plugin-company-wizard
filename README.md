@@ -274,6 +274,9 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`secure`** | + security-audit, + Security Engineer + Code Reviewer + PO | Regulated industries, fintech, healthtech |
 | **`gtm`** | + competitive-intel, brand-identity, + CMO + Customer Success + PO | Market-facing products, competitive positioning |
 | **`content`** | + documentation, accessibility, + Technical Writer + PO | Dev tools, documentation-heavy projects |
+| **`launch-mvp`** | launch-mvp, github-repo, backlog, auto-assign, stall-detection | Ship a first version end-to-end |
+| **`build-api`** | build-api, github-repo, backlog, auto-assign, ci-cd, stall-detection | Build a REST/GraphQL API from scratch |
+| **`website-relaunch`** | website-relaunch, github-repo, pr-review, backlog, auto-assign, stall-detection + UI Designer + PO | Relaunch a website with external design assets |
 
 > **`fast`** is for a single engineer — multiple engineers without review will cause conflicts.
 >
@@ -300,6 +303,8 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 
 **content** — Content and documentation focused. Technical Writer for developer docs and guides, accessibility for inclusive design, market analysis for positioning. Best for developer tools, documentation-heavy projects, or content-driven products.
 
+**website-relaunch** — Relaunch an existing website with external design assets. Site audit, design ingestion, implementation, content migration, QA, and go-live. UI Designer for design analysis, Product Owner for backlog management. Includes a user-assigned "Provide design assets" issue as the entry point — upload your agency's designs, the team handles the rest.
+
 </details>
 
 <br>
@@ -321,6 +326,8 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`documentation`** | Project docs, API refs, onboarding guides | Primary owner creates docs |
 | **`security-audit`** | Threat modeling and security code review | Primary owner conducts audit |
 | **`accessibility`** | WCAG 2.2 compliance audit and remediation | Primary owner runs audit |
+| **`website-relaunch`** | Website relaunch: audit, design ingestion, implementation, migration | Engineer audits + analyzes designs |
+| **`launch-mvp`** | MVP lifecycle: scope, build core feature, deploy, iterate from feedback | CEO scopes, Engineer builds |
 
 ### Engineering Workflow
 
@@ -331,6 +338,7 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`backlog`** | Auto-generate issues from goals when backlog runs low | Primary owner creates initial backlog |
 | **`auto-assign`** | Assign unassigned issues to idle agents | — |
 | **`stall-detection`** | Detect stuck handovers, nudge or escalate | — |
+| **`build-api`** | REST API: schema design, endpoints, auth, documentation | Engineer designs and implements |
 | **`ci-cd`** | Continuous integration and deployment pipeline | Primary owner sets up CI/CD |
 | **`monitoring`** | Observability, alerting, health checks | Primary owner sets up monitoring |
 
@@ -465,6 +473,28 @@ WCAG 2.2 compliance auditing: semantic HTML, keyboard navigation, color contrast
 
 - **Capability:** `accessibility-audit` — owners: `qa` &rarr; `ui-designer` &rarr; `engineer`
 - **Fallback:** UI Designer focuses on visual accessibility; Engineer runs automated checks
+
+#### website-relaunch
+
+Full website relaunch lifecycle: audit the current site, ingest design assets from an external agency, implement the new design, migrate content, and go live. Includes an inline goal with 5 milestones (discovery, design handoff, implementation, content migration, QA & launch) and 10 issues.
+
+- **Capability:** `design-ingestion` — owners: `ui-designer` &rarr; `engineer` &rarr; `ceo`
+- **Capability:** `site-audit` — owners: `ui-designer` &rarr; `engineer` &rarr; `ceo` (designer brings design/content lens; engineer fallback focuses on technical audit)
+- **Goal:** Website Relaunch (with dedicated project, 5 milestones, 10 issues)
+
+#### build-api
+
+REST API development from schema to documentation. Includes an `api-design` skill covering resource-oriented URL design, HTTP conventions, input validation, pagination, authentication, and OpenAPI documentation. Inline goal with 4 milestones and 8 issues.
+
+- **Capability:** `api-design` — owners: `engineer` &rarr; `ceo`
+- **Requires:** `github-repo`
+- **Goal:** Build a REST API (with dedicated project, 4 milestones, 8 issues)
+
+#### launch-mvp
+
+MVP project lifecycle: define scope tightly, build the core feature, deploy, and iterate from user feedback. No capabilities or skills — this module is a structured goal with milestones and issues that guide the team through the MVP process.
+
+- **Goal:** Launch MVP (with dedicated project, 4 milestones, 8 issues)
 
 #### stall-detection
 
@@ -636,6 +666,7 @@ The naming convention is the contract: `UPPERCASE.md` from another module → al
   "requires": ["other-module"],
   "activatesWithRoles": ["my-role"],
   "permissions": ["tasks:assign"],
+  "adapterOverrides": { "chrome": true },
   "capabilities": [
     {
       "skill": "my-skill",
@@ -649,7 +680,18 @@ The naming convention is the contract: `UPPERCASE.md` from another module → al
       "assignTo": "capability:my-skill",
       "description": "Task description"
     }
-  ]
+  ],
+  "goal": {
+    "title": "My Goal",
+    "description": "What this goal achieves",
+    "project": true,
+    "milestones": [
+      { "id": "phase-1", "title": "Phase 1", "project": false }
+    ],
+    "issues": [
+      { "title": "First task", "milestone": "phase-1", "assignTo": "engineer", "priority": "high" }
+    ]
+  }
 }
 ```
 
@@ -660,6 +702,10 @@ The naming convention is the contract: `UPPERCASE.md` from another module → al
 | `capabilities[].owners` | Priority order — first present role gets the primary skill |
 | `capabilities[].fallbackSkill` | Filename (without `.md`) of the fallback variant |
 | `tasks[].assignTo` | A role name or `"capability:<skill>"` to auto-resolve |
+| `adapterOverrides` | Adapter config keys merged into all capability owner agents during provisioning (e.g., `{ "chrome": true }`) |
+| `goal` | Optional inline goal with milestones and issues. When active, `tasks` are skipped. |
+| `goal.project` | If `true` (default), creates a dedicated Paperclip project for this goal |
+| `goal.issues[].assignTo` | Role name, `"capability:<skill>"`, or `"user"` (unassigned for human pickup) |
 
 </details>
 
@@ -767,9 +813,12 @@ Create `templates/presets/<name>/preset.meta.json`:
 
 **Provisioning** (with `--api`):
 
-1. Creates company &rarr; goal &rarr; project (with workspace) &rarr; agents &rarr; issues
-2. Wires `reportsTo` hierarchy (CEO first, then other agents)
-3. Optionally starts CEO heartbeat (`--start`)
+1. Connects to Paperclip API (auto-detects `local_trusted` vs authenticated, resolves board user ID)
+2. Creates company &rarr; goal &rarr; project (with workspace) &rarr; agents (with adapter config from role + module `adapterOverrides`) &rarr; module task issues
+3. For each inline goal (from preset/modules): sub-goal &rarr; optional project &rarr; milestones &rarr; issues
+4. Issues with `assignTo: "user"` are assigned to the board user; agent issues are assigned to the matching agent
+5. Wires `reportsTo` hierarchy (CEO first, then other agents)
+6. Optionally starts CEO heartbeat (`--start`)
 
 <br>
 

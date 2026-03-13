@@ -17,6 +17,7 @@ export class PaperclipClient {
     this.origin = new URL(this.baseUrl).origin;
     this.credentials = credentials; // { email, password } — optional
     this.sessionCookie = null;
+    this.boardUserId = null; // resolved during connect()
   }
 
   async _fetch(path, opts = {}) {
@@ -45,7 +46,10 @@ export class PaperclipClient {
     });
 
     // local_trusted — no auth needed
-    if (res.ok) return;
+    if (res.ok) {
+      this.boardUserId = 'local-board';
+      return;
+    }
 
     // Auth required
     if (res.status === 401 || res.status === 403) {
@@ -58,6 +62,13 @@ export class PaperclipClient {
         );
       }
       await this._signIn(email, password);
+      // Fetch the authenticated user's ID for assigneeUserId support
+      try {
+        const session = await this._fetch('/api/auth/get-session');
+        this.boardUserId = session?.user?.id || null;
+      } catch {
+        // Non-critical — user assignment will fall back to unassigned
+      }
       return;
     }
 
@@ -164,7 +175,7 @@ export class PaperclipClient {
 
   async createIssue(
     companyId,
-    { title, description, priority, projectId, goalId, assigneeAgentId },
+    { title, description, priority, projectId, goalId, assigneeAgentId, assigneeUserId },
   ) {
     return this._fetch(`/api/companies/${companyId}/issues`, {
       method: 'POST',
@@ -175,6 +186,7 @@ export class PaperclipClient {
         projectId: projectId || undefined,
         goalId: goalId || undefined,
         assigneeAgentId: assigneeAgentId || undefined,
+        assigneeUserId: assigneeUserId || undefined,
       }),
     });
   }

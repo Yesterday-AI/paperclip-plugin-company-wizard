@@ -2,6 +2,13 @@
 
 All notable changes to the Clipper Web UI are documented here. For CLI changes, see the [main changelog](../CHANGELOG.md).
 
+## [0.1.1] — 2026-03-13
+
+### Changed
+
+- **Inline goals support** — Provisioning plugin now uses `collectGoals()` to derive goals from selected preset + modules at runtime, matching the CLI's inline goals architecture. Replaces the removed `goalTemplate` parameter.
+- **Goal results in SSE stream** — Provision result event now includes `goalResults` and `goalErrors` for richer feedback on inline goal creation.
+
 ## [0.1.0] — 2026-03-13
 
 ### Added

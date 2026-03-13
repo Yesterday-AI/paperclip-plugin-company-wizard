@@ -6,6 +6,9 @@
   "paperclipRole": "designer",
   "description": "Owns visual identity, UI design systems, and brand consistency. Creates design specs that engineers implement.",
   "reportsTo": "ceo",
+  "adapter": {
+    "chrome": true
+  },
   "enhances": [
     "Takes over architecture-plan visual/UI layer from Engineer (Engineer becomes fallback for UI architecture)",
     "Takes over market-analysis brand positioning section from Product Owner/CEO",

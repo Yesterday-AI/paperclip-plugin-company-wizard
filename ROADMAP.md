@@ -3,9 +3,9 @@
 ## Done
 
 - Shared skills system — deduplicate primary skills, role-specific overrides only when genuinely different
-- 14 modules: vision-workshop, market-analysis, hiring-review, tech-stack, architecture-plan, github-repo, pr-review, backlog, auto-assign, stall-detection, brand-identity, user-testing, ci-cd, monitoring
+- 21 modules: vision-workshop, market-analysis, hiring-review, tech-stack, architecture-plan, github-repo, pr-review, backlog, auto-assign, stall-detection, brand-identity, user-testing, ci-cd, monitoring, competitive-intel, documentation, security-audit, accessibility, website-relaunch, build-api, launch-mvp
 - 9 optional roles: product-owner, code-reviewer, ui-designer, ux-researcher, cto, cmo, cfo, devops, qa
-- 6 presets: fast, quality, rad, startup, research, full
+- 12 presets: fast, quality, rad, startup, research, full, secure, gtm, content, launch-mvp, build-api, website-relaunch
 - Template catalogue in README
 - Special characters in company names (stripped in PascalCase)
 - `dangerouslySkipPermissions` default for claude_local agents
@@ -28,19 +28,22 @@
 - `--dry-run` flag — show summary and exit without writing files (works in all modes: interactive, headless, AI wizard)
 - Rename `roadmap-to-issues` → `backlog` — module now owns the full backlog lifecycle, not just the roadmap-to-issues transformation. Capability renamed to `backlog-health`. Added `docs/backlog-process.md` process definition.
 - Module process docs — modules that define workflows ship a `*-process.md` in `docs/` explaining the full process for all agents (complementing role-specific skills)
+- Inline goals — goals dissolved from separate `templates/goals/` into presets (`goals[]`) and modules (`goal`). `collectGoals()` merges at runtime. Module tasks skipped when goal is active.
+- Hierarchical project resolution — goals and milestones can create dedicated projects. Issues resolve: milestone project → goal project → main project.
+- `assignTo: "user"` support — issues assigned to board user via `assigneeUserId` (resolved during API connect)
+- Website relaunch module — `website-relaunch` with design-ingestion + site-audit skills (ui-designer override), 5 milestones, 10 issues
+- Build API module — `build-api` with api-design skill, 4 milestones, 8 issues
+- Launch MVP module — `launch-mvp` with 4 milestones, 8 issues (pure lifecycle structure)
+- Presets `launch-mvp`, `build-api`, and `website-relaunch` — thin bundles referencing goal-carrying modules
+- Chrome enabled by default for UI Designer roles
 
 ## In Progress
 
-- [ ] **Goal template provisioning improvements**
-    - Fix: duplicate issues created when using goal templates
-    - Support multi-select goal templates (currently single-select)
-    - Unsure if dedicated project per goal template is the right model — revisit
+_(nothing currently in progress)_
 
 ## Backlog
 
 ### Template System
-
-- [ ] Excalidraw MCP server integration — add as a tool skill for agents to generate diagrams and architecture visuals
 
 ### Platform
 

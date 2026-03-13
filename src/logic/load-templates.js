@@ -7,6 +7,7 @@ import { join } from 'node:path';
  * @property {string} title
  * @property {string} [description]
  * @property {string} [completionCriteria]
+ * @property {boolean} [project] - If true, creates a dedicated project for this milestone.
  */
 
 /**
@@ -15,13 +16,14 @@ import { join } from 'node:path';
  * @property {string} [description]
  * @property {'critical'|'high'|'medium'|'low'} [priority]
  * @property {string} [milestone] - ID of the milestone this issue belongs to.
- * @property {string} [assignTo] - Role name or 'capability:<skill>'.
+ * @property {string} [assignTo] - Role name, 'capability:<skill>', or 'user' (unassigned, for human pickup).
  */
 
 /**
- * @typedef {Object} GoalTemplate
+ * @typedef {Object} InlineGoal
  * @property {string} title
  * @property {string} description
+ * @property {boolean} [project] - If true, creates a dedicated project for this goal. Default: true.
  * @property {GoalMilestone[]} [milestones]
  * @property {GoalIssue[]} [issues]
  */
@@ -49,7 +51,14 @@ export async function loadPresets(templatesDir) {
     if (!dir.isDirectory()) continue;
     const presetFile = join(presetsDir, dir.name, 'preset.meta.json');
     if (await exists(presetFile)) {
-      presets.push(JSON.parse(await readFile(presetFile, 'utf-8')));
+      const preset = JSON.parse(await readFile(presetFile, 'utf-8'));
+      // Validate inline goals if present
+      if (preset.goals) {
+        for (const goal of preset.goals) {
+          validateGoal(goal, `preset "${preset.name}"`);
+        }
+      }
+      presets.push(preset);
     }
   }
   return presets;
@@ -70,7 +79,12 @@ export async function loadModules(templatesDir) {
       const descLine = content.split('\n').find((l) => l.length > 0 && !l.startsWith('#'));
       description = descLine?.trim() || '';
     }
-    modules.push({ name: dir.name, description, ...(moduleJson || {}) });
+    const mod = { name: dir.name, description, ...(moduleJson || {}) };
+    // Validate inline goal if present
+    if (mod.goal) {
+      validateGoal(mod.goal, `module "${mod.name}"`);
+    }
+    modules.push(mod);
   }
   return modules;
 }
@@ -96,58 +110,54 @@ const VALID_PRIORITIES = new Set(['critical', 'high', 'medium', 'low']);
 const MILESTONE_ID_RE = /^[a-z][a-z0-9-]*$/;
 
 /**
- * Validate a goal template object against the schema rules.
+ * Validate an inline goal object (from module or preset).
  * Throws on invalid data.
- * @param {GoalTemplate} goal
- * @param {string} sourceName - filename/dir name for error context
+ * @param {InlineGoal} goal
+ * @param {string} sourceName - context for error messages (e.g. 'module "ci-cd"')
  */
-function validateGoalTemplate(goal, sourceName) {
+function validateGoal(goal, sourceName) {
   if (!goal.title || typeof goal.title !== 'string') {
-    throw new Error(`Goal template "${sourceName}": missing or invalid "title"`);
+    throw new Error(`Goal in ${sourceName}: missing or invalid "title"`);
   }
   if (!goal.description || typeof goal.description !== 'string') {
-    throw new Error(`Goal template "${sourceName}": missing or invalid "description"`);
+    throw new Error(`Goal in ${sourceName}: missing or invalid "description"`);
   }
 
   const milestoneIds = new Set();
 
   if (goal.milestones) {
     if (!Array.isArray(goal.milestones)) {
-      throw new Error(`Goal template "${sourceName}": "milestones" must be an array`);
+      throw new Error(`Goal in ${sourceName}: "milestones" must be an array`);
     }
     for (const m of goal.milestones) {
       if (!m.id || typeof m.id !== 'string' || !MILESTONE_ID_RE.test(m.id)) {
-        throw new Error(
-          `Goal template "${sourceName}": milestone "id" must be kebab-case (got "${m.id}")`,
-        );
+        throw new Error(`Goal in ${sourceName}: milestone "id" must be kebab-case (got "${m.id}")`);
       }
       if (milestoneIds.has(m.id)) {
-        throw new Error(`Goal template "${sourceName}": duplicate milestone id "${m.id}"`);
+        throw new Error(`Goal in ${sourceName}: duplicate milestone id "${m.id}"`);
       }
       milestoneIds.add(m.id);
       if (!m.title || typeof m.title !== 'string') {
-        throw new Error(`Goal template "${sourceName}": milestone "${m.id}" missing "title"`);
+        throw new Error(`Goal in ${sourceName}: milestone "${m.id}" missing "title"`);
       }
     }
   }
 
   if (goal.issues) {
     if (!Array.isArray(goal.issues)) {
-      throw new Error(`Goal template "${sourceName}": "issues" must be an array`);
+      throw new Error(`Goal in ${sourceName}: "issues" must be an array`);
     }
     for (let i = 0; i < goal.issues.length; i++) {
       const issue = goal.issues[i];
       if (!issue.title || typeof issue.title !== 'string') {
-        throw new Error(`Goal template "${sourceName}": issue[${i}] missing "title"`);
+        throw new Error(`Goal in ${sourceName}: issue[${i}] missing "title"`);
       }
       if (issue.priority && !VALID_PRIORITIES.has(issue.priority)) {
-        throw new Error(
-          `Goal template "${sourceName}": issue[${i}] invalid priority "${issue.priority}"`,
-        );
+        throw new Error(`Goal in ${sourceName}: issue[${i}] invalid priority "${issue.priority}"`);
       }
       if (issue.milestone && !milestoneIds.has(issue.milestone)) {
         throw new Error(
-          `Goal template "${sourceName}": issue[${i}] references unknown milestone "${issue.milestone}"`,
+          `Goal in ${sourceName}: issue[${i}] references unknown milestone "${issue.milestone}"`,
         );
       }
     }
@@ -155,26 +165,52 @@ function validateGoalTemplate(goal, sourceName) {
 }
 
 /**
- * Load and validate goal templates from the templates directory.
- * Convention: goals/<name>/goal.meta.json
- * @param {string} templatesDir
- * @returns {Promise<GoalTemplate[]>}
+ * Collect all active goals from selected preset and modules.
+ *
+ * Sources (in order):
+ *   1. Preset `goals[]` — inline goals from the selected preset
+ *   2. Module `goal` — inline goal from each selected module that has one
+ *
+ * When a module has a `goal`, its `tasks` are skipped from initialTasks
+ * (the goal's issues are the comprehensive version).
+ *
+ * @param {object|null} preset - The selected preset object
+ * @param {object[]} modules - All loaded modules
+ * @param {Set<string>} selectedModules - Names of selected modules
+ * @returns {InlineGoal[]}
  */
-export async function loadGoals(templatesDir) {
-  const goalsDir = join(templatesDir, 'goals');
+export function collectGoals(preset, modules, selectedModules) {
   const goals = [];
-  if (!(await exists(goalsDir))) return goals;
 
-  const dirs = await readdir(goalsDir, { withFileTypes: true });
-  for (const dir of dirs) {
-    if (!dir.isDirectory()) continue;
-    const goalJson = await readJson(join(goalsDir, dir.name, 'goal.meta.json'));
-    if (!goalJson) continue;
-    validateGoalTemplate(goalJson, dir.name);
-    goals.push({ name: dir.name, ...goalJson });
+  // 1. Preset goals
+  if (preset?.goals) {
+    for (const goal of preset.goals) {
+      goals.push({ ...goal, _source: `preset:${preset.name}` });
+    }
+  }
+
+  // 2. Module goals (only from selected modules)
+  for (const mod of modules) {
+    if (!selectedModules.has(mod.name)) continue;
+    if (!mod.goal) continue;
+    goals.push({ ...mod.goal, _source: `module:${mod.name}`, _module: mod.name });
   }
 
   return goals;
 }
 
-export { validateGoalTemplate };
+/**
+ * Return the set of module names that have an active goal.
+ * Used to skip their tasks from initialTasks during assembly.
+ * @param {InlineGoal[]} goals - from collectGoals()
+ * @returns {Set<string>}
+ */
+export function modulesWithActiveGoals(goals) {
+  const names = new Set();
+  for (const g of goals) {
+    if (g._module) names.add(g._module);
+  }
+  return names;
+}
+
+export { validateGoal, validateGoal as validateGoalTemplate };

@@ -1,0 +1,152 @@
+{
+  "name": "website-relaunch",
+  "title": "Website Relaunch",
+  "adapterOverrides": {
+    "chrome": true
+  },
+  "capabilities": [
+    {
+      "skill": "design-ingestion",
+      "owners": ["ui-designer", "engineer", "ceo"],
+      "fallbackSkill": null
+    },
+    {
+      "skill": "site-audit",
+      "owners": ["ui-designer", "engineer", "ceo"],
+      "fallbackSkill": null
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Technical site audit",
+      "assignTo": "engineer",
+      "description": "Crawl the current website and document the technical baseline:\n- Complete page inventory (every URL, status codes)\n- Navigation structure and sitemap\n- Tech stack and hosting (framework, CMS, CDN)\n- SEO baseline (meta tags, structured data, robots.txt, sitemap.xml)\n- Analytics and tracking scripts\n\nUse WebFetch or Chrome to access each page. Output: `docs/SITE-AUDIT.md`."
+    },
+    {
+      "title": "Visual and UX audit of current website",
+      "assignTo": "capability:site-audit",
+      "description": "Audit the current website visually — design patterns, content quality, UX observations, accessibility. Follow the `site-audit` skill. Append to `docs/SITE-AUDIT.md` or create `docs/DESIGN-AUDIT.md`."
+    },
+    {
+      "title": "Analyze design assets and create design spec",
+      "assignTo": "engineer",
+      "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1–5, then 6–10) to view each page visually. Do NOT use text extraction as primary method — design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens — colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory — recurring UI components\n3. Page layouts — grid system, responsive breakpoints\n4. Asset catalog — images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts."
+    }
+  ],
+  "goal": {
+    "title": "Website Relaunch",
+    "description": "Relaunch an existing website with a new design. Audit the current site, ingest design assets from an external agency, implement the new design, migrate content, and go live.",
+    "project": true,
+    "milestones": [
+      {
+        "id": "discovery",
+        "title": "Discovery & audit",
+        "description": "Audit the current website — document page structure, content inventory, navigation, tech stack, and SEO baseline. Identify what to keep, migrate, or drop.",
+        "completionCriteria": "A site audit document exists with page inventory, content map, tech stack notes, and migration decisions."
+      },
+      {
+        "id": "design-handoff",
+        "title": "Design handoff",
+        "description": "Receive and process design assets from the external agency. Extract color palette, typography, component patterns, layout structure, and responsive breakpoints.",
+        "completionCriteria": "Design spec document exists with extracted tokens (colors, fonts, spacing), component inventory, and page layouts documented."
+      },
+      {
+        "id": "implementation",
+        "title": "Implementation",
+        "description": "Build the new site from the design spec. Set up the project, implement components, integrate content, and ensure responsive behavior.",
+        "completionCriteria": "All pages from the design are implemented, responsive, and content is integrated. Local dev environment shows the complete site."
+      },
+      {
+        "id": "content-migration",
+        "title": "Content migration",
+        "description": "Migrate content from the old site to the new structure. Set up redirects for changed URLs. Verify no content is lost.",
+        "completionCriteria": "All content from the old site is present in the new site. Redirect map covers all changed URLs. No broken internal links."
+      },
+      {
+        "id": "qa-launch",
+        "title": "QA & launch",
+        "description": "Cross-browser testing, accessibility audit, performance optimization, SEO verification, and go-live.",
+        "completionCriteria": "Site passes accessibility audit, loads under 3s, all redirects work, DNS is configured, and site is live."
+      }
+    ],
+    "issues": [
+      {
+        "title": "Technical site audit",
+        "description": "Crawl the current website and document the technical baseline:\n- Complete page inventory (every URL, status codes)\n- Navigation structure and sitemap\n- Content types per page (text, images, videos, downloads)\n- Tech stack and hosting (framework, CMS, CDN, response headers)\n- SEO baseline (meta tags, structured data, canonical URLs, robots.txt, sitemap.xml)\n- Analytics and tracking scripts\n- Performance baseline (page weight, render-blocking resources)\n\nUse WebFetch or Chrome to access each page. Output: `docs/SITE-AUDIT.md`.",
+        "priority": "high",
+        "milestone": "discovery",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Visual and UX audit of current website",
+        "description": "Audit the current website from a design and user experience perspective. Use Chrome to browse the site visually. Follow the `site-audit` skill.\n\nFor each page type, document:\n- **Layout patterns** — grid structure, content zones, visual hierarchy\n- **Design tokens in use** — colors, typography, spacing, component patterns\n- **Content quality** — is copy clear, current, and on-brand? Flag outdated or placeholder content\n- **UX observations** — navigation intuitiveness, user flows, friction points, dead ends\n- **Accessibility** — heading hierarchy, image alt text, color contrast (visual estimate)\n\nFor each page, recommend: **keep** (design is strong), **redesign** (layout needs rethinking), **rewrite** (content is outdated), **merge**, or **drop**.\n\nAppend findings to `docs/SITE-AUDIT.md` under a 'Visual Design & UX' section, or create `docs/DESIGN-AUDIT.md` if the technical audit is already complete.",
+        "priority": "high",
+        "milestone": "discovery",
+        "assignTo": "ui-designer"
+      },
+      {
+        "title": "Create content inventory spreadsheet",
+        "description": "Based on the site audit, create a structured content inventory:\n- Page URL, title, word count, images, last updated\n- Content owner (if identifiable)\n- Migration decision: keep as-is, rewrite, merge, or drop\n- Priority: critical (homepage, key landing pages) vs secondary\n\nOutput: `docs/CONTENT-INVENTORY.md`.",
+        "priority": "high",
+        "milestone": "discovery",
+        "assignTo": "ceo"
+      },
+      {
+        "title": "Provide design assets",
+        "description": "Upload the design files from the external agency. Accepted formats:\n- **PDF** — design comps, style guides (will be visually analyzed page by page)\n- **PNG/SVG** — logos, icons, illustrations, page mockups\n- **ZIP** — archive containing any of the above\n- **URL** — link to a shared folder, Figma file, or hosted assets\n\nPlace files in the `designs/` directory of the project, or paste a download URL in a comment on this issue.\n\nThis issue blocks all implementation work.",
+        "priority": "critical",
+        "milestone": "design-handoff",
+        "assignTo": "user"
+      },
+      {
+        "title": "Analyze design assets and create design spec",
+        "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1–5, then 6–10) to view each page visually. Do NOT use text extraction as primary method — design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens — colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory — recurring UI components\n3. Page layouts — grid system, responsive breakpoints\n4. Asset catalog — images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts.",
+        "priority": "critical",
+        "milestone": "design-handoff",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Implement core page layouts",
+        "description": "Configure the project for the new design, then build the primary page templates:\n\n**Project setup:**\n- CSS/styling approach (Tailwind, CSS modules, etc.) configured with design tokens from `docs/DESIGN-SPEC.md`\n- Component library structure\n- Framework configuration matching design spec requirements\n\n**Core pages:**\n- Homepage\n- Key landing pages\n- Standard content page layout\n- Navigation (header, footer, mobile menu)\n\nApply design tokens (colors, typography, spacing) from the spec. Ensure responsive behavior matches the design breakpoints.",
+        "priority": "high",
+        "milestone": "implementation",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Implement remaining pages and components",
+        "description": "Build all remaining pages and UI components identified in the design spec. Ensure consistent use of design tokens and component patterns. Include interactive elements (forms, accordions, modals) as specified.",
+        "priority": "medium",
+        "milestone": "implementation",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Migrate content from old site",
+        "description": "Using the content inventory (`docs/CONTENT-INVENTORY.md`), migrate content to the new site:\n- Transfer text content, updating formatting for the new design\n- Download and optimize images from the old site\n- Preserve SEO-critical content (headings, meta descriptions, alt text)\n- Flag content marked for rewrite and create issues for each\n\nVerify no content is lost by cross-referencing the inventory.",
+        "priority": "high",
+        "milestone": "content-migration",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Create URL redirect map",
+        "description": "Map every old URL to its new equivalent:\n- 1:1 redirects for pages that moved\n- Pattern-based redirects for structural changes\n- 410 Gone for intentionally removed pages\n- Verify no orphaned URLs (old pages with no redirect)\n\nOutput: redirect configuration file appropriate for the hosting platform. Test all redirects locally.",
+        "priority": "high",
+        "milestone": "content-migration",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Cross-browser testing and performance optimization",
+        "description": "Test across Chrome, Firefox, Safari, and mobile viewports. Optimize:\n- Image formats (WebP/AVIF with fallbacks)\n- Lazy loading for below-fold content\n- Font loading strategy (preload, swap)\n- Bundle size and code splitting\n- Core Web Vitals targets: LCP < 2.5s, CLS < 0.1, INP < 200ms",
+        "priority": "medium",
+        "milestone": "qa-launch",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Pre-launch checklist and go-live",
+        "description": "Final verification before launch:\n- [ ] All redirects configured and tested\n- [ ] DNS records updated (or ready to switch)\n- [ ] TLS/SSL certificate active\n- [ ] Analytics and tracking re-installed\n- [ ] robots.txt and sitemap.xml updated\n- [ ] Social meta tags (Open Graph, Twitter cards)\n- [ ] 404 page designed and implemented\n- [ ] Monitoring and alerting configured\n\nDeploy to production and verify with smoke test.",
+        "priority": "critical",
+        "milestone": "qa-launch",
+        "assignTo": "engineer"
+      }
+    ]
+  }
+}

@@ -51,7 +51,6 @@ export function provisionApiPlugin(): Plugin {
           selectedModules,
           selectedRoles,
           allRoles,
-          goalTemplate: goalTemplateFromBody,
         } = body;
 
         const instancesHost =
@@ -89,7 +88,18 @@ export function provisionApiPlugin(): Plugin {
             "../../../src/api/client.js"
           );
 
-          // --- Step 1: Assemble files to host instances dir ---
+          // --- Step 1: Collect inline goals from preset + modules ---
+          const { loadPresets, loadModules, collectGoals } = await import(
+            "../../../src/logic/load-templates.js"
+          );
+          const [presets, allModules] = await Promise.all([
+            loadPresets(TEMPLATES_DIR),
+            loadModules(TEMPLATES_DIR),
+          ]);
+          const selectedPreset = presets.find((p: any) => p.name === presetName) || null;
+          const goals = collectGoals(selectedPreset, allModules, new Set(selectedModules ?? []));
+
+          // --- Step 2: Assemble files to host instances dir ---
           fs.mkdirSync(instancesHost, { recursive: true });
           log("Assembling company workspace...");
 
@@ -99,19 +109,19 @@ export function provisionApiPlugin(): Plugin {
             project: project || {},
             moduleNames: selectedModules ?? [],
             extraRoleNames: selectedRoles ?? [],
-            goalTemplate: goalTemplateFromBody ?? null,
+            goals,
             outputDir: instancesHost,
             templatesDir: TEMPLATES_DIR,
             onProgress: log,
           });
 
-          const { companyDir, initialTasks } = assembleResult;
+          const { companyDir, initialTasks, roleAdapterOverrides } = assembleResult;
           const assembledAllRoles: Set<string> = assembleResult.allRoles;
 
           log("");
           log(`Assembled to: ${companyDir}`);
 
-          // --- Step 2: Compute container-relative path ---
+          // --- Step 3: Compute container-relative path ---
           // companyDir = /host/path/instances/CompanyName
           // We need: /paperclip/instances/CompanyName
           const relativeDir = path.relative(instancesHost, companyDir);
@@ -120,7 +130,7 @@ export function provisionApiPlugin(): Plugin {
           log(`Container path: ${remoteCompanyDir}`);
           log("");
 
-          // --- Step 3: Load role metadata for API provisioning ---
+          // --- Step 4: Load role metadata for API provisioning ---
           const rolesData = new Map();
           for (const role of assembledAllRoles) {
             const metaPath = path.join(TEMPLATES_DIR, "roles", role, "role.meta.json");
@@ -132,7 +142,7 @@ export function provisionApiPlugin(): Plugin {
             }
           }
 
-          // --- Step 4: Provision via Paperclip API ---
+          // --- Step 5: Provision via Paperclip API ---
           log("Connecting to Paperclip API...");
           const client = new PaperclipClient(paperclipUrl, {
             email: paperclipEmail,
@@ -153,7 +163,8 @@ export function provisionApiPlugin(): Plugin {
             allRoles: assembledAllRoles,
             rolesData,
             initialTasks,
-            goalTemplate: goalTemplateFromBody ?? null,
+            goals,
+            roleAdapterOverrides,
             model: null,
             remoteCompanyDir,
             startCeo: false,
@@ -171,6 +182,8 @@ export function provisionApiPlugin(): Plugin {
             projectId: result.projectId,
             agentIds: Object.fromEntries(result.agentIds),
             issueIds: result.issueIds,
+            goalResults: result.goalResults,
+            goalErrors: result.goalErrors,
           });
         } catch (err: unknown) {
           const message = err instanceof Error ? err.message : String(err);

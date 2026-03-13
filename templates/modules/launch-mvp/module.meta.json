@@ -1,0 +1,93 @@
+{
+  "name": "launch-mvp",
+  "title": "Launch MVP",
+  "goal": {
+    "title": "Launch MVP",
+    "description": "Ship a minimal viable product. Define scope tightly, build the core feature, deploy it, and iterate based on feedback. The goal is a working product in users' hands, not a polished one.",
+    "project": true,
+    "milestones": [
+      {
+        "id": "define-scope",
+        "title": "Define scope",
+        "description": "Agree on what the MVP includes and — critically — what it does not.",
+        "completionCriteria": "A written scope document exists with explicit in/out-of-scope lists, approved by the team."
+      },
+      {
+        "id": "build-core",
+        "title": "Build core feature",
+        "description": "Implement the single most important feature that delivers value to users.",
+        "completionCriteria": "Core feature works end-to-end in a local development environment."
+      },
+      {
+        "id": "deploy",
+        "title": "Deploy",
+        "description": "Get the MVP running in a production-like environment accessible to users.",
+        "completionCriteria": "Application is deployed, accessible via URL, and basic health checks pass."
+      },
+      {
+        "id": "iterate",
+        "title": "Iterate",
+        "description": "Collect feedback and ship improvements. Fix critical bugs, improve UX, add missing essentials.",
+        "completionCriteria": "At least one round of user feedback has been incorporated and deployed."
+      }
+    ],
+    "issues": [
+      {
+        "title": "Create project repository and initial structure",
+        "description": "Initialize the repository with README, .gitignore, package.json (or equivalent), and a basic project structure. Push to main.",
+        "priority": "high",
+        "milestone": "define-scope",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Write MVP scope document",
+        "description": "Draft a scope document that defines what the MVP includes and excludes. List the core user journey, key features (max 3), and explicit non-goals. Get team sign-off.",
+        "priority": "high",
+        "milestone": "define-scope",
+        "assignTo": "ceo"
+      },
+      {
+        "title": "Set up CI pipeline",
+        "description": "Add a CI workflow (GitHub Actions or equivalent) that runs lint and tests on every push. Keep it simple — single job, no matrix builds.",
+        "priority": "medium",
+        "milestone": "build-core",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Implement core feature",
+        "description": "Build the primary feature defined in the scope document. Focus on functionality over polish. Write tests for critical paths.",
+        "priority": "high",
+        "milestone": "build-core",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Deploy to production",
+        "description": "Set up the production environment and deploy the application. Configure DNS, TLS, and basic monitoring/alerting. Verify the deployment with a smoke test.",
+        "priority": "high",
+        "milestone": "deploy",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Write basic user documentation",
+        "description": "Create a getting-started guide that covers the core user journey. Keep it short — one page maximum. Include screenshots or examples where helpful.",
+        "priority": "medium",
+        "milestone": "deploy",
+        "assignTo": "engineer"
+      },
+      {
+        "title": "Collect and triage initial feedback",
+        "description": "Gather feedback from early users. Categorize into: critical bugs, UX issues, and feature requests. Prioritize critical bugs for immediate fix.",
+        "priority": "medium",
+        "milestone": "iterate",
+        "assignTo": "ceo"
+      },
+      {
+        "title": "Fix critical bugs from feedback",
+        "description": "Address critical bugs identified during the feedback round. Each fix should include a regression test.",
+        "priority": "high",
+        "milestone": "iterate",
+        "assignTo": "engineer"
+      }
+    ]
+  }
+}

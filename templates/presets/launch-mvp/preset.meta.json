@@ -1,0 +1,14 @@
+{
+  "name": "launch-mvp",
+  "description": "Ship a minimal viable product. Tight scope, core feature first, deploy fast, iterate from feedback. CEO + Engineer with automatic task management.",
+  "constraints": [
+    "Intentionally minimal — no PR review, no design roles. Add quality modules after the MVP is live."
+  ],
+  "modules": [
+    "launch-mvp",
+    "github-repo",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}

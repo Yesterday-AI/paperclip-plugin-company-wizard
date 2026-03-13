@@ -23,7 +23,7 @@
 ## Next
 
 - [ ] Remaining agent configurations available in the wizard
-- [ ] Generate multiple goals/projects by the wizard / Add multiple goals/projects (non-wizard)
+- [ ] Generate multiple goals/projects by the wizard / Add multiple goals/projects (non-wizard) _(partially addressed: inline goals from presets/modules are now auto-collected and provisioned; manual multi-goal UI not yet built)_
 - [ ] Generate additional issues by the wizard, if applicable (the current ones are all predefined in the modules)
 - [ ] Live preview of assembled markdown files during wizard
 - [ ] Agent heartbeat rate configuration (predefined values for each role)

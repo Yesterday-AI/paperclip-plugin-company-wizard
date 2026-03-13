@@ -6,25 +6,36 @@ All notable changes to Clipper are documented here.
 
 ### Added
 
-- **Goal templates** — 3 starter goal templates (`launch-mvp`, `setup-cicd`, `build-api`) with pre-defined milestones and issues. New `--goal-template` flag for headless mode. Interactive wizard includes a goal template selection step after modules.
-    - `templates/goals/` directory with `schema.json` for validation.
-    - `loadGoals()` loader with full validation (kebab-case milestone IDs, issue-milestone cross-references, priority values).
-    - Goal template issues provisioned via API with milestone and priority metadata.
-- **`issuePrefix` in provision result** — `provisionCompany()` now returns the Paperclip-generated `issuePrefix` (e.g., `ASD`) alongside `companyId`, enabling deep links to the company dashboard.
-- **Provision test suite** — Unit tests for `provisionCompany()` covering goal template creation, priority mapping, partial failure handling, and error paths.
+- **Inline goals** — Goals now live inside presets (`goals: []`) or modules (`goal: {}`), replacing the separate `templates/goals/` directory. Goals are collected automatically from the selected preset and modules — no manual selection step needed.
+    - Presets `launch-mvp`, `build-api`, and `website-relaunch` — thin bundles that reference goal-carrying modules.
+    - Modules `ci-cd`, `website-relaunch`, `build-api`, and `launch-mvp` carry module-specific inline goals.
+    - `collectGoals()` merges goals from preset + selected modules at runtime.
+    - `modulesWithActiveGoals()` identifies modules whose tasks should be skipped when their goal is active.
+- **Hierarchical project resolution** — Inline goals support `project: boolean` (default true) to create dedicated Paperclip projects. Milestones can also have `project: true`. Issues resolve to the nearest ancestor project: milestone project → goal project → main project.
+- **`assignTo: "user"` support** — Issues with `assignTo: "user"` are assigned to the board user (`assigneeUserId`), not left unassigned. For `local_trusted` instances the user is `local-board`; for authenticated instances the signed-in user's ID is resolved during `connect()`.
+- **Website relaunch module** — `website-relaunch` module with `design-ingestion` and `site-audit` shared skills (with ui-designer role-specific override for design-focused audits), 5 milestones, and 11 issues covering the full relaunch lifecycle from audit through go-live.
+- **Build API module** — `build-api` module with `api-design` skill, 4 milestones (schema → endpoints → auth → docs), and 8 issues. Requires `github-repo`.
+- **Launch MVP module** — `launch-mvp` module with 4 milestones (scope → build → deploy → iterate) and 8 issues. No capabilities — pure project lifecycle structure.
+- **Website relaunch preset** — `website-relaunch` preset bundling the module with github-repo, pr-review, backlog, auto-assign, stall-detection, UI Designer, and Product Owner.
+- **`issuePrefix` in provision result** — `provisionCompany()` now returns the Paperclip-generated `issuePrefix` alongside `companyId`.
+- **Provision test suite** — Unit tests for `provisionCompany()` covering inline goals, project hierarchy, milestones, partial failures, user tasks, and multiple goals.
 
-### Fixed
+- **Module-level `adapterOverrides`** — Modules can declare `"adapterOverrides": { "chrome": true }` (or any adapter key) in `module.meta.json`. During assembly, overrides are collected per role (for all capability owners in that module). During provisioning, overrides are merged into each agent's `adapterConfig`. This keeps role templates clean — Chrome, model overrides, etc. are applied only when the module that needs them is active.
+- **`site-audit` capability expanded** — Owner chain now includes `ui-designer` as primary (design/content-focused audit), with `engineer` as fallback (technical audit). UI Designer gets a role-specific skill override for visual and content analysis. UI Designer role has `"chrome": true` in its base adapter config (visual analysis is inherent to the role). Engineer gets Chrome via the `website-relaunch` module's `adapterOverrides` only when that module is selected.
+- **Explicit PDF visual analysis instructions** — `design-ingestion` skill now documents exactly how to read design files: Read tool with `pages` parameter for PDFs, direct Read for images. Includes fallback CLI tools (`markitdown`, `docling`, `pdffonts`, `exiftool`) for supplementing visual analysis with extracted metadata.
+- **Separate visual/UX audit** — Website relaunch module now has two discovery issues: "Technical site audit" (engineer — URLs, tech stack, SEO) and "Visual and UX audit" (ui-designer — layout patterns, design tokens, content quality, accessibility, migration recommendations).
 
-- **`--goal-template` flag ignored in interactive mode** — The flag was parsed but never passed to the `App` component. Now wired through as `initialGoalTemplate` prop and resolved from loaded templates on mount.
-- **`--goal-template` with invalid name silently skipped** — When the flag didn't match any loaded template, the wizard jumped to summary without applying it. Now falls through to the goal template selection step.
-- **`--preset` shortcut regression** — Passing `--preset` in interactive mode briefly caused extra steps (goal templates + roles) before summary. Now correctly skips to goal template selection (which auto-skips if empty), then straight to summary — while preserving the full role customization step in the manual wizard flow.
-- **BOOTSTRAP.md missing goal template step** — The "Get Started" manual instructions didn't mention creating the starter goal. Now includes a numbered step when a goal template is present.
-- **Headless `goalTemplate` coupling** — Headless provisioning used `assemblyResult.goalTemplate` (a pass-through of the input) instead of the already-resolved `selectedGoalTemplate`. Removed the fragile indirection.
-- **`assembleCompany` return value** — Removed `goalTemplate` from the return object since it was an unchanged echo of the input parameter. Callers already have the value.
-- **`StepGoalTemplates` unstable `useEffect`** — `onComplete` (an inline arrow from the parent) was in the dependency array, causing potential re-trigger loops. Removed from deps since `skip` is stable for the component's lifetime.
-- **Unused `companyDir` prop on `StepProject`** — Dead prop left from earlier refactoring. Removed from `App` render.
-- **`dist/cli.mjs` out of sync** — The committed bundle had stale dependency arrays that didn't match source. Rebuilt.
-- **Goal template breadcrumbs** — `GOAL_TEMPLATES` step now has its own `prev.goalTemplates` context showing company, preset, and modules.
+### Changed
+
+- **Wizard simplified** — Removed the GOAL_TEMPLATES step. Goals are derived automatically from preset + module selections. Wizard is now 7 steps (was 8): NAME → GOAL → PROJECT → PRESET → MODULES → ROLES → SUMMARY.
+- **`--goal-template` flag removed** — No longer needed since goals are inline in presets and modules.
+- **Module task skipping** — When a module has an active inline goal, its `tasks[]` are skipped during assembly and provisioning. The goal's issues are the comprehensive replacement, preventing duplicate work.
+
+### Removed
+
+- `templates/goals/` directory — goal templates dissolved into presets and modules.
+- `loadGoals()` function — replaced by `collectGoals()`.
+- `StepGoalTemplates` component — no longer needed.
 
 ## [0.3.7] — 2026-03-12
 

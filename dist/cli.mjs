@@ -9639,14 +9639,14 @@ var require_react_reconciler_production = __commonJS({
       }
       var exports2 = {};
       "use strict";
-      var React32 = require_react(), Scheduler2 = require_scheduler(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
+      var React31 = require_react(), Scheduler2 = require_scheduler(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
       Symbol.for("react.scope");
       var REACT_ACTIVITY_TYPE = Symbol.for("react.activity");
       Symbol.for("react.legacy_hidden");
       Symbol.for("react.tracing_marker");
       var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
       Symbol.for("react.view_transition");
-      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React32.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, rendererVersion = $$$config.rendererVersion, rendererPackageName = $$$config.rendererPackageName, extraDevToolsConfig = $$$config.extraDevToolsConfig, getPublicInstance = $$$config.getPublicInstance, getRootHostContext = $$$config.getRootHostContext, getChildHostContext = $$$config.getChildHostContext, prepareForCommit = $$$config.prepareForCommit, resetAfterCommit = $$$config.resetAfterCommit, createInstance = $$$config.createInstance;
+      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React31.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, rendererVersion = $$$config.rendererVersion, rendererPackageName = $$$config.rendererPackageName, extraDevToolsConfig = $$$config.extraDevToolsConfig, getPublicInstance = $$$config.getPublicInstance, getRootHostContext = $$$config.getRootHostContext, getChildHostContext = $$$config.getChildHostContext, prepareForCommit = $$$config.prepareForCommit, resetAfterCommit = $$$config.resetAfterCommit, createInstance = $$$config.createInstance;
       $$$config.cloneMutableInstance;
       var appendInitialChild = $$$config.appendInitialChild, finalizeInitialChildren = $$$config.finalizeInitialChildren, shouldSetTextContent = $$$config.shouldSetTextContent, createTextInstance = $$$config.createTextInstance;
       $$$config.cloneMutableTextInstance;
@@ -22239,14 +22239,14 @@ var require_react_reconciler_development = __commonJS({
       }
       var exports2 = {};
       "use strict";
-      var React32 = require_react(), Scheduler2 = require_scheduler(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
+      var React31 = require_react(), Scheduler2 = require_scheduler(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
       Symbol.for("react.scope");
       var REACT_ACTIVITY_TYPE = Symbol.for("react.activity");
       Symbol.for("react.legacy_hidden");
       Symbol.for("react.tracing_marker");
       var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
       Symbol.for("react.view_transition");
-      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React32.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, rendererVersion = $$$config.rendererVersion, rendererPackageName = $$$config.rendererPackageName, extraDevToolsConfig = $$$config.extraDevToolsConfig, getPublicInstance = $$$config.getPublicInstance, getRootHostContext = $$$config.getRootHostContext, getChildHostContext = $$$config.getChildHostContext, prepareForCommit = $$$config.prepareForCommit, resetAfterCommit = $$$config.resetAfterCommit, createInstance = $$$config.createInstance;
+      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React31.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, rendererVersion = $$$config.rendererVersion, rendererPackageName = $$$config.rendererPackageName, extraDevToolsConfig = $$$config.extraDevToolsConfig, getPublicInstance = $$$config.getPublicInstance, getRootHostContext = $$$config.getRootHostContext, getChildHostContext = $$$config.getChildHostContext, prepareForCommit = $$$config.prepareForCommit, resetAfterCommit = $$$config.resetAfterCommit, createInstance = $$$config.createInstance;
       $$$config.cloneMutableInstance;
       var appendInitialChild = $$$config.appendInitialChild, finalizeInitialChildren = $$$config.finalizeInitialChildren, shouldSetTextContent = $$$config.shouldSetTextContent, createTextInstance = $$$config.createTextInstance;
       $$$config.cloneMutableTextInstance;
@@ -28584,18 +28584,18 @@ var require_react_jsx_runtime_development = __commonJS({
       function isValidElement(object) {
         return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
       }
-      var React32 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React32.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+      var React31 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React31.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
         return null;
       };
-      React32 = {
+      React31 = {
         react_stack_bottom_frame: function(callStackForError) {
           return callStackForError();
         }
       };
       var specialPropKeyWarningShown;
       var didWarnAboutElementRef = {};
-      var unknownOwnerDebugStack = React32.react_stack_bottom_frame.bind(
-        React32,
+      var unknownOwnerDebugStack = React31.react_stack_bottom_frame.bind(
+        React31,
         UnknownOwner
       )();
       var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
@@ -30285,7 +30285,7 @@ var require_cli_spinners = __commonJS({
 });
 
 // src/cli.jsx
-var import_react48 = __toESM(require_react(), 1);
+var import_react47 = __toESM(require_react(), 1);
 
 // node_modules/ink/build/render.js
 import { Stream } from "node:stream";
@@ -38448,7 +38448,7 @@ import { dirname, join as join7, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // src/app.jsx
-var import_react47 = __toESM(require_react(), 1);
+var import_react46 = __toESM(require_react(), 1);
 
 // src/components/Header.jsx
 var import_react29 = __toESM(require_react(), 1);
@@ -39492,62 +39492,9 @@ function StepRoles({ roles, preselected, onComplete }) {
   );
 }
 
-// src/components/StepGoalTemplates.jsx
+// src/components/StepSummary.jsx
 var import_react41 = __toESM(require_react(), 1);
 var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
-function StepGoalTemplates({ goalTemplates, onComplete }) {
-  const [highlighted, setHighlighted] = (0, import_react41.useState)(null);
-  const skip = goalTemplates.length === 0;
-  (0, import_react41.useEffect)(() => {
-    if (skip) onComplete(null);
-  }, [skip]);
-  if (skip) return null;
-  const items = [
-    {
-      key: "__skip__",
-      label: "Skip",
-      value: null
-    },
-    ...goalTemplates.map((g) => ({
-      key: g.name,
-      label: g.title,
-      value: g
-    }))
-  ];
-  const detail = highlighted?.description || "";
-  const issueCount = highlighted?.issues?.length || 0;
-  const milestoneCount = highlighted?.milestones?.length || 0;
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { flexDirection: "column", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { color: "cyan", bold: true, children: [
-        "?",
-        " "
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { bold: true, children: "Choose a starter goal (optional)" })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Box_default, { marginLeft: 2, marginTop: 1, flexDirection: "column", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
-      SelectInput_default,
-      {
-        items,
-        onSelect: (item) => onComplete(item.value),
-        onHighlight: (item) => setHighlighted(item.value),
-        itemComponent: ({ isSelected, label }) => /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { color: isSelected ? "cyan" : void 0, bold: isSelected, children: label })
-      }
-    ) }),
-    detail ? /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { marginLeft: 2, marginTop: 1, flexDirection: "column", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: detail }),
-      milestoneCount > 0 || issueCount > 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { dimColor: true, children: [
-        milestoneCount > 0 ? `${milestoneCount} milestones` : "",
-        milestoneCount > 0 && issueCount > 0 ? ", " : "",
-        issueCount > 0 ? `${issueCount} starter issues` : ""
-      ] }) : null
-    ] }) : null
-  ] });
-}
-
-// src/components/StepSummary.jsx
-var import_react42 = __toESM(require_react(), 1);
-var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
 function StepSummary({
   companyName,
   goal,
@@ -39557,7 +39504,7 @@ function StepSummary({
   roleNames,
   modules,
   capabilities,
-  goalTemplate,
+  goals = [],
   outputDir,
   apiEnabled,
   dryRun,
@@ -39579,74 +39526,75 @@ function StepSummary({
     name: m.name,
     needs: m.activatesWithRoles
   }));
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { flexDirection: "column", borderStyle: "round", borderColor: "cyan", paddingX: 2, paddingY: 1, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { bold: true, color: "cyan", children: "Summary" }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { children: " " }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Company", value: companyName }),
-      goal?.title ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Goal", value: goal.title }) : null,
-      goal?.description ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "", value: goal.description, dim: true }) : null,
-      project?.name ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Project", value: project.name }) : null,
-      project?.repoUrl ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Repo", value: project.repoUrl, dim: true }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Preset", value: presetName || "custom" }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Modules", value: moduleNames.length > 0 ? moduleNames.join(", ") : "none" }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Roles", value: allRoleNames.map((r) => formatRoleName(r)).join(", ") }),
-      goalTemplate ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { flexDirection: "column", borderStyle: "round", borderColor: "cyan", paddingX: 2, paddingY: 1, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { bold: true, color: "cyan", children: "Summary" }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { children: " " }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Company", value: companyName }),
+      goal?.title ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Goal", value: goal.title }) : null,
+      goal?.description ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "", value: goal.description, dim: true }) : null,
+      project?.name ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Project", value: project.name }) : null,
+      project?.repoUrl ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Repo", value: project.repoUrl, dim: true }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Preset", value: presetName || "custom" }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Modules", value: moduleNames.length > 0 ? moduleNames.join(", ") : "none" }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Roles", value: allRoleNames.map((r) => formatRoleName(r)).join(", ") }),
+      goals.length > 0 ? goals.map((g, i) => /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
         Row,
         {
-          label: "Starter",
-          value: `${goalTemplate.title} (${goalTemplate.issues?.length || 0} issues)`
-        }
-      ) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "Output", value: outputDir, dim: true }),
-      apiEnabled ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Row, { label: "API", value: "enabled", color: "green" }) : null
+          label: i === 0 ? "Goals" : "",
+          value: `${g.title} (${g.issues?.length || 0} issues)`
+        },
+        i
+      )) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "Output", value: outputDir, dim: true }),
+      apiEnabled ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Row, { label: "API", value: "enabled", color: "green" }) : null
     ] }),
-    capabilities.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { flexDirection: "column", marginLeft: 1, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { dimColor: true, children: "Capability resolution:" }),
-      capabilities.map((cap) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Text, { dimColor: true, children: [
+    capabilities.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { flexDirection: "column", marginLeft: 1, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: "Capability resolution:" }),
+      capabilities.map((cap) => /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { dimColor: true, children: [
         "  ",
         cap.skill,
         " ",
         "->",
         " ",
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { color: "cyan", children: cap.primary }),
-        cap.fallbacks.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Text, { dimColor: true, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { color: "cyan", children: cap.primary }),
+        cap.fallbacks.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { dimColor: true, children: [
           " (fallback: ",
           cap.fallbacks.join(", "),
           ")"
         ] }) : null
       ] }, cap.skill))
     ] }) : null,
-    skippedModules.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Box_default, { marginLeft: 1, flexDirection: "column", children: skippedModules.map((m) => /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Text, { color: "yellow", children: [
+    skippedModules.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Box_default, { marginLeft: 1, flexDirection: "column", children: skippedModules.map((m) => /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Text, { color: "yellow", children: [
       "! ",
       m.name,
       " will be skipped (needs ",
       m.needs.join(" or "),
       ")"
     ] }, m.name)) }) : null,
-    dryRun ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Box_default, { marginLeft: 1, children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { dimColor: true, children: "Dry run \u2014 press enter to exit, no files will be written." }) }) : /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { marginLeft: 1, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { bold: true, children: "Create? " }),
-      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { dimColor: true, children: "y/n" })
+    dryRun ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Box_default, { marginLeft: 1, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: "Dry run \u2014 press enter to exit, no files will be written." }) }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { marginLeft: 1, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { bold: true, children: "Create? " }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: "y/n" })
     ] })
   ] });
 }
 function Row({ label, value, dim, color }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { children: [
-    label ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { dimColor: true, children: label.padEnd(10) }) : /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { children: "          " }),
-    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { color: color || (dim ? void 0 : "white"), dimColor: dim, children: value })
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Box_default, { children: [
+    label ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { dimColor: true, children: label.padEnd(10) }) : /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { children: "          " }),
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Text, { color: color || (dim ? void 0 : "white"), dimColor: dim, children: value })
   ] });
 }
 
 // src/components/StepAssemble.jsx
-var import_react44 = __toESM(require_react(), 1);
+var import_react43 = __toESM(require_react(), 1);
 
 // node_modules/ink-spinner/build/index.js
-var import_react43 = __toESM(require_react(), 1);
+var import_react42 = __toESM(require_react(), 1);
 var import_cli_spinners = __toESM(require_cli_spinners(), 1);
 function Spinner({ type = "dots" }) {
-  const [frame, setFrame] = (0, import_react43.useState)(0);
+  const [frame, setFrame] = (0, import_react42.useState)(0);
   const spinner = import_cli_spinners.default[type];
-  (0, import_react43.useEffect)(() => {
+  (0, import_react42.useEffect)(() => {
     const timer = setInterval(() => {
       setFrame((previousFrame) => {
         const isLastFrame = previousFrame === spinner.frames.length - 1;
@@ -39657,20 +39605,24 @@ function Spinner({ type = "dots" }) {
       clearInterval(timer);
     };
   }, [spinner]);
-  return import_react43.default.createElement(Text, null, spinner.frames[frame]);
+  return import_react42.default.createElement(Text, null, spinner.frames[frame]);
 }
 var build_default2 = Spinner;
 
 // src/logic/assemble.js
 import {
-  access,
+  access as access2,
   appendFile,
   copyFile,
   mkdir,
-  readdir,
-  readFile,
+  readdir as readdir2,
+  readFile as readFile2,
   writeFile
 } from "node:fs/promises";
+import { join as join2 } from "node:path";
+
+// src/logic/load-templates.js
+import { access, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 async function exists(p) {
   try {
@@ -39680,13 +39632,156 @@ async function exists(p) {
     return false;
   }
 }
+async function readJson(p) {
+  if (!await exists(p)) return null;
+  return JSON.parse(await readFile(p, "utf-8"));
+}
+async function loadPresets(templatesDir) {
+  const presetsDir = join(templatesDir, "presets");
+  const presets = [];
+  if (!await exists(presetsDir)) return presets;
+  const dirs = await readdir(presetsDir, { withFileTypes: true });
+  for (const dir of dirs) {
+    if (!dir.isDirectory()) continue;
+    const presetFile = join(presetsDir, dir.name, "preset.meta.json");
+    if (await exists(presetFile)) {
+      const preset = JSON.parse(await readFile(presetFile, "utf-8"));
+      if (preset.goals) {
+        for (const goal of preset.goals) {
+          validateGoal(goal, `preset "${preset.name}"`);
+        }
+      }
+      presets.push(preset);
+    }
+  }
+  return presets;
+}
+async function loadModules(templatesDir) {
+  const modulesDir = join(templatesDir, "modules");
+  const modules = [];
+  if (!await exists(modulesDir)) return modules;
+  const dirs = await readdir(modulesDir, { withFileTypes: true });
+  for (const dir of dirs) {
+    if (!dir.isDirectory()) continue;
+    const moduleJson = await readJson(join(modulesDir, dir.name, "module.meta.json"));
+    const readmePath = join(modulesDir, dir.name, "README.md");
+    let description = "";
+    if (await exists(readmePath)) {
+      const content = await readFile(readmePath, "utf-8");
+      const descLine = content.split("\n").find((l) => l.length > 0 && !l.startsWith("#"));
+      description = descLine?.trim() || "";
+    }
+    const mod = { name: dir.name, description, ...moduleJson || {} };
+    if (mod.goal) {
+      validateGoal(mod.goal, `module "${mod.name}"`);
+    }
+    modules.push(mod);
+  }
+  return modules;
+}
+async function loadRoles(templatesDir) {
+  const rolesDir = join(templatesDir, "roles");
+  const roles = [];
+  if (!await exists(rolesDir)) return roles;
+  const dirs = await readdir(rolesDir, { withFileTypes: true });
+  for (const dir of dirs) {
+    if (!dir.isDirectory()) continue;
+    const roleJson = await readJson(join(rolesDir, dir.name, "role.meta.json"));
+    if (roleJson) {
+      roles.push(roleJson);
+    }
+  }
+  return roles;
+}
+var VALID_PRIORITIES = /* @__PURE__ */ new Set(["critical", "high", "medium", "low"]);
+var MILESTONE_ID_RE = /^[a-z][a-z0-9-]*$/;
+function validateGoal(goal, sourceName) {
+  if (!goal.title || typeof goal.title !== "string") {
+    throw new Error(`Goal in ${sourceName}: missing or invalid "title"`);
+  }
+  if (!goal.description || typeof goal.description !== "string") {
+    throw new Error(`Goal in ${sourceName}: missing or invalid "description"`);
+  }
+  const milestoneIds = /* @__PURE__ */ new Set();
+  if (goal.milestones) {
+    if (!Array.isArray(goal.milestones)) {
+      throw new Error(`Goal in ${sourceName}: "milestones" must be an array`);
+    }
+    for (const m of goal.milestones) {
+      if (!m.id || typeof m.id !== "string" || !MILESTONE_ID_RE.test(m.id)) {
+        throw new Error(
+          `Goal in ${sourceName}: milestone "id" must be kebab-case (got "${m.id}")`
+        );
+      }
+      if (milestoneIds.has(m.id)) {
+        throw new Error(`Goal in ${sourceName}: duplicate milestone id "${m.id}"`);
+      }
+      milestoneIds.add(m.id);
+      if (!m.title || typeof m.title !== "string") {
+        throw new Error(`Goal in ${sourceName}: milestone "${m.id}" missing "title"`);
+      }
+    }
+  }
+  if (goal.issues) {
+    if (!Array.isArray(goal.issues)) {
+      throw new Error(`Goal in ${sourceName}: "issues" must be an array`);
+    }
+    for (let i = 0; i < goal.issues.length; i++) {
+      const issue = goal.issues[i];
+      if (!issue.title || typeof issue.title !== "string") {
+        throw new Error(`Goal in ${sourceName}: issue[${i}] missing "title"`);
+      }
+      if (issue.priority && !VALID_PRIORITIES.has(issue.priority)) {
+        throw new Error(
+          `Goal in ${sourceName}: issue[${i}] invalid priority "${issue.priority}"`
+        );
+      }
+      if (issue.milestone && !milestoneIds.has(issue.milestone)) {
+        throw new Error(
+          `Goal in ${sourceName}: issue[${i}] references unknown milestone "${issue.milestone}"`
+        );
+      }
+    }
+  }
+}
+function collectGoals(preset, modules, selectedModules) {
+  const goals = [];
+  if (preset?.goals) {
+    for (const goal of preset.goals) {
+      goals.push({ ...goal, _source: `preset:${preset.name}` });
+    }
+  }
+  for (const mod of modules) {
+    if (!selectedModules.has(mod.name)) continue;
+    if (!mod.goal) continue;
+    goals.push({ ...mod.goal, _source: `module:${mod.name}`, _module: mod.name });
+  }
+  return goals;
+}
+function modulesWithActiveGoals(goals) {
+  const names = /* @__PURE__ */ new Set();
+  for (const g of goals) {
+    if (g._module) names.add(g._module);
+  }
+  return names;
+}
+
+// src/logic/assemble.js
+async function exists2(p) {
+  try {
+    await access2(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
 async function copyDir(src, dest, { skipExt } = {}) {
   await mkdir(dest, { recursive: true });
-  const entries = await readdir(src, { withFileTypes: true });
+  const entries = await readdir2(src, { withFileTypes: true });
   for (const entry of entries) {
     if (skipExt && entry.name.endsWith(skipExt)) continue;
-    const srcPath = join(src, entry.name);
-    const destPath = join(dest, entry.name);
+    const srcPath = join2(src, entry.name);
+    const destPath = join2(dest, entry.name);
     if (entry.isDirectory()) {
       await copyDir(srcPath, destPath, { skipExt });
     } else {
@@ -39695,13 +39790,13 @@ async function copyDir(src, dest, { skipExt } = {}) {
   }
 }
 async function appendToFile(filePath, content) {
-  if (await exists(filePath)) {
+  if (await exists2(filePath)) {
     await appendFile(filePath, content);
   }
 }
-async function readJson(p) {
-  if (!await exists(p)) return null;
-  return JSON.parse(await readFile(p, "utf-8"));
+async function readJson2(p) {
+  if (!await exists2(p)) return null;
+  return JSON.parse(await readFile2(p, "utf-8"));
 }
 function toPascalCase(name) {
   return name.replace(/[^a-zA-Z0-9\s\-_]/g, "").split(/[\s\-_]+/).filter(Boolean).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("");
@@ -39712,7 +39807,7 @@ async function assembleCompany({
   project = {},
   moduleNames,
   extraRoleNames,
-  goalTemplate = null,
+  goals = [],
   outputDir,
   templatesDir,
   onProgress = () => {
@@ -39720,20 +39815,20 @@ async function assembleCompany({
 }) {
   const baseDirName = toPascalCase(companyName);
   let dirName = baseDirName;
-  let companyDir = join(outputDir, dirName);
-  if (await exists(companyDir)) {
+  let companyDir = join2(outputDir, dirName);
+  if (await exists2(companyDir)) {
     let idx = 2;
-    while (await exists(join(outputDir, `${baseDirName}${idx}`))) idx++;
+    while (await exists2(join2(outputDir, `${baseDirName}${idx}`))) idx++;
     dirName = `${baseDirName}${idx}`;
-    companyDir = join(outputDir, dirName);
+    companyDir = join2(outputDir, dirName);
   }
-  const rolesDir = join(templatesDir, "roles");
+  const rolesDir = join2(templatesDir, "roles");
   const baseRoleNames = [];
-  if (await exists(rolesDir)) {
-    const roleDirs = await readdir(rolesDir, { withFileTypes: true });
+  if (await exists2(rolesDir)) {
+    const roleDirs = await readdir2(rolesDir, { withFileTypes: true });
     for (const dir of roleDirs) {
       if (!dir.isDirectory()) continue;
-      const roleMeta = await readJson(join(rolesDir, dir.name, "role.meta.json"));
+      const roleMeta = await readJson2(join2(rolesDir, dir.name, "role.meta.json"));
       if (roleMeta?.base) {
         baseRoleNames.push(dir.name);
       }
@@ -39742,9 +39837,9 @@ async function assembleCompany({
   const allRoles = /* @__PURE__ */ new Set([...baseRoleNames, ...extraRoleNames]);
   const selectedSet = new Set(moduleNames);
   for (const moduleName of moduleNames) {
-    const moduleDir = join(templatesDir, "modules", moduleName);
-    if (!await exists(moduleDir)) continue;
-    const moduleJson = await readJson(join(moduleDir, "module.meta.json"));
+    const moduleDir = join2(templatesDir, "modules", moduleName);
+    if (!await exists2(moduleDir)) continue;
+    const moduleJson = await readJson2(join2(moduleDir, "module.meta.json"));
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));
       if (!hasActivatingRole) continue;
@@ -39757,44 +39852,46 @@ async function assembleCompany({
     }
   }
   for (const roleName of baseRoleNames) {
-    const roleSrc = join(rolesDir, roleName);
-    const roleDest = join(companyDir, "agents", roleName);
+    const roleSrc = join2(rolesDir, roleName);
+    const roleDest = join2(companyDir, "agents", roleName);
     await mkdir(roleDest, { recursive: true });
-    const entries = await readdir(roleSrc, { withFileTypes: true });
+    const entries = await readdir2(roleSrc, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        await copyDir(join(roleSrc, entry.name), join(roleDest, entry.name), {
+        await copyDir(join2(roleSrc, entry.name), join2(roleDest, entry.name), {
           skipExt: ".meta.json"
         });
       } else if (!entry.name.endsWith(".meta.json")) {
-        await copyFile(join(roleSrc, entry.name), join(roleDest, entry.name));
+        await copyFile(join2(roleSrc, entry.name), join2(roleDest, entry.name));
       }
     }
     onProgress(`+ agents/${roleName}/ (base)`);
   }
   for (const roleName of extraRoleNames) {
-    const roleDir = join(rolesDir, roleName);
-    if (!await exists(roleDir)) {
+    const roleDir = join2(rolesDir, roleName);
+    if (!await exists2(roleDir)) {
       onProgress(`! role ${roleName} not found, skipping`);
       continue;
     }
-    const destDir = join(companyDir, "agents", roleName);
+    const destDir = join2(companyDir, "agents", roleName);
     await mkdir(destDir, { recursive: true });
-    const entries = await readdir(roleDir, { withFileTypes: true });
+    const entries = await readdir2(roleDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory() || !entry.name.endsWith(".md")) continue;
-      await copyFile(join(roleDir, entry.name), join(destDir, entry.name));
+      await copyFile(join2(roleDir, entry.name), join2(destDir, entry.name));
     }
     onProgress(`+ agents/${roleName}/ (role)`);
   }
   const initialTasks = [];
+  const roleAdapterOverrides = /* @__PURE__ */ new Map();
+  const skipTaskModules = modulesWithActiveGoals(goals);
   for (const moduleName of moduleNames) {
-    const moduleDir = join(templatesDir, "modules", moduleName);
-    if (!await exists(moduleDir)) {
+    const moduleDir = join2(templatesDir, "modules", moduleName);
+    if (!await exists2(moduleDir)) {
       onProgress(`! module ${moduleName} not found, skipping`);
       continue;
     }
-    const moduleJson = await readJson(join(moduleDir, "module.meta.json"));
+    const moduleJson = await readJson2(join2(moduleDir, "module.meta.json"));
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));
       if (!hasActivatingRole) {
@@ -39802,7 +39899,7 @@ async function assembleCompany({
         continue;
       }
     }
-    if (moduleJson?.tasks?.length) {
+    if (moduleJson?.tasks?.length && !skipTaskModules.has(moduleName)) {
       for (const task of moduleJson.tasks) {
         let assignee = task.assignTo;
         if (assignee?.startsWith("capability:")) {
@@ -39815,10 +39912,10 @@ async function assembleCompany({
         initialTasks.push({ ...task, assignTo: assignee, module: moduleName });
       }
     }
-    const docsDir = join(moduleDir, "docs");
-    if (await exists(docsDir)) {
-      await copyDir(docsDir, join(companyDir, "docs"));
-      const docs = await readdir(docsDir);
+    const docsDir = join2(moduleDir, "docs");
+    if (await exists2(docsDir)) {
+      await copyDir(docsDir, join2(companyDir, "docs"));
+      const docs = await readdir2(docsDir);
       for (const doc of docs) {
         onProgress(`+ docs/${doc} (${moduleName})`);
       }
@@ -39832,23 +39929,36 @@ async function assembleCompany({
         }
       }
     }
-    const sharedSkillsDir = join(moduleDir, "skills");
-    const agentsDir = join(moduleDir, "agents");
+    if (moduleJson?.adapterOverrides && capabilityOwners.size > 0) {
+      const ownerRoles = /* @__PURE__ */ new Set();
+      for (const { primary, cap } of capabilityOwners.values()) {
+        ownerRoles.add(primary);
+        for (const r of cap.owners) {
+          if (allRoles.has(r)) ownerRoles.add(r);
+        }
+      }
+      for (const role of ownerRoles) {
+        const existing = roleAdapterOverrides.get(role) || {};
+        roleAdapterOverrides.set(role, { ...existing, ...moduleJson.adapterOverrides });
+      }
+    }
+    const sharedSkillsDir = join2(moduleDir, "skills");
+    const agentsDir = join2(moduleDir, "agents");
     async function resolveSkillFile(roleName, fileName) {
-      const roleSpecific = join(agentsDir, roleName, "skills", fileName);
-      if (await exists(roleSpecific)) return { path: roleSpecific, source: "role" };
-      const shared = join(sharedSkillsDir, fileName);
-      if (await exists(shared)) return { path: shared, source: "shared" };
+      const roleSpecific = join2(agentsDir, roleName, "skills", fileName);
+      if (await exists2(roleSpecific)) return { path: roleSpecific, source: "role" };
+      const shared = join2(sharedSkillsDir, fileName);
+      if (await exists2(shared)) return { path: shared, source: "shared" };
       return null;
     }
     async function installSkill(roleName, fileName, label) {
       const resolved = await resolveSkillFile(roleName, fileName);
       if (!resolved) return false;
-      const destSkillsDir = join(companyDir, "agents", roleName, "skills");
+      const destSkillsDir = join2(companyDir, "agents", roleName, "skills");
       await mkdir(destSkillsDir, { recursive: true });
-      await copyFile(resolved.path, join(destSkillsDir, fileName));
+      await copyFile(resolved.path, join2(destSkillsDir, fileName));
       await appendToFile(
-        join(companyDir, "agents", roleName, "AGENTS.md"),
+        join2(companyDir, "agents", roleName, "AGENTS.md"),
         `
 Read and follow: \`$AGENT_HOME/skills/${fileName}\`
 `
@@ -39867,23 +39977,23 @@ Read and follow: \`$AGENT_HOME/skills/${fileName}\`
         }
       }
     }
-    if (await exists(agentsDir)) {
-      const roles = await readdir(agentsDir, { withFileTypes: true });
+    if (await exists2(agentsDir)) {
+      const roles = await readdir2(agentsDir, { withFileTypes: true });
       for (const role of roles) {
         if (!role.isDirectory()) continue;
         if (!allRoles.has(role.name)) continue;
-        const skillsDir = join(agentsDir, role.name, "skills");
-        if (!await exists(skillsDir)) continue;
-        const skills = await readdir(skillsDir);
+        const skillsDir = join2(agentsDir, role.name, "skills");
+        if (!await exists2(skillsDir)) continue;
+        const skills = await readdir2(skillsDir);
         for (const skillFile of skills) {
           const skillName = skillFile.replace(/\.md$/, "");
           const skillBaseName = skillName.replace(/\.fallback$/, "");
           if (capabilityOwners.has(skillBaseName)) continue;
-          const destSkillsDir = join(companyDir, "agents", role.name, "skills");
+          const destSkillsDir = join2(companyDir, "agents", role.name, "skills");
           await mkdir(destSkillsDir, { recursive: true });
-          await copyFile(join(skillsDir, skillFile), join(destSkillsDir, skillFile));
+          await copyFile(join2(skillsDir, skillFile), join2(destSkillsDir, skillFile));
           await appendToFile(
-            join(companyDir, "agents", role.name, "AGENTS.md"),
+            join2(companyDir, "agents", role.name, "AGENTS.md"),
             `
 Read and follow: \`$AGENT_HOME/skills/${skillFile}\`
 `
@@ -39895,40 +40005,40 @@ Read and follow: \`$AGENT_HOME/skills/${skillFile}\`
   }
   const HEARTBEAT_MARKER = "<!-- Module heartbeat sections are inserted above this line during assembly -->";
   for (const moduleName of moduleNames) {
-    const moduleDir = join(templatesDir, "modules", moduleName);
-    if (!await exists(moduleDir)) continue;
-    const moduleJson = await readJson(join(moduleDir, "module.meta.json"));
+    const moduleDir = join2(templatesDir, "modules", moduleName);
+    if (!await exists2(moduleDir)) continue;
+    const moduleJson = await readJson2(join2(moduleDir, "module.meta.json"));
     if (moduleJson?.activatesWithRoles?.length) {
       const hasActivatingRole = moduleJson.activatesWithRoles.some((r) => allRoles.has(r));
       if (!hasActivatingRole) continue;
     }
-    const modAgentsDir = join(moduleDir, "agents");
-    if (!await exists(modAgentsDir)) continue;
-    const modRoles = await readdir(modAgentsDir, { withFileTypes: true });
+    const modAgentsDir = join2(moduleDir, "agents");
+    if (!await exists2(modAgentsDir)) continue;
+    const modRoles = await readdir2(modAgentsDir, { withFileTypes: true });
     for (const modRole of modRoles) {
       if (!modRole.isDirectory()) continue;
       if (!allRoles.has(modRole.name)) continue;
-      const sectionFile = join(modAgentsDir, modRole.name, "heartbeat-section.md");
-      if (!await exists(sectionFile)) continue;
-      const heartbeatPath = join(companyDir, "agents", modRole.name, "HEARTBEAT.md");
-      if (!await exists(heartbeatPath)) continue;
-      const section = await readFile(sectionFile, "utf-8");
-      const heartbeat = await readFile(heartbeatPath, "utf-8");
+      const sectionFile = join2(modAgentsDir, modRole.name, "heartbeat-section.md");
+      if (!await exists2(sectionFile)) continue;
+      const heartbeatPath = join2(companyDir, "agents", modRole.name, "HEARTBEAT.md");
+      if (!await exists2(heartbeatPath)) continue;
+      const section = await readFile2(sectionFile, "utf-8");
+      const heartbeat = await readFile2(heartbeatPath, "utf-8");
       const updated = heartbeat.includes(HEARTBEAT_MARKER) ? heartbeat.replace(HEARTBEAT_MARKER, section.trim() + "\n\n" + HEARTBEAT_MARKER) : heartbeat.trimEnd() + "\n\n" + section.trim() + "\n";
       await writeFile(heartbeatPath, updated);
       onProgress(`+ agents/${modRole.name}/HEARTBEAT.md (${moduleName}, heartbeat section)`);
     }
   }
-  const finalDocsDir = join(companyDir, "docs");
-  if (await exists(finalDocsDir)) {
-    const docs = await readdir(finalDocsDir);
+  const finalDocsDir = join2(companyDir, "docs");
+  if (await exists2(finalDocsDir)) {
+    const docs = await readdir2(finalDocsDir);
     if (docs.length > 0) {
-      const agentsBaseDir = join(companyDir, "agents");
-      const agentRoles = await readdir(agentsBaseDir, { withFileTypes: true });
+      const agentsBaseDir = join2(companyDir, "agents");
+      const agentRoles = await readdir2(agentsBaseDir, { withFileTypes: true });
       for (const role of agentRoles) {
         if (!role.isDirectory()) continue;
-        const agentsMd = join(agentsBaseDir, role.name, "AGENTS.md");
-        if (await exists(agentsMd)) {
+        const agentsMd = join2(agentsBaseDir, role.name, "AGENTS.md");
+        if (await exists2(agentsMd)) {
           let docRefs = "\n## Shared Documentation\n";
           for (const doc of docs) {
             docRefs += `
@@ -39959,7 +40069,7 @@ Read: \`docs/${doc}\`
 `;
   }
   const projectName = project?.name || companyName;
-  const projectCwd = join(companyDir, "projects", toPascalCase(projectName));
+  const projectCwd = join2(companyDir, "projects", toPascalCase(projectName));
   bootstrap += `## Project
 
 `;
@@ -39992,27 +40102,27 @@ Read: \`docs/${doc}\`
 
 `;
   }
-  if (goalTemplate) {
-    bootstrap += `## Starter Goal: ${goalTemplate.title}
+  for (const ig of goals) {
+    bootstrap += `## Goal: ${ig.title}
 
 `;
-    bootstrap += `${goalTemplate.description}
+    bootstrap += `${ig.description}
 
 `;
-    if (goalTemplate.milestones?.length) {
+    if (ig.milestones?.length) {
       bootstrap += `**Milestones:**
 `;
-      for (const m of goalTemplate.milestones) {
-        bootstrap += `- ${m.title}
+      for (const m of ig.milestones) {
+        bootstrap += `- ${m.title}${m.project ? " (+ project)" : ""}
 `;
       }
       bootstrap += `
 `;
     }
-    if (goalTemplate.issues?.length) {
+    if (ig.issues?.length) {
       bootstrap += `**Issues:**
 `;
-      for (const issue of goalTemplate.issues) {
+      for (const issue of ig.issues) {
         const assignLabel = issue.assignTo ? ` \u2192 ${issue.assignTo}` : "";
         bootstrap += `- ${issue.title}${assignLabel}
 `;
@@ -40062,8 +40172,8 @@ Read: \`docs/${doc}\`
     bootstrap += `${stepN++}. Create the goal: "${goal.title}"
 `;
   }
-  if (goalTemplate) {
-    bootstrap += `${stepN++}. Create the starter goal "${goalTemplate.title}" and its issues listed above
+  for (const ig of goals) {
+    bootstrap += `${stepN++}. Create the goal "${ig.title}" and its issues listed above
 `;
   }
   if (initialTasks.length > 0) {
@@ -40072,28 +40182,28 @@ Read: \`docs/${doc}\`
   }
   bootstrap += `${stepN}. Start the CEO heartbeat
 `;
-  await writeFile(join(companyDir, "BOOTSTRAP.md"), bootstrap);
+  await writeFile(join2(companyDir, "BOOTSTRAP.md"), bootstrap);
   onProgress("+ BOOTSTRAP.md");
-  return { companyDir, allRoles, initialTasks };
+  return { companyDir, allRoles, initialTasks, roleAdapterOverrides };
 }
 
 // src/components/StepAssemble.jsx
-var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
 function StepAssemble({
   companyName,
   goal,
   project,
   moduleNames,
   extraRoleNames,
-  goalTemplate,
+  goals,
   outputDir,
   templatesDir,
   onComplete,
   onError
 }) {
-  const [log, setLog] = (0, import_react44.useState)([]);
-  const [done, setDone] = (0, import_react44.useState)(false);
-  (0, import_react44.useEffect)(() => {
+  const [log, setLog] = (0, import_react43.useState)([]);
+  const [done, setDone] = (0, import_react43.useState)(false);
+  (0, import_react43.useEffect)(() => {
     let cancelled = false;
     assembleCompany({
       companyName,
@@ -40101,7 +40211,7 @@ function StepAssemble({
       project,
       moduleNames,
       extraRoleNames,
-      goalTemplate,
+      goals,
       outputDir,
       templatesDir,
       onProgress: (line) => {
@@ -40123,25 +40233,25 @@ function StepAssemble({
       cancelled = true;
     };
   }, []);
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Box_default, { flexDirection: "column", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Box_default, { children: [
-      done ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { color: "green", children: "\u2713 " }) : /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Text, { color: "cyan", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(build_default2, { type: "dots" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { flexDirection: "column", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Box_default, { children: [
+      done ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { color: "green", children: "\u2713 " }) : /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(Text, { color: "cyan", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(build_default2, { type: "dots" }),
         " "
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { bold: true, children: done ? "Workspace assembled" : "Assembling workspace..." })
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { bold: true, children: done ? "Workspace assembled" : "Assembling workspace..." })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Box_default, { flexDirection: "column", marginLeft: 2, children: log.map((line, i) => {
+    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Box_default, { flexDirection: "column", marginLeft: 2, children: log.map((line, i) => {
       const isAdd = line.startsWith("+");
       const isSkip = line.startsWith("\u25CB") || line.startsWith("!");
-      return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { color: isAdd ? "green" : isSkip ? "yellow" : void 0, dimColor: isSkip, children: line }, i);
+      return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Text, { color: isAdd ? "green" : isSkip ? "yellow" : void 0, dimColor: isSkip, children: line }, i);
     }) })
   ] });
 }
 
 // src/components/StepProvision.jsx
-var import_react45 = __toESM(require_react(), 1);
-import { join as join3, basename } from "node:path";
+var import_react44 = __toESM(require_react(), 1);
+import { join as join4, basename } from "node:path";
 
 // src/api/client.js
 var BASE_ROLE_MAP = {
@@ -40154,6 +40264,7 @@ var PaperclipClient = class {
     this.origin = new URL(this.baseUrl).origin;
     this.credentials = credentials;
     this.sessionCookie = null;
+    this.boardUserId = null;
   }
   async _fetch(path, opts = {}) {
     const url = `${this.baseUrl}${path}`;
@@ -40178,7 +40289,10 @@ var PaperclipClient = class {
       method: "GET",
       headers: { Origin: this.origin }
     });
-    if (res.ok) return;
+    if (res.ok) {
+      this.boardUserId = "local-board";
+      return;
+    }
     if (res.status === 401 || res.status === 403) {
       const { email, password } = this.credentials;
       if (!email || !password) {
@@ -40189,6 +40303,11 @@ var PaperclipClient = class {
         );
       }
       await this._signIn(email, password);
+      try {
+        const session = await this._fetch("/api/auth/get-session");
+        this.boardUserId = session?.user?.id || null;
+      } catch {
+      }
       return;
     }
     throw new Error(`Paperclip API unreachable (${res.status})`);
@@ -40276,7 +40395,7 @@ var PaperclipClient = class {
       })
     });
   }
-  async createIssue(companyId, { title, description, priority, projectId, goalId, assigneeAgentId }) {
+  async createIssue(companyId, { title, description, priority, projectId, goalId, assigneeAgentId, assigneeUserId }) {
     return this._fetch(`/api/companies/${companyId}/issues`, {
       method: "POST",
       body: JSON.stringify({
@@ -40285,7 +40404,8 @@ var PaperclipClient = class {
         priority: priority || "medium",
         projectId: projectId || void 0,
         goalId: goalId || void 0,
-        assigneeAgentId: assigneeAgentId || void 0
+        assigneeAgentId: assigneeAgentId || void 0,
+        assigneeUserId: assigneeUserId || void 0
       })
     });
   }
@@ -40311,7 +40431,7 @@ var PaperclipClient = class {
 };
 
 // src/api/provision.js
-import { join as join2 } from "node:path";
+import { join as join3 } from "node:path";
 async function provisionCompany({
   client,
   companyName,
@@ -40323,7 +40443,8 @@ async function provisionCompany({
   allRoles,
   rolesData = /* @__PURE__ */ new Map(),
   initialTasks = [],
-  goalTemplate = null,
+  goals = [],
+  roleAdapterOverrides = /* @__PURE__ */ new Map(),
   model = null,
   remoteCompanyDir = null,
   startCeo = false,
@@ -40346,7 +40467,7 @@ async function provisionCompany({
     goalId = g.id;
     onProgress(`\u2713 Goal created: ${goal.title}`);
   }
-  const projectCwd = join2(apiCompanyDir, "projects", toPascalCase(projectName));
+  const projectCwd = join3(apiCompanyDir, "projects", toPascalCase(projectName));
   onProgress(`Creating project "${projectName}"...`);
   const project = await client.createProject(companyId, {
     name: projectName,
@@ -40371,6 +40492,7 @@ async function provisionCompany({
     const paperclipRole = PaperclipClient.resolveRole(role, roleData);
     const title = formatRoleName(role);
     const roleAdapter = roleData?.adapter || {};
+    const moduleOverrides = roleAdapterOverrides.get(role) || {};
     const agentModel = roleAdapter.model || model;
     const reportsToRole = roleData?.reportsTo || null;
     const reportsToAgentId = reportsToRole ? agentIds.get(reportsToRole) || null : null;
@@ -40382,9 +40504,10 @@ async function provisionCompany({
       reportsTo: reportsToAgentId,
       adapterConfig: {
         cwd: apiCompanyDir,
-        instructionsFilePath: join2(apiCompanyDir, `agents/${role}/AGENTS.md`),
+        instructionsFilePath: join3(apiCompanyDir, `agents/${role}/AGENTS.md`),
         ...agentModel ? { model: agentModel } : {},
-        ...Object.fromEntries(Object.entries(roleAdapter).filter(([k]) => k !== "model"))
+        ...Object.fromEntries(Object.entries(roleAdapter).filter(([k]) => k !== "model")),
+        ...moduleOverrides
       }
     });
     agentIds.set(role, agent.id);
@@ -40409,72 +40532,24 @@ async function provisionCompany({
     const assignLabel = assigneeAgentId ? ` \u2192 ${task.assignTo}` : "";
     onProgress(`\u2713 Issue created: ${task.title}${assignLabel}`);
   }
-  let goalTemplateId = null;
-  const goalTemplateErrors = [];
-  if (goalTemplate) {
-    onProgress(`Creating starter goal: ${goalTemplate.title}...`);
-    const tg = await client.createGoal(companyId, {
-      title: goalTemplate.title,
-      description: goalTemplate.description,
-      level: "company",
-      parentId: goalId
+  const goalErrors = [];
+  const goalResults = [];
+  for (const inlineGoal of goals) {
+    const result = await provisionInlineGoal({
+      client,
+      companyId,
+      parentGoalId: goalId,
+      mainProjectId: projectId,
+      inlineGoal,
+      agentIds,
+      apiCompanyDir,
+      onProgress
     });
-    goalTemplateId = tg.id;
-    onProgress(`\u2713 Starter goal created: ${goalTemplate.title}`);
-    const templateProjectCwd = join2(apiCompanyDir, "projects", toPascalCase(goalTemplate.title));
-    onProgress(`Creating project "${goalTemplate.title}"...`);
-    const templateProject = await client.createProject(companyId, {
-      name: goalTemplate.title,
-      description: goalTemplate.description,
-      goalIds: [goalTemplateId],
-      workspace: {
-        cwd: templateProjectCwd,
-        isPrimary: true
-      }
-    });
-    const templateProjectId = templateProject.id;
-    onProgress(`\u2713 Project "${goalTemplate.title}" created`);
-    const milestoneIds = /* @__PURE__ */ new Map();
-    if (goalTemplate.milestones?.length) {
-      for (const milestone of goalTemplate.milestones) {
-        try {
-          onProgress(`Creating milestone: ${milestone.title}...`);
-          const mg = await client.createGoal(companyId, {
-            title: milestone.title,
-            description: milestone.description,
-            level: "task",
-            parentId: goalTemplateId
-          });
-          milestoneIds.set(milestone.id, mg.id);
-          onProgress(`\u2713 Milestone created: ${milestone.title}`);
-        } catch (err) {
-          goalTemplateErrors.push({ title: milestone.title, error: err.message });
-          onProgress(`! Failed to create milestone: ${milestone.title} \u2014 ${err.message}`);
-        }
-      }
-    }
-    if (goalTemplate.issues?.length) {
-      for (const issue of goalTemplate.issues) {
-        try {
-          const issueGoalId = issue.milestone && milestoneIds.get(issue.milestone) || goalTemplateId;
-          const assigneeAgentId = issue.assignTo ? agentIds.get(issue.assignTo) || null : null;
-          onProgress(`Creating issue: ${issue.title}...`);
-          const created = await client.createIssue(companyId, {
-            title: issue.title,
-            description: issue.description,
-            priority: issue.priority,
-            projectId: templateProjectId,
-            goalId: issueGoalId,
-            assigneeAgentId
-          });
-          issueIds.push(created.id);
-          const assignLabel = assigneeAgentId ? ` \u2192 ${issue.assignTo}` : "";
-          onProgress(`\u2713 Issue created: ${issue.title}${assignLabel}`);
-        } catch (err) {
-          goalTemplateErrors.push({ title: issue.title, error: err.message });
-          onProgress(`! Failed to create issue: ${issue.title} \u2014 ${err.message}`);
-        }
-      }
+    goalResults.push(result);
+    issueIds.push(...result.issueIds);
+    goalErrors.push(...result.errors);
+    if (!firstCeoIssueId) {
+      firstCeoIssueId = result.firstCeoIssueId;
     }
   }
   let ceoStarted = false;
@@ -40497,18 +40572,136 @@ async function provisionCompany({
     companyId,
     issuePrefix: company.issuePrefix,
     goalId,
-    goalTemplateId,
+    goalResults,
     projectId,
     projectCwd,
     agentIds,
     issueIds,
-    goalTemplateErrors,
+    goalErrors,
     ceoStarted
+  };
+}
+async function provisionInlineGoal({
+  client,
+  companyId,
+  parentGoalId,
+  mainProjectId,
+  inlineGoal,
+  agentIds,
+  apiCompanyDir,
+  onProgress
+}) {
+  const errors = [];
+  const issueIds = [];
+  let firstCeoIssueId = null;
+  onProgress(`Creating goal: ${inlineGoal.title}...`);
+  const tg = await client.createGoal(companyId, {
+    title: inlineGoal.title,
+    description: inlineGoal.description,
+    level: "company",
+    parentId: parentGoalId
+  });
+  const inlineGoalId = tg.id;
+  onProgress(`\u2713 Goal created: ${inlineGoal.title}`);
+  const wantsProject = inlineGoal.project !== false;
+  let goalProjectId = null;
+  if (wantsProject) {
+    const goalProjectCwd = join3(apiCompanyDir, "projects", toPascalCase(inlineGoal.title));
+    onProgress(`Creating project "${inlineGoal.title}"...`);
+    const gp = await client.createProject(companyId, {
+      name: inlineGoal.title,
+      description: inlineGoal.description,
+      goalIds: [inlineGoalId],
+      workspace: {
+        cwd: goalProjectCwd,
+        isPrimary: true
+      }
+    });
+    goalProjectId = gp.id;
+    onProgress(`\u2713 Project "${inlineGoal.title}" created`);
+  }
+  const milestoneIds = /* @__PURE__ */ new Map();
+  const milestoneProjectIds = /* @__PURE__ */ new Map();
+  if (inlineGoal.milestones?.length) {
+    for (const milestone of inlineGoal.milestones) {
+      try {
+        onProgress(`Creating milestone: ${milestone.title}...`);
+        const mg = await client.createGoal(companyId, {
+          title: milestone.title,
+          description: milestone.description,
+          level: "task",
+          parentId: inlineGoalId
+        });
+        milestoneIds.set(milestone.id, mg.id);
+        onProgress(`\u2713 Milestone created: ${milestone.title}`);
+        if (milestone.project) {
+          const msCwd = join3(apiCompanyDir, "projects", toPascalCase(milestone.title));
+          onProgress(`Creating project "${milestone.title}"...`);
+          const mp = await client.createProject(companyId, {
+            name: milestone.title,
+            description: milestone.description,
+            goalIds: [mg.id],
+            workspace: { cwd: msCwd, isPrimary: true }
+          });
+          milestoneProjectIds.set(milestone.id, mp.id);
+          onProgress(`\u2713 Project "${milestone.title}" created`);
+        }
+      } catch (err) {
+        errors.push({ title: milestone.title, error: err.message });
+        onProgress(`! Failed to create milestone: ${milestone.title} \u2014 ${err.message}`);
+      }
+    }
+  }
+  if (inlineGoal.issues?.length) {
+    for (const issue of inlineGoal.issues) {
+      try {
+        const issueGoalId = issue.milestone && milestoneIds.get(issue.milestone) || inlineGoalId;
+        let issueProjectId;
+        if (issue.milestone && milestoneProjectIds.has(issue.milestone)) {
+          issueProjectId = milestoneProjectIds.get(issue.milestone);
+        } else if (goalProjectId) {
+          issueProjectId = goalProjectId;
+        } else {
+          issueProjectId = mainProjectId;
+        }
+        const isUserTask = issue.assignTo === "user";
+        const assigneeAgentId = issue.assignTo && !isUserTask ? agentIds.get(issue.assignTo) || null : null;
+        const assigneeUserId = isUserTask ? client.boardUserId || null : null;
+        onProgress(`Creating issue: ${issue.title}...`);
+        const created = await client.createIssue(companyId, {
+          title: issue.title,
+          description: issue.description,
+          priority: issue.priority,
+          projectId: issueProjectId,
+          goalId: issueGoalId,
+          assigneeAgentId,
+          assigneeUserId
+        });
+        issueIds.push(created.id);
+        if (issue.assignTo === "ceo" && !firstCeoIssueId) {
+          firstCeoIssueId = created.id;
+        }
+        const assignLabel = isUserTask ? " \u2192 board (human)" : assigneeAgentId ? ` \u2192 ${issue.assignTo}` : "";
+        onProgress(`\u2713 Issue created: ${issue.title}${assignLabel}`);
+      } catch (err) {
+        errors.push({ title: issue.title, error: err.message });
+        onProgress(`! Failed to create issue: ${issue.title} \u2014 ${err.message}`);
+      }
+    }
+  }
+  return {
+    goalId: inlineGoalId,
+    goalProjectId,
+    milestoneIds,
+    milestoneProjectIds,
+    issueIds,
+    errors,
+    firstCeoIssueId
   };
 }
 
 // src/components/StepProvision.jsx
-var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
 function StepProvision({
   companyName,
   companyDir,
@@ -40517,7 +40710,8 @@ function StepProvision({
   allRoles,
   rolesData,
   initialTasks,
-  goalTemplate,
+  goals,
+  roleAdapterOverrides,
   apiBaseUrl,
   apiEmail,
   apiPassword,
@@ -40527,9 +40721,9 @@ function StepProvision({
   onComplete,
   onError
 }) {
-  const [log, setLog] = (0, import_react45.useState)([]);
-  const [done, setDone] = (0, import_react45.useState)(false);
-  (0, import_react45.useEffect)(() => {
+  const [log, setLog] = (0, import_react44.useState)([]);
+  const [done, setDone] = (0, import_react44.useState)(false);
+  (0, import_react44.useEffect)(() => {
     let cancelled = false;
     const client = new PaperclipClient(apiBaseUrl, {
       email: apiEmail,
@@ -40547,9 +40741,10 @@ function StepProvision({
         allRoles,
         rolesData,
         initialTasks,
-        goalTemplate,
+        goals,
+        roleAdapterOverrides,
         model,
-        remoteCompanyDir: apiWorkspaceRoot ? join3(apiWorkspaceRoot, basename(companyDir)) : null,
+        remoteCompanyDir: apiWorkspaceRoot ? join4(apiWorkspaceRoot, basename(companyDir)) : null,
         startCeo,
         onProgress: (line) => {
           if (!cancelled) {
@@ -40571,218 +40766,90 @@ function StepProvision({
       cancelled = true;
     };
   }, []);
-  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { children: [
-      done ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "\u2713 " }) : /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { color: "cyan", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(build_default2, { type: "dots" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Box_default, { flexDirection: "column", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Box_default, { children: [
+      done ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { color: "green", children: "\u2713 " }) : /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(Text, { color: "cyan", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(build_default2, { type: "dots" }),
         " "
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { bold: true, children: done ? "Provisioned via API" : "Provisioning via Paperclip API..." })
+      /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { bold: true, children: done ? "Provisioned via API" : "Provisioning via Paperclip API..." })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Box_default, { flexDirection: "column", marginLeft: 2, children: log.map((line, i) => {
+    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Box_default, { flexDirection: "column", marginLeft: 2, children: log.map((line, i) => {
       const isDone = line.startsWith("\u2713");
-      return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: isDone ? "green" : void 0, dimColor: !isDone, children: line }, i);
+      return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Text, { color: isDone ? "green" : void 0, dimColor: !isDone, children: line }, i);
     }) })
   ] });
 }
 
 // src/components/StepDone.jsx
-var import_react46 = __toESM(require_react(), 1);
-var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
+var import_react45 = __toESM(require_react(), 1);
+var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
 function StepDone({ companyDir, allRoles, provisioned, provisionResult }) {
   const rolesList = [...allRoles];
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", bold: true, children: "Done!" }),
-    provisioned && provisionResult ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { bold: true, children: "Provisioned via Paperclip API" }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", marginLeft: 2, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", bold: true, children: "Done!" }),
+    provisioned && provisionResult ? /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { bold: true, children: "Provisioned via Paperclip API" }),
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", marginLeft: 2, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " Company",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: provisionResult.companyId?.slice(0, 8) })
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: provisionResult.companyId?.slice(0, 8) })
         ] }),
-        provisionResult.goalId ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+        provisionResult.goalId ? /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " Goal",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: provisionResult.goalId.slice(0, 8) })
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: provisionResult.goalId.slice(0, 8) })
         ] }) : null,
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " Project",
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: provisionResult.projectId?.slice(0, 8) })
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: provisionResult.projectId?.slice(0, 8) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { dimColor: true, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { dimColor: true, children: [
           "  ",
           "workspace: ",
           provisionResult.projectCwd
         ] }),
-        rolesList.map((role) => /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+        rolesList.map((role) => /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " Agent ",
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { bold: true, children: formatRoleName(role) }),
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { bold: true, children: formatRoleName(role) }),
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: provisionResult.agentIds?.get(role)?.slice(0, 8) })
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: provisionResult.agentIds?.get(role)?.slice(0, 8) })
         ] }, role)),
-        provisionResult.issueIds?.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+        provisionResult.issueIds?.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " ",
           provisionResult.issueIds.length,
           " issue",
           provisionResult.issueIds.length !== 1 ? "s" : ""
         ] }) : null,
-        provisionResult.ceoStarted ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { color: "green", children: "+" }),
+        provisionResult.ceoStarted ? /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { color: "green", children: "+" }),
           " CEO heartbeat started"
         ] }) : null
       ] }),
-      !provisionResult.ceoStarted ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", marginTop: 1, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: "Next: start the CEO heartbeat in the Paperclip UI" }),
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: " or re-run with --start" })
+      !provisionResult.ceoStarted ? /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", marginTop: 1, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: "Next: start the CEO heartbeat in the Paperclip UI" }),
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: " or re-run with --start" })
       ] }) : null
-    ] }) : /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: "Next: follow BOOTSTRAP.md in the company directory" }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: " or re-run with --api to provision automatically" })
+    ] }) : /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Box_default, { flexDirection: "column", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: "Next: follow BOOTSTRAP.md in the company directory" }),
+      /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Text, { dimColor: true, children: " or re-run with --api to provision automatically" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { dimColor: true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(Text, { dimColor: true, children: [
       "Workspace: ",
       companyDir
     ] })
   ] });
 }
 
-// src/logic/load-templates.js
-import { access as access2, readdir as readdir2, readFile as readFile2 } from "node:fs/promises";
-import { join as join4 } from "node:path";
-async function exists2(p) {
-  try {
-    await access2(p);
-    return true;
-  } catch {
-    return false;
-  }
-}
-async function readJson2(p) {
-  if (!await exists2(p)) return null;
-  return JSON.parse(await readFile2(p, "utf-8"));
-}
-async function loadPresets(templatesDir) {
-  const presetsDir = join4(templatesDir, "presets");
-  const presets = [];
-  if (!await exists2(presetsDir)) return presets;
-  const dirs = await readdir2(presetsDir, { withFileTypes: true });
-  for (const dir of dirs) {
-    if (!dir.isDirectory()) continue;
-    const presetFile = join4(presetsDir, dir.name, "preset.meta.json");
-    if (await exists2(presetFile)) {
-      presets.push(JSON.parse(await readFile2(presetFile, "utf-8")));
-    }
-  }
-  return presets;
-}
-async function loadModules(templatesDir) {
-  const modulesDir = join4(templatesDir, "modules");
-  const modules = [];
-  if (!await exists2(modulesDir)) return modules;
-  const dirs = await readdir2(modulesDir, { withFileTypes: true });
-  for (const dir of dirs) {
-    if (!dir.isDirectory()) continue;
-    const moduleJson = await readJson2(join4(modulesDir, dir.name, "module.meta.json"));
-    const readmePath = join4(modulesDir, dir.name, "README.md");
-    let description = "";
-    if (await exists2(readmePath)) {
-      const content = await readFile2(readmePath, "utf-8");
-      const descLine = content.split("\n").find((l) => l.length > 0 && !l.startsWith("#"));
-      description = descLine?.trim() || "";
-    }
-    modules.push({ name: dir.name, description, ...moduleJson || {} });
-  }
-  return modules;
-}
-async function loadRoles(templatesDir) {
-  const rolesDir = join4(templatesDir, "roles");
-  const roles = [];
-  if (!await exists2(rolesDir)) return roles;
-  const dirs = await readdir2(rolesDir, { withFileTypes: true });
-  for (const dir of dirs) {
-    if (!dir.isDirectory()) continue;
-    const roleJson = await readJson2(join4(rolesDir, dir.name, "role.meta.json"));
-    if (roleJson) {
-      roles.push(roleJson);
-    }
-  }
-  return roles;
-}
-var VALID_PRIORITIES = /* @__PURE__ */ new Set(["critical", "high", "medium", "low"]);
-var MILESTONE_ID_RE = /^[a-z][a-z0-9-]*$/;
-function validateGoalTemplate(goal, sourceName) {
-  if (!goal.title || typeof goal.title !== "string") {
-    throw new Error(`Goal template "${sourceName}": missing or invalid "title"`);
-  }
-  if (!goal.description || typeof goal.description !== "string") {
-    throw new Error(`Goal template "${sourceName}": missing or invalid "description"`);
-  }
-  const milestoneIds = /* @__PURE__ */ new Set();
-  if (goal.milestones) {
-    if (!Array.isArray(goal.milestones)) {
-      throw new Error(`Goal template "${sourceName}": "milestones" must be an array`);
-    }
-    for (const m of goal.milestones) {
-      if (!m.id || typeof m.id !== "string" || !MILESTONE_ID_RE.test(m.id)) {
-        throw new Error(
-          `Goal template "${sourceName}": milestone "id" must be kebab-case (got "${m.id}")`
-        );
-      }
-      if (milestoneIds.has(m.id)) {
-        throw new Error(`Goal template "${sourceName}": duplicate milestone id "${m.id}"`);
-      }
-      milestoneIds.add(m.id);
-      if (!m.title || typeof m.title !== "string") {
-        throw new Error(`Goal template "${sourceName}": milestone "${m.id}" missing "title"`);
-      }
-    }
-  }
-  if (goal.issues) {
-    if (!Array.isArray(goal.issues)) {
-      throw new Error(`Goal template "${sourceName}": "issues" must be an array`);
-    }
-    for (let i = 0; i < goal.issues.length; i++) {
-      const issue = goal.issues[i];
-      if (!issue.title || typeof issue.title !== "string") {
-        throw new Error(`Goal template "${sourceName}": issue[${i}] missing "title"`);
-      }
-      if (issue.priority && !VALID_PRIORITIES.has(issue.priority)) {
-        throw new Error(
-          `Goal template "${sourceName}": issue[${i}] invalid priority "${issue.priority}"`
-        );
-      }
-      if (issue.milestone && !milestoneIds.has(issue.milestone)) {
-        throw new Error(
-          `Goal template "${sourceName}": issue[${i}] references unknown milestone "${issue.milestone}"`
-        );
-      }
-    }
-  }
-}
-async function loadGoals(templatesDir) {
-  const goalsDir = join4(templatesDir, "goals");
-  const goals = [];
-  if (!await exists2(goalsDir)) return goals;
-  const dirs = await readdir2(goalsDir, { withFileTypes: true });
-  for (const dir of dirs) {
-    if (!dir.isDirectory()) continue;
-    const goalJson = await readJson2(join4(goalsDir, dir.name, "goal.meta.json"));
-    if (!goalJson) continue;
-    validateGoalTemplate(goalJson, dir.name);
-    goals.push({ name: dir.name, ...goalJson });
-  }
-  return goals;
-}
-
 // src/app.jsx
-var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
 var STEPS = {
   LOADING: "loading",
   NAME: "name",
@@ -40790,7 +40857,6 @@ var STEPS = {
   PROJECT: "project",
   PRESET: "preset",
   MODULES: "modules",
-  GOAL_TEMPLATES: "goal_templates",
   ROLES: "roles",
   SUMMARY: "summary",
   ASSEMBLE: "assemble",
@@ -40818,47 +40884,36 @@ function App2({
   initialRepo = null,
   initialPreset = null,
   initialModules = [],
-  initialRoles = [],
-  initialGoalTemplate = null
+  initialRoles = []
 }) {
   const { exit } = use_app_default();
-  const [step, setStep] = (0, import_react47.useState)(STEPS.LOADING);
-  const [error, setError] = (0, import_react47.useState)(null);
-  const [presets, setPresets] = (0, import_react47.useState)([]);
-  const [modules, setModules] = (0, import_react47.useState)([]);
-  const [availableRoles, setAvailableRoles] = (0, import_react47.useState)([]);
-  const [goalTemplates, setGoalTemplates] = (0, import_react47.useState)([]);
-  const [companyName, setCompanyName] = (0, import_react47.useState)(initialName || "");
-  const [goal, setGoal] = (0, import_react47.useState)({
+  const [step, setStep] = (0, import_react46.useState)(STEPS.LOADING);
+  const [error, setError] = (0, import_react46.useState)(null);
+  const [presets, setPresets] = (0, import_react46.useState)([]);
+  const [modules, setModules] = (0, import_react46.useState)([]);
+  const [availableRoles, setAvailableRoles] = (0, import_react46.useState)([]);
+  const [companyName, setCompanyName] = (0, import_react46.useState)(initialName || "");
+  const [goal, setGoal] = (0, import_react46.useState)({
     title: initialGoal || "",
     description: initialGoalDescription || null
   });
-  const [project, setProject] = (0, import_react47.useState)({
+  const [project, setProject] = (0, import_react46.useState)({
     name: initialProjectName || "",
     description: initialProjectDescription || null,
     repoUrl: initialRepo || null
   });
-  const [presetName, setPresetName] = (0, import_react47.useState)("");
-  const [selectedModules, setSelectedModules] = (0, import_react47.useState)([]);
-  const [preselectedModules, setPreselectedModules] = (0, import_react47.useState)([]);
-  const [selectedRoles, setSelectedRoles] = (0, import_react47.useState)([]);
-  const [preselectedRoles, setPreselectedRoles] = (0, import_react47.useState)([]);
-  const [selectedGoalTemplate, setSelectedGoalTemplate] = (0, import_react47.useState)(null);
-  const [assemblyResult, setAssemblyResult] = (0, import_react47.useState)(null);
-  const [provisionResult, setProvisionResult] = (0, import_react47.useState)(null);
-  function resolveFirstStep(loadedPresets, loadedGoals) {
+  const [presetName, setPresetName] = (0, import_react46.useState)("");
+  const [selectedModules, setSelectedModules] = (0, import_react46.useState)([]);
+  const [preselectedModules, setPreselectedModules] = (0, import_react46.useState)([]);
+  const [selectedRoles, setSelectedRoles] = (0, import_react46.useState)([]);
+  const [preselectedRoles, setPreselectedRoles] = (0, import_react46.useState)([]);
+  const [assemblyResult, setAssemblyResult] = (0, import_react46.useState)(null);
+  const [provisionResult, setProvisionResult] = (0, import_react46.useState)(null);
+  function resolveFirstStep(loadedPresets) {
     if (!companyName) return STEPS.NAME;
     if (!goal.title && !initialGoal) return STEPS.GOAL;
     if (!project.name && !initialProjectName) {
       setProject((p) => ({ ...p, name: companyName }));
-    }
-    let goalTemplateResolved = false;
-    if (initialGoalTemplate) {
-      const tmpl = loadedGoals.find((g) => g.name === initialGoalTemplate);
-      if (tmpl) {
-        setSelectedGoalTemplate(tmpl);
-        goalTemplateResolved = true;
-      }
     }
     if (initialPreset) {
       const preset = loadedPresets.find((p) => p.name === initialPreset);
@@ -40870,23 +40925,21 @@ function App2({
         setSelectedModules(mods);
         setPreselectedRoles(roles);
         setSelectedRoles(roles);
-        return goalTemplateResolved ? STEPS.SUMMARY : STEPS.GOAL_TEMPLATES;
+        return STEPS.SUMMARY;
       }
     }
     return STEPS.PRESET;
   }
-  (0, import_react47.useEffect)(() => {
+  (0, import_react46.useEffect)(() => {
     Promise.all([
       loadPresets(templatesDir),
       loadModules(templatesDir),
-      loadRoles(templatesDir),
-      loadGoals(templatesDir)
-    ]).then(([p, m, r, g]) => {
+      loadRoles(templatesDir)
+    ]).then(([p, m, r]) => {
       setPresets(p);
       setModules(m);
       setAvailableRoles(r);
-      setGoalTemplates(g);
-      setStep(resolveFirstStep(p, g));
+      setStep(resolveFirstStep(p));
     }).catch((err) => {
       setError(err.message);
       setStep(STEPS.ERROR);
@@ -40899,17 +40952,18 @@ function App2({
     rolesData.set(r.name, r);
   }
   const companyDir = companyName ? `${outputDir}/${toPascalCase(companyName)}` : "";
+  const selectedPreset = presets.find((p) => p.name === presetName) || null;
+  const goals = collectGoals(selectedPreset, modules, new Set(selectedModules));
   const STEP_NUMBERS = {
     [STEPS.NAME]: 1,
     [STEPS.GOAL]: 2,
     [STEPS.PROJECT]: 3,
     [STEPS.PRESET]: 4,
     [STEPS.MODULES]: 5,
-    [STEPS.GOAL_TEMPLATES]: 6,
-    [STEPS.ROLES]: 7,
-    [STEPS.SUMMARY]: 8
+    [STEPS.ROLES]: 6,
+    [STEPS.SUMMARY]: 7
   };
-  const TOTAL_STEPS = 8;
+  const TOTAL_STEPS = 7;
   const currentStepNum = STEP_NUMBERS[step] || null;
   const handleError = (msg) => {
     setError(msg);
@@ -40938,21 +40992,16 @@ function App2({
       ...goal.title ? [["Goal", goal.title]] : [],
       ...presetName ? [["Preset", presetName]] : []
     ],
-    goalTemplates: [
-      ["Company", companyName],
-      ...presetName ? [["Preset", presetName]] : [],
-      ...selectedModules.length ? [["Modules", selectedModules.join(", ")]] : []
-    ],
     roles: [
       ["Company", companyName],
       ...presetName ? [["Preset", presetName]] : [],
       ...selectedModules.length ? [["Modules", selectedModules.join(", ")]] : []
     ]
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Box_default, { flexDirection: "column", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Header, { step: currentStepNum, totalSteps: TOTAL_STEPS }),
-    step === STEPS.LOADING && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Text, { dimColor: true, children: "Loading templates..." }),
-    step === STEPS.NAME && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, { step: currentStepNum, totalSteps: TOTAL_STEPS }),
+    step === STEPS.LOADING && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Text, { dimColor: true, children: "Loading templates..." }),
+    step === STEPS.NAME && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       StepName,
       {
         onComplete: (name) => {
@@ -40961,9 +41010,9 @@ function App2({
         }
       }
     ),
-    step === STEPS.GOAL && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.company }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.GOAL && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(PrevSelections, { entries: prev.company }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepGoal,
         {
           onComplete: (g) => {
@@ -40973,9 +41022,9 @@ function App2({
         }
       )
     ] }),
-    step === STEPS.PROJECT && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.goal }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.PROJECT && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(PrevSelections, { entries: prev.goal }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepProject,
         {
           defaultName: companyName,
@@ -40986,9 +41035,9 @@ function App2({
         }
       )
     ] }),
-    step === STEPS.PRESET && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.preset }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.PRESET && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(PrevSelections, { entries: prev.preset }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepPreset,
         {
           presets,
@@ -41008,36 +41057,23 @@ function App2({
         }
       )
     ] }),
-    step === STEPS.MODULES && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.modules }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.MODULES && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(PrevSelections, { entries: prev.modules }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepModules,
         {
           modules,
           preselected: preselectedModules,
           onComplete: (mods) => {
             setSelectedModules(mods);
-            setStep(STEPS.GOAL_TEMPLATES);
+            setStep(STEPS.ROLES);
           }
         }
       )
     ] }),
-    step === STEPS.GOAL_TEMPLATES && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.goalTemplates }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-        StepGoalTemplates,
-        {
-          goalTemplates,
-          onComplete: (template) => {
-            setSelectedGoalTemplate(template);
-            setStep(initialPreset ? STEPS.SUMMARY : STEPS.ROLES);
-          }
-        }
-      )
-    ] }),
-    step === STEPS.ROLES && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PrevSelections, { entries: prev.roles }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.ROLES && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(PrevSelections, { entries: prev.roles }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepRoles,
         {
           roles: availableRoles.filter((r) => !r.base),
@@ -41049,7 +41085,7 @@ function App2({
         }
       )
     ] }),
-    step === STEPS.SUMMARY && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.SUMMARY && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       StepSummary,
       {
         companyName,
@@ -41060,7 +41096,7 @@ function App2({
         roleNames: selectedRoles,
         modules,
         capabilities,
-        goalTemplate: selectedGoalTemplate,
+        goals,
         outputDir: companyDir,
         apiEnabled,
         dryRun,
@@ -41076,7 +41112,7 @@ function App2({
         }
       }
     ),
-    step === STEPS.ASSEMBLE && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.ASSEMBLE && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       StepAssemble,
       {
         companyName,
@@ -41084,7 +41120,7 @@ function App2({
         project,
         moduleNames: selectedModules,
         extraRoleNames: selectedRoles,
-        goalTemplate: selectedGoalTemplate,
+        goals,
         outputDir,
         templatesDir,
         onComplete: (result) => {
@@ -41098,7 +41134,7 @@ function App2({
         onError: handleError
       }
     ),
-    step === STEPS.PROVISION && assemblyResult && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    step === STEPS.PROVISION && assemblyResult && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       StepProvision,
       {
         companyName,
@@ -41108,7 +41144,8 @@ function App2({
         allRoles: assemblyResult.allRoles,
         rolesData,
         initialTasks: assemblyResult.initialTasks,
-        goalTemplate: selectedGoalTemplate,
+        goals,
+        roleAdapterOverrides: assemblyResult.roleAdapterOverrides,
         apiBaseUrl,
         apiEmail,
         apiPassword,
@@ -41125,12 +41162,12 @@ function App2({
         }
       }
     ),
-    step === STEPS.DONE && assemblyResult && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
-      error ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Box_default, { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Text, { color: "yellow", children: [
+    step === STEPS.DONE && assemblyResult && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Box_default, { flexDirection: "column", gap: 1, children: [
+      error ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Box_default, { children: /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { color: "yellow", children: [
         "API provisioning failed: ",
         error
       ] }) }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
         StepDone,
         {
           companyDir: assemblyResult.companyDir,
@@ -41140,7 +41177,7 @@ function App2({
         }
       )
     ] }),
-    step === STEPS.ERROR && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Text, { color: "red", children: [
+    step === STEPS.ERROR && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(Text, { color: "red", children: [
       "Error: ",
       error
     ] })
@@ -41151,11 +41188,10 @@ function App2({
 import { join as join5, basename as basename2 } from "node:path";
 async function runHeadless(opts) {
   const log = (msg) => console.log(msg);
-  const [presets, modules, allAvailableRoles, goalTemplates] = await Promise.all([
+  const [presets, modules, allAvailableRoles] = await Promise.all([
     loadPresets(opts.templatesDir),
     loadModules(opts.templatesDir),
-    loadRoles(opts.templatesDir),
-    loadGoals(opts.templatesDir)
+    loadRoles(opts.templatesDir)
   ]);
   let presetModules = [];
   let presetRoles = [];
@@ -41187,19 +41223,10 @@ async function runHeadless(opts) {
       process.exit(1);
     }
   }
-  let selectedGoalTemplate = null;
-  if (opts.goalTemplate) {
-    selectedGoalTemplate = goalTemplates.find((g) => g.name === opts.goalTemplate);
-    if (!selectedGoalTemplate) {
-      const names = goalTemplates.map((g) => g.name).join(", ");
-      console.error(
-        `Error: unknown goal template "${opts.goalTemplate}". Available: ${names || "(none)"}`
-      );
-      process.exit(1);
-    }
-  }
   const allRolesSet = buildAllRoles(allAvailableRoles, selectedRoles);
   const capabilities = resolveCapabilities(modules, selectedModules, allRolesSet);
+  const selectedPreset = presets.find((p) => p.name === opts.preset) || null;
+  const goals = collectGoals(selectedPreset, modules, new Set(selectedModules));
   const rolesData = /* @__PURE__ */ new Map();
   for (const r of allAvailableRoles) {
     rolesData.set(r.name, r);
@@ -41222,10 +41249,10 @@ async function runHeadless(opts) {
   log(`  Modules:  ${selectedModules.join(", ") || "(none)"}`);
   const baseRoleNames = allAvailableRoles.filter((r) => r.base).map((r) => r.name);
   log(`  Roles:    ${[...baseRoleNames, ...selectedRoles].join(", ")}`);
-  if (selectedGoalTemplate) {
-    log(
-      `  Starter:  ${selectedGoalTemplate.title} (${selectedGoalTemplate.issues?.length || 0} issues)`
-    );
+  if (goals.length) {
+    for (const g of goals) {
+      log(`  Goal:     ${g.title} (${g.issues?.length || 0} issues)`);
+    }
   }
   if (capabilities.length) {
     log(`  Capabilities:`);
@@ -41245,7 +41272,7 @@ async function runHeadless(opts) {
     project,
     moduleNames: selectedModules,
     extraRoleNames: selectedRoles,
-    goalTemplate: selectedGoalTemplate,
+    goals,
     outputDir: opts.outputDir,
     templatesDir: opts.templatesDir,
     onProgress: (line) => log(`  ${line}`)
@@ -41270,7 +41297,8 @@ async function runHeadless(opts) {
       allRoles: assemblyResult.allRoles,
       rolesData,
       initialTasks: assemblyResult.initialTasks,
-      goalTemplate: selectedGoalTemplate,
+      goals,
+      roleAdapterOverrides: assemblyResult.roleAdapterOverrides,
       model: opts.model,
       remoteCompanyDir: opts.apiWorkspaceRoot ? join5(opts.apiWorkspaceRoot, basename2(assemblyResult.companyDir)) : null,
       startCeo: opts.startCeo,
@@ -41280,7 +41308,6 @@ async function runHeadless(opts) {
     log("Provisioned:");
     log(`  Company:  ${provisionResult.companyId}`);
     if (provisionResult.goalId) log(`  Goal:     ${provisionResult.goalId}`);
-    if (provisionResult.goalTemplateId) log(`  Starter:  ${provisionResult.goalTemplateId}`);
     log(`  Project:  ${provisionResult.projectId}`);
     log(`  Workspace: ${provisionResult.projectCwd}`);
     for (const [role, id] of provisionResult.agentIds) {
@@ -41289,11 +41316,14 @@ async function runHeadless(opts) {
     if (provisionResult.issueIds.length) {
       log(`  Issues:   ${provisionResult.issueIds.length} created`);
     }
-    if (provisionResult.goalTemplateErrors?.length) {
-      log(
-        `  Warnings: ${provisionResult.goalTemplateErrors.length} goal template issue(s) failed:`
-      );
-      for (const e of provisionResult.goalTemplateErrors) {
+    if (provisionResult.goalResults?.length) {
+      for (const gr of provisionResult.goalResults) {
+        log(`  Goal:     ${gr.goalId} (${gr.issueIds.length} issues)`);
+      }
+    }
+    if (provisionResult.goalErrors?.length) {
+      log(`  Warnings: ${provisionResult.goalErrors.length} goal issue(s) failed:`);
+      for (const e of provisionResult.goalErrors) {
         log(`    ! ${e.title}: ${e.error}`);
       }
     }
@@ -41740,7 +41770,7 @@ ${loadPromptFile(opts.templatesDir, "config-format.md")}`
 }
 
 // src/cli.jsx
-var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
 var __dirname = dirname(fileURLToPath(import.meta.url));
 var TEMPLATES_DIR = join7(__dirname, "..", "templates");
 var HELP = `
@@ -41759,8 +41789,6 @@ var HELP = `
     --preset <name>            Preset: fast, quality, rad, startup, research, full
     --modules <a,b,c>          Comma-separated module names (added to preset)
     --roles <a,b>              Comma-separated extra role names (added to preset)
-    --goal-template <name>     Starter goal template (e.g., build-api, launch-mvp)
-
   Infrastructure options:
     --dry-run                  Show summary and exit without writing files
     --output <dir>             Output directory (default: ./companies/)
@@ -41823,8 +41851,7 @@ function parseArgs(argv) {
     repo: null,
     preset: null,
     modules: [],
-    roles: [],
-    goalTemplate: null
+    roles: []
   };
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -41911,10 +41938,6 @@ function parseArgs(argv) {
         break;
       case "--roles":
         config2.roles = next.split(",").map((s) => s.trim()).filter(Boolean);
-        i++;
-        break;
-      case "--goal-template":
-        config2.goalTemplate = next;
         i++;
         break;
       case "--help":
@@ -42009,7 +42032,7 @@ if (config.aiDescription !== null) {
   });
 } else {
   const app = render_default(
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
       App2,
       {
         outputDir: config.outputDir,
@@ -42030,8 +42053,7 @@ if (config.aiDescription !== null) {
         initialRepo: config.repo,
         initialPreset: config.preset,
         initialModules: config.modules,
-        initialRoles: config.roles,
-        initialGoalTemplate: config.goalTemplate
+        initialRoles: config.roles
       }
     )
   );
