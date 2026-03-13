@@ -22,6 +22,14 @@
 
 ## Next
 
+- [ ] Remaining agent configurations available in the wizard
+- [ ] Generate multiple goals/projects by the wizard / Add multiple goals/projects (non-wizard)
+- [ ] Generate additional issues by the wizard, if applicable (the current ones are all predefined in the modules)
+- [ ] Live preview of assembled markdown files during wizard
+- [ ] Agent heartbeat rate configuration (predefined values for each role)
+
+## Later
+
 - [ ] **Paperclip plugin integration** — package as a `page` slot plugin
     - Blocked on: plugin system implementation in Paperclip (post-V1, see `doc/plugins/PLUGIN_SPEC.md`)
     - See: [PLUGIN-INTEGRATION.md](./PLUGIN-INTEGRATION.md) for full architecture plan
@@ -31,17 +39,9 @@
     3. UI: export `WizardPage` for `page` slot, use `usePluginData`/`usePluginAction` bridge
     4. Manifest: declare capabilities (`companies.create`, `agents.create`, `ui.page.register`)
     5. Publish to npm, install via `pnpm paperclipai plugin install`
-
-## Later
-
 - [ ] Adapter model selection (general / specific for each role)
-- [ ] Agent heartbeat rate configuration (predefined values for each role)
-- [ ] Remaining agent configurations available in the wizard
-- [ ] Provide agent tool to add modules and/or roles to the company after creation (considering human approval required setting)
-- [ ] Generate multiple projects by the wizard / Add multiple projects (non-wizard)
-- [ ] Generate additional issues by the wizard, if applicable (the current ones are all predefined in the modules)
 - [ ] Org hierarchy chart preview
-- [ ] Live preview of assembled markdown files during wizard
+- [ ] Provide agent tool to add modules and/or roles to the company after creation (considering human approval required setting)
 - [ ] BYO bring your own templates — pre-assembled complete teams as a third onboarding path (AGENTS.md, HEARTBEAT.md, reference docs ...)
     - Load from `paperclipai/companies` repo (Marketing Agency, Research Team, Startup Essentials), or
     - Define local template directory (e.g. `~/.paperclip/templates`)

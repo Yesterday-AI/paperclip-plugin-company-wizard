@@ -31,6 +31,11 @@
 
 ## In Progress
 
+- [ ] **Goal template provisioning improvements**
+    - Fix: duplicate issues created when using goal templates
+    - Support multi-select goal templates (currently single-select)
+    - Unsure if dedicated project per goal template is the right model — revisit
+
 ## Backlog
 
 ### Template System

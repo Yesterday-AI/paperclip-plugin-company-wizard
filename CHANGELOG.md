@@ -2,7 +2,7 @@
 
 All notable changes to Clipper are documented here.
 
-## [0.3.8] — 2026-03-13
+## [0.3.8] — 2026-03-xx
 
 ### Added
 
