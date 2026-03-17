@@ -1,0 +1,26 @@
+{
+  "name": "launch-pack",
+  "description": "Launch your AI-powered company with a full executive team. CEO for strategy and coordination, CTO for technical architecture and deployment, CMO for go-to-market and growth. Zero revenue share — your agents, your company, your money.",
+  "constraints": [
+    "Optimized for rapid company launch. All three roles collaborate autonomously from day one.",
+    "Includes vision, technical, and marketing modules for end-to-end coverage."
+  ],
+  "roles": [
+    "ceo",
+    "cto",
+    "cmo"
+  ],
+  "modules": [
+    "vision-workshop",
+    "market-analysis",
+    "competitive-intel",
+    "brand-identity",
+    "tech-stack",
+    "architecture-plan",
+    "launch-mvp",
+    "github-repo",
+    "backlog",
+    "auto-assign",
+    "stall-detection"
+  ]
+}
