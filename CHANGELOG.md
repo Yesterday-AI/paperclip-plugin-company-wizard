@@ -40,7 +40,6 @@ Initial release of the plugin. Replaces the standalone Clipper CLI with a native
 - New `companiesDir` plugin setting — where assembled company workspaces are written. Defaults to `~/.paperclip/instances/default/companies`
 - New `templatesRepoUrl` plugin setting — GitHub tree URL for auto-downloading templates. Defaults to the Yesterday-AI/plugin-paperclip-company-wizard repo
 - `templatesPath` now defaults to `~/.paperclip/plugin-templates`, auto-downloaded from `templatesRepoUrl` if missing; falls back to bundled templates
-- Plugin config fields ordered via `x-order` (requires `x-order` keyword support in the Paperclip server's AJV validator and `JsonSchemaForm`)
 - `sync-plugin.sh` added — syncs built artifacts and updates `manifest_json` in the Paperclip DB so schema changes are picked up on restart
 
 ### Bug fixes

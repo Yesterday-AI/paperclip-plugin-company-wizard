@@ -1,6 +1,6 @@
 {
   "name": "@yesterday-ai/plugin-paperclip-company-wizard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "AI-powered wizard to bootstrap paperclip agent companies from composable templates",
   "scripts": {
