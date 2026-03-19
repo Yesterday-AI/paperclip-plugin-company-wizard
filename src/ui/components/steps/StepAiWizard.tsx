@@ -234,13 +234,29 @@ export function StepAiWizard() {
   };
 
   const tryExtractConfig = (text: string) => {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return null;
-    try {
-      const config = JSON.parse(jsonMatch[0]);
-      if (config.name && config.preset) return config;
-    } catch {
-      // not valid JSON
+    // Extract all top-level JSON objects by tracking brace depth
+    const candidates: string[] = [];
+    let depth = 0;
+    let start = -1;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === '{') {
+        if (depth === 0) start = i;
+        depth++;
+      } else if (text[i] === '}') {
+        depth--;
+        if (depth === 0 && start !== -1) {
+          candidates.push(text.slice(start, i + 1));
+          start = -1;
+        }
+      }
+    }
+    for (const candidate of candidates) {
+      try {
+        const config = JSON.parse(candidate);
+        if (config.name && config.preset) return config;
+      } catch {
+        // not valid JSON, try next
+      }
     }
     return null;
   };
