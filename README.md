@@ -20,33 +20,17 @@
 
 ## Table of Contents
 
-- [Configuration](#configuration)
 - [Two Ways to Start](#two-ways-to-start)
 - [How Roles Work](#how-roles-work)
 - [Presets](#presets)
 - [Modules](#modules)
 - [Roles](#roles)
+- [Configuration](#configuration)
 - [Development](#development)
 - [Extending](#extending)
 - [How It Works](#how-it-works)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
-
-<br>
-
-## Configuration
-
-Configure the plugin via **Settings → Plugins → Company Wizard** in the Paperclip UI.
-
-| Field | Required | Description |
-| --- | --- | --- |
-| `companiesDir` | No | Where assembled company workspaces are written. Defaults to `~/.paperclip/instances/default/companies`. Override for Docker setups. |
-| `templatesPath` | No | Path to the templates directory. Defaults to `~/.paperclip/plugin-templates` (auto-downloaded from `templatesRepoUrl` if missing). |
-| `templatesRepoUrl` | No | GitHub tree URL to pull templates from when the templates directory does not exist. Defaults to the official paperclipper templates. |
-| `paperclipUrl` | No | Paperclip instance URL. Defaults to `http://localhost:3100` or `PAPERCLIP_PUBLIC_URL` env var. |
-| `paperclipEmail` | No | Board login email. Required for authenticated (non-`local_trusted`) instances. |
-| `paperclipPassword` | No | Board login password. Stored as a secret ref. |
-| `anthropicApiKey` | No | Anthropic API key for AI wizard mode. Stored as a secret ref. Required to use the AI-powered setup path. |
 
 <br>
 
@@ -507,6 +491,22 @@ Owns visual art production: sprites, textures, tilesets, UI elements, and visual
 Owns audio production: sound effects, music, ambient soundscapes, and audio systems design. Creates audio using AI generation tools, code-based synthesis, and audio processing pipelines.
 
 </details>
+
+<br>
+
+## Configuration
+
+Configure the plugin via **Settings → Plugins → Company Wizard** in the Paperclip UI.
+
+| Field | Required | Description |
+| --- | --- | --- |
+| `companiesDir` | No | Where assembled company workspaces are written. Defaults to `~/.paperclip/instances/default/companies`. Override for Docker setups. |
+| `templatesPath` | No | Path to the templates directory. Defaults to `~/.paperclip/plugin-templates` (auto-downloaded from `templatesRepoUrl` if missing). |
+| `templatesRepoUrl` | No | GitHub tree URL to pull templates from when the templates directory does not exist. Defaults to the official paperclipper templates. |
+| `paperclipUrl` | No | Paperclip instance URL. Defaults to `http://localhost:3100` or `PAPERCLIP_PUBLIC_URL` env var. |
+| `paperclipEmail` | No | Board login email. Required for authenticated (non-`local_trusted`) instances. |
+| `paperclipPassword` | No | Board login password. Stored as a secret ref. |
+| `anthropicApiKey` | No | Anthropic API key for AI wizard mode. Stored as a secret ref. Required to use the AI-powered setup path. |
 
 <br>
 
