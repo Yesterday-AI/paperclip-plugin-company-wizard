@@ -2,7 +2,6 @@
   "name": "@yesterday-ai/plugin-paperclip-company-wizard",
   "version": "0.1.0",
   "type": "module",
-  "private": true,
   "description": "AI-powered wizard to bootstrap paperclip agent companies from composable templates",
   "scripts": {
     "build": "node ./esbuild.config.mjs",
@@ -19,6 +18,10 @@
       "prettier --write"
     ]
   },
+  "files": [
+    "dist/",
+    "templates/"
+  ],
   "paperclipPlugin": {
     "manifest": "./dist/manifest.js",
     "worker": "./dist/worker.js",
