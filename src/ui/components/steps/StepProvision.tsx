@@ -126,7 +126,7 @@ export function StepProvision() {
                 dispatch({ type: 'SET_ERROR', error: null });
                 started.current = false;
                 dispatch({ type: 'SET_PROVISIONING', value: false });
-                dispatch({ type: 'GO_TO', step: 'summary' });
+                dispatch({ type: 'GO_TO', step: state.path === 'ai' ? 'ai-wizard' : 'summary' });
               }}
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
@@ -154,7 +154,7 @@ export function StepProvision() {
                 dispatch({ type: 'SET_ERROR', error: null });
                 started.current = false;
                 dispatch({ type: 'SET_PROVISIONING', value: false });
-                dispatch({ type: 'GO_TO', step: 'summary' });
+                dispatch({ type: 'GO_TO', step: state.path === 'ai' ? 'ai-wizard' : 'summary' });
               }}
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
