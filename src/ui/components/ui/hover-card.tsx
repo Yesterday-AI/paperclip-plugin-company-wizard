@@ -25,8 +25,8 @@ function HoverCardRoot({
   closeDelay?: number;
 }) {
   const [open, setOpen] = useState(false);
-  const openTimer = useRef<ReturnType<typeof setTimeout>>();
-  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+  const openTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const triggerRef = useRef<HTMLDivElement>(null);
 
   const handleEnter = useCallback(() => {
