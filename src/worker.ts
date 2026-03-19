@@ -305,6 +305,41 @@ const plugin = definePlugin({
       }
     });
 
+    // AI chat action — proxies messages to the Anthropic API using the configured key.
+    // Keeps the API key server-side; the UI never touches it directly.
+    ctx.actions.register('ai-chat', async (params) => {
+      const cfg = ((await ctx.config.get()) ?? {}) as Record<string, string>;
+      const apiKey = cfg.anthropicApiKey || '';
+      if (!apiKey) {
+        throw new Error(
+          'Anthropic API key not configured. Add it in plugin settings (anthropicApiKey).',
+        );
+      }
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1024,
+          ...(params.system ? { system: params.system } : {}),
+          messages: params.messages,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Anthropic API error: ${response.status} ${err}`);
+      }
+
+      const data = (await response.json()) as { content?: { text: string }[] };
+      return { text: data.content?.[0]?.text || '' };
+    });
+
     ctx.actions.register('start-provision', async (params) => {
       const cfg = ((await ctx.config.get()) ?? {}) as Record<string, string>;
       const paperclipUrl =

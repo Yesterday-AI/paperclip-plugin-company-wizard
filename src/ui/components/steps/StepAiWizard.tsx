@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { usePluginAction } from '@paperclipai/plugin-sdk/ui';
 import { useWizard, useWizardDispatch } from '../../context/WizardContext';
 import { Button } from '../ui/button';
 import { ConfigReview } from '../ConfigReview';
@@ -164,7 +165,7 @@ function ConfiguringAnimation({ ready, onDone }: { ready: boolean; onDone: () =>
 export function StepAiWizard() {
   const state = useWizard();
   const dispatch = useWizardDispatch();
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('anthropic_api_key') || '');
+  const aiChat = usePluginAction('ai-chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -225,29 +226,11 @@ export function StepAiWizard() {
     .replace('{{CONFIG_FORMAT}}', promptMessages.configFormat);
 
   const callApi = async (allMessages: Message[], system?: string): Promise<string> => {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: system || systemPrompt,
-        messages: allMessages.map((m) => ({ role: m.role, content: m.content })),
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`API error: ${response.status} ${err}`);
-    }
-
-    const data = await response.json();
-    return data.content?.[0]?.text || '';
+    const result = (await aiChat({
+      messages: allMessages.map((m) => ({ role: m.role, content: m.content })),
+      system: system || systemPrompt,
+    })) as { text: string };
+    return result.text;
   };
 
   const tryExtractConfig = (text: string) => {
@@ -265,15 +248,10 @@ export function StepAiWizard() {
   const startInterview = async (description?: string) => {
     const desc = description || state.aiDescription;
     if (!desc.trim()) return;
-    if (!apiKey.trim()) {
-      dispatch({ type: 'SET_ERROR', error: 'Anthropic API Key is required for AI wizard mode.' });
-      return;
-    }
 
     if (description) {
       dispatch({ type: 'SET_AI_DESCRIPTION', value: description });
     }
-    localStorage.setItem('anthropic_api_key', apiKey);
     dispatch({ type: 'SET_ERROR', error: null });
 
     setPhase('interview');
@@ -300,15 +278,10 @@ export function StepAiWizard() {
   const quickGenerate = async (description?: string) => {
     const desc = description || state.aiDescription;
     if (!desc.trim()) return;
-    if (!apiKey.trim()) {
-      dispatch({ type: 'SET_ERROR', error: 'Anthropic API Key is required for AI wizard mode.' });
-      return;
-    }
 
     if (description) {
       dispatch({ type: 'SET_AI_DESCRIPTION', value: description });
     }
-    localStorage.setItem('anthropic_api_key', apiKey);
     dispatch({ type: 'SET_ERROR', error: null });
 
     setConfigReady(false);
@@ -467,7 +440,7 @@ export function StepAiWizard() {
                   key={prompt}
                   onClick={() => {
                     dispatch({ type: 'SET_AI_DESCRIPTION', value: prompt });
-                    if (apiKey.trim()) startInterview(prompt);
+                    startInterview(prompt);
                   }}
                   className="text-xs px-2.5 py-1 rounded-full border border-border hover:border-foreground/20 hover:bg-accent/50 text-muted-foreground hover:text-foreground transition-colors text-left"
                 >
@@ -477,22 +450,6 @@ export function StepAiWizard() {
             </div>
           </div>
         </div>
-
-        {!apiKey && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Anthropic API Key</label>
-            <input
-              type="password"
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              placeholder="sk-ant-..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Stored locally in your browser. Never sent to Paperclip.
-            </p>
-          </div>
-        )}
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => dispatch({ type: 'GO_TO', step: 'onboarding' })}>

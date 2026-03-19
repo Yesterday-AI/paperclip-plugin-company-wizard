@@ -56,6 +56,13 @@ const manifest: PaperclipPluginManifestV1 = {
         format: 'secret-ref',
         description: 'Board login password.',
       },
+      anthropicApiKey: {
+        'x-order': 6,
+        type: 'string',
+        format: 'secret-ref',
+        description:
+          'Anthropic API key for the AI wizard. Required to use the AI-powered company setup path.',
+      },
     },
   },
   entrypoints: {
