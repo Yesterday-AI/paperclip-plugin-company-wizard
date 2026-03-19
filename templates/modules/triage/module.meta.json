@@ -1,10 +1,17 @@
 {
   "name": "triage",
-  "requires": ["github-repo"],
+  "description": "Triages open GitHub issues: classifies, prioritizes, closes noise, and converts actionable items to Paperclip tasks.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "issue-triage",
-      "owners": ["product-owner", "engineer", "ceo"],
+      "owners": [
+        "product-owner",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "issue-triage.fallback"
     }
   ],

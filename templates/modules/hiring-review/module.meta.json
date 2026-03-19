@@ -1,9 +1,13 @@
 {
   "name": "hiring-review",
+  "description": "Adds a review step before new agents are hired. Gives the board visibility into team composition changes.",
   "capabilities": [
     {
       "skill": "hiring-review",
-      "owners": ["product-owner", "ceo"],
+      "owners": [
+        "product-owner",
+        "ceo"
+      ],
       "fallbackSkill": "hiring-review.fallback"
     }
   ],

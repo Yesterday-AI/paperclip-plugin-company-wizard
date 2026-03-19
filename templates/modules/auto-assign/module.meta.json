@@ -1,10 +1,16 @@
 {
   "name": "auto-assign",
-  "permissions": ["tasks:assign"],
+  "description": "Automatically assigns unowned backlog items to available agents. Keeps work flowing without manual dispatch.",
+  "permissions": [
+    "tasks:assign"
+  ],
   "capabilities": [
     {
       "skill": "auto-assign",
-      "owners": ["product-owner", "ceo"],
+      "owners": [
+        "product-owner",
+        "ceo"
+      ],
       "fallbackSkill": "auto-assign.fallback"
     }
   ]

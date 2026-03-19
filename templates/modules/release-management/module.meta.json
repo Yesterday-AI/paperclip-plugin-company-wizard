@@ -1,10 +1,17 @@
 {
   "name": "release-management",
-  "requires": ["github-repo"],
+  "description": "Defines and tracks the release process: versioning, changelogs, and deployment checklists.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "release-process",
-      "owners": ["devops", "engineer", "ceo"],
+      "owners": [
+        "devops",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "release-process.fallback"
     }
   ],

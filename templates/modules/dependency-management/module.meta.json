@@ -1,10 +1,17 @@
 {
   "name": "dependency-management",
-  "requires": ["github-repo"],
+  "description": "Audits and maintains project dependencies. Flags outdated packages, security issues, and license risks.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "dependency-audit",
-      "owners": ["devops", "security-engineer", "engineer"],
+      "owners": [
+        "devops",
+        "security-engineer",
+        "engineer"
+      ],
       "fallbackSkill": "dependency-audit.fallback"
     }
   ],

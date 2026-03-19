@@ -3,6 +3,7 @@
   "description": "Content and documentation focused setup. Technical Writer for docs, market analysis for positioning, and accessibility for inclusive design. Best for developer tools, documentation-heavy projects, or content-driven products.",
   "constraints": [],
   "roles": [
+    "engineer",
     "technical-writer",
     "product-owner"
   ],

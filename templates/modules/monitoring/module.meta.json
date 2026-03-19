@@ -1,10 +1,16 @@
 {
   "name": "monitoring",
-  "requires": ["github-repo"],
+  "description": "Sets up application monitoring, alerting, and observability for production systems.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "monitoring",
-      "owners": ["devops", "engineer"],
+      "owners": [
+        "devops",
+        "engineer"
+      ],
       "fallbackSkill": "monitoring.fallback"
     }
   ],

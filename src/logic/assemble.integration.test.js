@@ -36,13 +36,16 @@ describe('assembleCompany integration (real templates)', () => {
       goal: { title: 'Ship the MVP', description: 'Build and launch a working product' },
       project: { name: 'test-app', repoUrl: 'https://github.com/test/test-app' },
       moduleNames: ['github-repo', 'pr-review', 'backlog', 'auto-assign', 'stall-detection'],
-      extraRoleNames: ['product-owner', 'code-reviewer'],
+      extraRoleNames: ['engineer', 'product-owner', 'code-reviewer'],
       outputDir,
       templatesDir: REAL_TEMPLATES_DIR,
     });
 
     // --- Verify company directory ---
-    assert.ok(companyDir.endsWith('IntegrationTestCo'), `expected PascalCase dir, got ${companyDir}`);
+    assert.ok(
+      companyDir.endsWith('IntegrationTestCo'),
+      `expected PascalCase dir, got ${companyDir}`,
+    );
     assert.ok(await exists(companyDir), 'company directory should exist');
 
     // --- Verify all expected roles ---
@@ -55,10 +58,7 @@ describe('assembleCompany integration (real templates)', () => {
 
       // Every role must have these core files
       for (const file of ['AGENTS.md', 'HEARTBEAT.md', 'SOUL.md', 'TOOLS.md']) {
-        assert.ok(
-          await exists(join(roleDir, file)),
-          `agents/${role}/${file} should exist`,
-        );
+        assert.ok(await exists(join(roleDir, file)), `agents/${role}/${file} should exist`);
       }
 
       // AGENTS.md should not be empty
@@ -87,12 +87,18 @@ describe('assembleCompany integration (real templates)', () => {
     const bootstrap = await readFile(join(companyDir, 'BOOTSTRAP.md'), 'utf-8');
     assert.ok(bootstrap.includes('# Bootstrap: Integration Test Co'));
     assert.ok(bootstrap.includes('**Ship the MVP**'), 'BOOTSTRAP.md should include goal title');
-    assert.ok(bootstrap.includes('Build and launch a working product'), 'should include goal description');
+    assert.ok(
+      bootstrap.includes('Build and launch a working product'),
+      'should include goal description',
+    );
     assert.ok(bootstrap.includes('test-app'), 'should include project name');
     assert.ok(bootstrap.includes('https://github.com/test/test-app'), 'should include repo URL');
     assert.ok(bootstrap.includes('instructionsFilePath'), 'should have agent setup instructions');
     for (const role of expectedRoles) {
-      assert.ok(bootstrap.includes(`agents/${role}/AGENTS.md`), `BOOTSTRAP.md should reference ${role}`);
+      assert.ok(
+        bootstrap.includes(`agents/${role}/AGENTS.md`),
+        `BOOTSTRAP.md should reference ${role}`,
+      );
     }
 
     // --- Verify initial tasks ---
@@ -139,17 +145,32 @@ describe('assembleCompany integration (real templates)', () => {
     assert.ok(poSkills.includes('backlog-health.md'), 'PO should have primary backlog-health.md');
 
     // ceo gets fallback skills
-    assert.ok(ceoSkills.includes('auto-assign.fallback.md'), 'CEO should have fallback auto-assign');
-    assert.ok(ceoSkills.includes('backlog-health.fallback.md'), 'CEO should have fallback backlog-health');
+    assert.ok(
+      ceoSkills.includes('auto-assign.fallback.md'),
+      'CEO should have fallback auto-assign',
+    );
+    assert.ok(
+      ceoSkills.includes('backlog-health.fallback.md'),
+      'CEO should have fallback backlog-health',
+    );
 
     // ceo should NOT have the primary versions of capability skills
     assert.ok(!ceoSkills.includes('auto-assign.md'), 'CEO should not have primary auto-assign');
-    assert.ok(!ceoSkills.includes('backlog-health.md'), 'CEO should not have primary backlog-health');
+    assert.ok(
+      !ceoSkills.includes('backlog-health.md'),
+      'CEO should not have primary backlog-health',
+    );
 
     // AGENTS.md should reference the installed skills
-    const poAgentsMd = await readFile(join(companyDir, 'agents', 'product-owner', 'AGENTS.md'), 'utf-8');
+    const poAgentsMd = await readFile(
+      join(companyDir, 'agents', 'product-owner', 'AGENTS.md'),
+      'utf-8',
+    );
     assert.ok(poAgentsMd.includes('auto-assign.md'), 'PO AGENTS.md should reference auto-assign');
-    assert.ok(poAgentsMd.includes('backlog-health.md'), 'PO AGENTS.md should reference backlog-health');
+    assert.ok(
+      poAgentsMd.includes('backlog-health.md'),
+      'PO AGENTS.md should reference backlog-health',
+    );
 
     const ceoAgentsMd = await readFile(join(companyDir, 'agents', 'ceo', 'AGENTS.md'), 'utf-8');
     assert.ok(
@@ -172,11 +193,19 @@ describe('assembleCompany integration (real templates)', () => {
     assert.ok(await exists(ceoSkillsDir), 'ceo should have skills/');
 
     const ceoSkills = await readdir(ceoSkillsDir);
-    assert.ok(ceoSkills.includes('auto-assign.md'), 'CEO should have primary auto-assign when PO absent');
-    assert.ok(ceoSkills.includes('backlog-health.md'), 'CEO should have primary backlog-health when PO absent');
+    assert.ok(
+      ceoSkills.includes('auto-assign.md'),
+      'CEO should have primary auto-assign when PO absent',
+    );
+    assert.ok(
+      ceoSkills.includes('backlog-health.md'),
+      'CEO should have primary backlog-health when PO absent',
+    );
 
     // Backlog task should resolve to ceo
-    const backlogTask = initialTasks.find((t) => t.title === 'Create roadmap and generate initial backlog');
+    const backlogTask = initialTasks.find(
+      (t) => t.title === 'Create roadmap and generate initial backlog',
+    );
     assert.ok(backlogTask, 'should have backlog task');
     assert.equal(backlogTask.assignTo, 'ceo', 'backlog task should fall back to ceo');
   });
@@ -204,13 +233,16 @@ describe('assembleCompany integration (real templates)', () => {
     const { companyDir } = await assembleCompany({
       companyName: 'SkillRefCo',
       moduleNames: ['github-repo'],
-      extraRoleNames: [],
+      extraRoleNames: ['engineer'],
       outputDir,
       templatesDir: REAL_TEMPLATES_DIR,
     });
 
     // github-repo has agent-specific skill for engineer
-    const engAgentsMd = await readFile(join(companyDir, 'agents', 'engineer', 'AGENTS.md'), 'utf-8');
+    const engAgentsMd = await readFile(
+      join(companyDir, 'agents', 'engineer', 'AGENTS.md'),
+      'utf-8',
+    );
     assert.ok(
       engAgentsMd.includes('$AGENT_HOME/skills/git-workflow.md'),
       'engineer AGENTS.md should have $AGENT_HOME skill reference for git-workflow',
@@ -232,14 +264,17 @@ describe('assembleCompany integration (real templates)', () => {
       templatesDir: REAL_TEMPLATES_DIR,
     });
 
-    // Only base roles
-    assert.deepEqual(allRoles, new Set(['ceo', 'engineer']));
+    // Only base roles (engineer is now optional, not a base role)
+    assert.deepEqual(allRoles, new Set(['ceo']));
     assert.equal(initialTasks.length, 0, 'no modules = no tasks');
 
     // Core files still present
-    for (const role of ['ceo', 'engineer']) {
+    for (const role of ['ceo']) {
       for (const file of ['AGENTS.md', 'HEARTBEAT.md', 'SOUL.md', 'TOOLS.md']) {
-        assert.ok(await exists(join(companyDir, 'agents', role, file)), `${role}/${file} should exist`);
+        assert.ok(
+          await exists(join(companyDir, 'agents', role, file)),
+          `${role}/${file} should exist`,
+        );
       }
     }
 
@@ -292,6 +327,10 @@ describe('assembleCompany integration (real templates)', () => {
     }
 
     const metaFiles = await findMetaFiles(companyDir);
-    assert.equal(metaFiles.length, 0, `no .meta.json should leak into output, found: ${metaFiles.join(', ')}`);
+    assert.equal(
+      metaFiles.length,
+      0,
+      `no .meta.json should leak into output, found: ${metaFiles.join(', ')}`,
+    );
   });
 });

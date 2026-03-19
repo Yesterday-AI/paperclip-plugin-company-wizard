@@ -9,5 +9,8 @@
     "auto-assign",
     "ci-cd",
     "stall-detection"
+  ],
+  "roles": [
+    "engineer"
   ]
 }

@@ -11,9 +11,9 @@ You are conducting a guided interview to understand what company to set up.
 ## Available Optional Roles (can be added on top of preset)
 {{ROLE_CATALOG}}
 
-## Base Roles (always included)
+## Base Role (always included)
+
 - **ceo**: Company CEO, strategic oversight
-- **engineer**: Software engineer, builds the product
 
 ## Interview Rules
 

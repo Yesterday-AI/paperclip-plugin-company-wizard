@@ -3,6 +3,7 @@
   "description": "Security-focused setup with threat modeling, security reviews, and quality gates. Includes PR review and full planning. Best for regulated industries, fintech, healthtech, or security-sensitive projects.",
   "constraints": [],
   "roles": [
+    "engineer",
     "security-engineer",
     "code-reviewer",
     "product-owner"

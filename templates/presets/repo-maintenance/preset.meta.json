@@ -3,6 +3,7 @@
   "description": "Maintain an existing repository: review PRs, triage issues, audit codebase health, manage dependencies and releases. For custodial maintenance, not greenfield development.",
   "constraints": [],
   "roles": [
+    "engineer",
     "code-reviewer",
     "product-owner"
   ],
@@ -44,7 +45,7 @@
         {
           "id": "steady-state",
           "title": "Steady State",
-          "description": "Ongoing maintenance loop — agents handle PRs, issues, and health on every heartbeat.",
+          "description": "Ongoing maintenance loop \u2014 agents handle PRs, issues, and health on every heartbeat.",
           "completionCriteria": "Maintenance processes running autonomously for 3+ heartbeat cycles with no backlog buildup."
         }
       ],

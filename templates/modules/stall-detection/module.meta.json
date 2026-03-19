@@ -1,4 +1,5 @@
 {
   "name": "stall-detection",
+  "description": "Detects when issues go stale or agents get stuck. Prompts the CEO to unblock work automatically.",
   "capabilities": []
 }

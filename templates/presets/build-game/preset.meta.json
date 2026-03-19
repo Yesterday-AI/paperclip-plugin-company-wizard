@@ -1,8 +1,9 @@
 {
   "name": "build-game",
-  "description": "Build a game from idea to playable release. Game design, prototyping, art creation, playtesting, and shipping. Works for any genre — platformers, puzzles, roguelikes, strategy, etc.",
+  "description": "Build a game from idea to playable release. Game design, prototyping, art creation, playtesting, and shipping. Works for any genre \u2014 platformers, puzzles, roguelikes, strategy, etc.",
   "constraints": [],
   "roles": [
+    "engineer",
     "game-designer",
     "game-artist",
     "audio-designer"
@@ -55,7 +56,7 @@
       "issues": [
         {
           "title": "Create Game Design Document",
-          "description": "Define the game's complete design. Follow the GDD template in docs/gdd-template.md.\n\nMust include: concept pitch, core mechanic (input → action → feedback → consequence), three-layer game loop, progression system, win/lose conditions, controls, art direction, audio direction, and all tuning parameters.\n\nOutput: docs/GDD.md",
+          "description": "Define the game's complete design. Follow the GDD template in docs/gdd-template.md.\n\nMust include: concept pitch, core mechanic (input \u2192 action \u2192 feedback \u2192 consequence), three-layer game loop, progression system, win/lose conditions, controls, art direction, audio direction, and all tuning parameters.\n\nOutput: docs/GDD.md",
           "priority": "critical",
           "milestone": "concept",
           "assignTo": "game-designer"
@@ -83,14 +84,14 @@
         },
         {
           "title": "Implement core mechanic prototype",
-          "description": "Build a playable prototype focused on the core mechanic only:\n- Player character with basic movement and the core action\n- Minimal game loop (start → play → end)\n- Placeholder art (colored rectangles, basic shapes)\n- Tuning parameters exposed as constants (not hardcoded in logic)\n\nThe prototype must be playable and demonstrate whether the core mechanic feels good. Don't build menus, progression, or polish.",
+          "description": "Build a playable prototype focused on the core mechanic only:\n- Player character with basic movement and the core action\n- Minimal game loop (start \u2192 play \u2192 end)\n- Placeholder art (colored rectangles, basic shapes)\n- Tuning parameters exposed as constants (not hardcoded in logic)\n\nThe prototype must be playable and demonstrate whether the core mechanic feels good. Don't build menus, progression, or polish.",
           "priority": "critical",
           "milestone": "prototype",
           "assignTo": "engineer"
         },
         {
           "title": "Create placeholder art for prototype",
-          "description": "Generate basic art assets for the prototype:\n- Player character sprite (simple, readable silhouette)\n- Basic tileset or background elements\n- Key interactive objects (enemies, pickups, hazards)\n\nThese are working assets — better than colored rectangles but not final. Focus on gameplay readability over visual polish.",
+          "description": "Generate basic art assets for the prototype:\n- Player character sprite (simple, readable silhouette)\n- Basic tileset or background elements\n- Key interactive objects (enemies, pickups, hazards)\n\nThese are working assets \u2014 better than colored rectangles but not final. Focus on gameplay readability over visual polish.",
           "priority": "high",
           "milestone": "prototype",
           "assignTo": "game-artist"
@@ -132,7 +133,7 @@
         },
         {
           "title": "Build all levels and game flow",
-          "description": "Implement the full game:\n- All levels from the level design document\n- Complete game flow: title screen → level select → gameplay → game over → credits\n- Full progression system: unlocks, saves, scoring\n- All enemy types and behaviors\n- Integrate all art and audio assets\n\nThe game should be completable from start to finish.",
+          "description": "Implement the full game:\n- All levels from the level design document\n- Complete game flow: title screen \u2192 level select \u2192 gameplay \u2192 game over \u2192 credits\n- Full progression system: unlocks, saves, scoring\n- All enemy types and behaviors\n- Integrate all art and audio assets\n\nThe game should be completable from start to finish.",
           "priority": "high",
           "milestone": "production",
           "assignTo": "engineer"
@@ -153,7 +154,7 @@
         },
         {
           "title": "Distribution and launch",
-          "description": "Distribute the game to players:\n- Deploy to target platform (itch.io, web hosting, app store, etc.)\n- Create game page with screenshots, description, controls\n- Set up analytics if applicable\n- Announce availability\n\nThis is a human task — platform accounts and publishing decisions require board involvement.",
+          "description": "Distribute the game to players:\n- Deploy to target platform (itch.io, web hosting, app store, etc.)\n- Create game page with screenshots, description, controls\n- Set up analytics if applicable\n- Announce availability\n\nThis is a human task \u2014 platform accounts and publishing decisions require board involvement.",
           "priority": "medium",
           "milestone": "polish-ship",
           "assignTo": "user"

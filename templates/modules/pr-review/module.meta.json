@@ -1,7 +1,18 @@
 {
   "name": "pr-review",
-  "requires": ["github-repo"],
-  "activatesWithRoles": ["code-reviewer", "product-owner", "ui-designer", "ux-researcher", "qa", "devops"],
+  "description": "Enforces pull request reviews through branch protection. Activates additional reviewers based on the roles present in the team.",
+  "requires": [
+    "github-repo"
+  ],
+  "activatesWithRoles": [
+    "engineer",
+    "code-reviewer",
+    "product-owner",
+    "ui-designer",
+    "ux-researcher",
+    "qa",
+    "devops"
+  ],
   "capabilities": [],
   "tasks": [
     {

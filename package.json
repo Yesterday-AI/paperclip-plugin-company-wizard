@@ -1,66 +1,68 @@
 {
-  "name": "@yesterday-ai/paperclipper",
-  "version": "0.3.7",
-  "description": "Bootstrap a Paperclip company workspace from modular templates. Company as code.",
+  "name": "@yesterday-ai/plugin-paperclip-company-wizard",
+  "version": "0.1.0",
   "type": "module",
-  "bin": {
-    "clipper": "dist/cli.mjs"
+  "description": "AI-powered wizard to bootstrap paperclip agent companies from composable templates",
+  "scripts": {
+    "build": "node ./esbuild.config.mjs",
+    "build:rollup": "rollup -c",
+    "dev": "node ./esbuild.config.mjs --watch",
+    "dev:ui": "paperclip-plugin-dev-server --root . --ui-dir dist/ui --port 4177",
+    "test": "vitest run --config ./vitest.config.ts",
+    "test:logic": "node --test src/logic/*.test.js",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "prettier --write"
+    ]
   },
   "files": [
     "dist/",
     "templates/"
   ],
-  "scripts": {
-    "build": "node esbuild.config.mjs",
-    "dev": "node --experimental-strip-types src/cli.jsx",
-    "test": "node --test src/logic/*.test.js src/api/*.test.js",
-    "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix",
-    "format": "prettier --write src/",
-    "format:check": "prettier --check src/",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js",
+    "ui": "./dist/ui/"
   },
   "keywords": [
     "paperclip",
-    "ai-agents",
-    "company-as-code",
-    "bootstrap",
-    "templates",
-    "cli"
+    "plugin",
+    "workspace"
   ],
-  "author": "Yesterday <https://yesterday-ai.de>",
-  "homepage": "https://github.com/Yesterday-AI/paperclipper#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Yesterday-AI/paperclipper"
-  },
-  "bugs": {
-    "url": "https://github.com/Yesterday-AI/paperclipper/issues"
-  },
+  "author": "@lx-0 <https://github.com/lx-0>",
   "license": "MIT",
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
-    "ink": "^6.0.0",
-    "ink-select-input": "^6.0.0",
-    "ink-spinner": "^5.0.0",
-    "ink-text-input": "^6.0.0",
-    "react": "^19.0.0"
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.574.0",
+    "tailwind-merge": "^3.4.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0",
-    "eslint": "^9.39.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
+    "@paperclipai/plugin-sdk": "2026.318.0",
+    "@paperclipai/shared": "2026.318.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@tailwindcss/postcss": "^4.0.7",
+    "@types/node": "^24.6.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.27.3",
+    "esbuild-postcss-plugin": "^0.0.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.2",
-    "prettier": "^3.8.1"
+    "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
+    "rollup": "^4.38.0",
+    "tailwindcss": "^4.0.7",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   }
 }

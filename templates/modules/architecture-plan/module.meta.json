@@ -1,15 +1,24 @@
 {
   "name": "architecture-plan",
-  "requires": ["tech-stack"],
+  "description": "Documents system architecture and design system before building begins. Prevents structural debt from accumulating early.",
+  "requires": [
+    "tech-stack"
+  ],
   "capabilities": [
     {
       "skill": "architecture-plan",
-      "owners": ["engineer", "ceo"],
+      "owners": [
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "architecture-plan.fallback"
     },
     {
       "skill": "design-system",
-      "owners": ["ui-designer", "engineer"],
+      "owners": [
+        "ui-designer",
+        "engineer"
+      ],
       "fallbackSkill": "design-system.fallback"
     }
   ],

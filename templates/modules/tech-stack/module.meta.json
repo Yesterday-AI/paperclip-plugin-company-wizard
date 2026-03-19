@@ -1,9 +1,13 @@
 {
   "name": "tech-stack",
+  "description": "Documents the technology choices for the project: languages, frameworks, infrastructure, and rationale.",
   "capabilities": [
     {
       "skill": "tech-stack",
-      "owners": ["engineer", "ceo"],
+      "owners": [
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "tech-stack.fallback"
     }
   ],

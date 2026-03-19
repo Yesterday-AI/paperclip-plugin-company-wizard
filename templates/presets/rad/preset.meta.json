@@ -2,8 +2,8 @@
   "name": "rad",
   "description": "Rapid Application Development. Minimal planning, fast prototyping, iterate based on what you learn. Tech stack decision upfront, then straight to building. Hiring review to scale the team when bottlenecks appear.",
   "constraints": [
-    "No PR review — speed over process. Add pr-review module when the codebase stabilizes.",
-    "No upfront market or architecture analysis — prototype first, formalize later."
+    "No PR review \u2014 speed over process. Add pr-review module when the codebase stabilizes.",
+    "No upfront market or architecture analysis \u2014 prototype first, formalize later."
   ],
   "modules": [
     "tech-stack",
@@ -12,5 +12,8 @@
     "backlog",
     "auto-assign",
     "stall-detection"
+  ],
+  "roles": [
+    "engineer"
   ]
 }

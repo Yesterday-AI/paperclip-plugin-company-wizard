@@ -1,9 +1,14 @@
 {
   "name": "brand-identity",
+  "description": "Establishes brand identity: naming, visual language, messaging, and tone of voice.",
   "capabilities": [
     {
       "skill": "brand-identity",
-      "owners": ["ui-designer", "cmo", "ceo"],
+      "owners": [
+        "ui-designer",
+        "cmo",
+        "ceo"
+      ],
       "fallbackSkill": "brand-identity.fallback"
     }
   ],

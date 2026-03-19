@@ -1,9 +1,15 @@
 {
   "name": "competitive-intel",
+  "description": "Tracks competitors and surfaces market shifts. Keeps the team informed on what others are building.",
   "capabilities": [
     {
       "skill": "competitive-tracking",
-      "owners": ["customer-success", "cmo", "product-owner", "ceo"],
+      "owners": [
+        "customer-success",
+        "cmo",
+        "product-owner",
+        "ceo"
+      ],
       "fallbackSkill": "competitive-tracking.fallback"
     }
   ],

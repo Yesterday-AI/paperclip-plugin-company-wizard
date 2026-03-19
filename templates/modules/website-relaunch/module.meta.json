@@ -1,18 +1,27 @@
 {
   "name": "website-relaunch",
   "title": "Website Relaunch",
+  "description": "Audits the current site, ingests new designs, and plans a full website relaunch.",
   "adapterOverrides": {
     "chrome": true
   },
   "capabilities": [
     {
       "skill": "design-ingestion",
-      "owners": ["ui-designer", "engineer", "ceo"],
+      "owners": [
+        "ui-designer",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": null
     },
     {
       "skill": "site-audit",
-      "owners": ["ui-designer", "engineer", "ceo"],
+      "owners": [
+        "ui-designer",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": null
     }
   ],
@@ -25,12 +34,12 @@
     {
       "title": "Visual and UX audit of current website",
       "assignTo": "capability:site-audit",
-      "description": "Audit the current website visually — design patterns, content quality, UX observations, accessibility. Follow the `site-audit` skill. Append to `docs/SITE-AUDIT.md` or create `docs/DESIGN-AUDIT.md`."
+      "description": "Audit the current website visually \u2014 design patterns, content quality, UX observations, accessibility. Follow the `site-audit` skill. Append to `docs/SITE-AUDIT.md` or create `docs/DESIGN-AUDIT.md`."
     },
     {
       "title": "Analyze design assets and create design spec",
       "assignTo": "engineer",
-      "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1–5, then 6–10) to view each page visually. Do NOT use text extraction as primary method — design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens — colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory — recurring UI components\n3. Page layouts — grid system, responsive breakpoints\n4. Asset catalog — images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts."
+      "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1\u20135, then 6\u201310) to view each page visually. Do NOT use text extraction as primary method \u2014 design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens \u2014 colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory \u2014 recurring UI components\n3. Page layouts \u2014 grid system, responsive breakpoints\n4. Asset catalog \u2014 images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts."
     }
   ],
   "goal": {
@@ -41,7 +50,7 @@
       {
         "id": "discovery",
         "title": "Discovery & audit",
-        "description": "Audit the current website — document page structure, content inventory, navigation, tech stack, and SEO baseline. Identify what to keep, migrate, or drop.",
+        "description": "Audit the current website \u2014 document page structure, content inventory, navigation, tech stack, and SEO baseline. Identify what to keep, migrate, or drop.",
         "completionCriteria": "A site audit document exists with page inventory, content map, tech stack notes, and migration decisions."
       },
       {
@@ -79,14 +88,14 @@
       },
       {
         "title": "Visual and UX audit of current website",
-        "description": "Audit the current website from a design and user experience perspective. Use Chrome to browse the site visually. Follow the `site-audit` skill.\n\nFor each page type, document:\n- **Layout patterns** — grid structure, content zones, visual hierarchy\n- **Design tokens in use** — colors, typography, spacing, component patterns\n- **Content quality** — is copy clear, current, and on-brand? Flag outdated or placeholder content\n- **UX observations** — navigation intuitiveness, user flows, friction points, dead ends\n- **Accessibility** — heading hierarchy, image alt text, color contrast (visual estimate)\n\nFor each page, recommend: **keep** (design is strong), **redesign** (layout needs rethinking), **rewrite** (content is outdated), **merge**, or **drop**.\n\nAppend findings to `docs/SITE-AUDIT.md` under a 'Visual Design & UX' section, or create `docs/DESIGN-AUDIT.md` if the technical audit is already complete.",
+        "description": "Audit the current website from a design and user experience perspective. Use Chrome to browse the site visually. Follow the `site-audit` skill.\n\nFor each page type, document:\n- **Layout patterns** \u2014 grid structure, content zones, visual hierarchy\n- **Design tokens in use** \u2014 colors, typography, spacing, component patterns\n- **Content quality** \u2014 is copy clear, current, and on-brand? Flag outdated or placeholder content\n- **UX observations** \u2014 navigation intuitiveness, user flows, friction points, dead ends\n- **Accessibility** \u2014 heading hierarchy, image alt text, color contrast (visual estimate)\n\nFor each page, recommend: **keep** (design is strong), **redesign** (layout needs rethinking), **rewrite** (content is outdated), **merge**, or **drop**.\n\nAppend findings to `docs/SITE-AUDIT.md` under a 'Visual Design & UX' section, or create `docs/DESIGN-AUDIT.md` if the technical audit is already complete.",
         "priority": "high",
         "milestone": "discovery",
         "assignTo": "ui-designer"
       },
       {
         "title": "Content audit of current website",
-        "description": "Crawl every page of the current website and audit the existing content to inform the redesign:\n\nFor each page, document:\n- **Content type** — hero copy, body text, testimonials, FAQs, CTAs, legal, blog posts\n- **Key messages** — what is the page trying to communicate? What value propositions are present?\n- **Content quality** — is the copy clear, current, and on-brand? Flag outdated, placeholder, or thin content\n- **Media assets** — images, videos, downloads — note which are reusable vs need replacement\n- **SEO content** — headings, meta descriptions, alt text — what's working, what's missing\n- **Gaps** — messaging that should exist but doesn't (e.g., missing social proof, no pricing clarity)\n\nFor each page, recommend a migration strategy:\n- **Keep** — content is strong, migrate as-is into the new design\n- **Rewrite** — message is right but copy needs updating for the new design/voice\n- **Merge** — overlapping content across pages, consolidate\n- **Drop** — no longer relevant, redirect or remove\n\nOutput: `docs/CONTENT-AUDIT.md` — this is a key input for the design handoff and content migration milestones.",
+        "description": "Crawl every page of the current website and audit the existing content to inform the redesign:\n\nFor each page, document:\n- **Content type** \u2014 hero copy, body text, testimonials, FAQs, CTAs, legal, blog posts\n- **Key messages** \u2014 what is the page trying to communicate? What value propositions are present?\n- **Content quality** \u2014 is the copy clear, current, and on-brand? Flag outdated, placeholder, or thin content\n- **Media assets** \u2014 images, videos, downloads \u2014 note which are reusable vs need replacement\n- **SEO content** \u2014 headings, meta descriptions, alt text \u2014 what's working, what's missing\n- **Gaps** \u2014 messaging that should exist but doesn't (e.g., missing social proof, no pricing clarity)\n\nFor each page, recommend a migration strategy:\n- **Keep** \u2014 content is strong, migrate as-is into the new design\n- **Rewrite** \u2014 message is right but copy needs updating for the new design/voice\n- **Merge** \u2014 overlapping content across pages, consolidate\n- **Drop** \u2014 no longer relevant, redirect or remove\n\nOutput: `docs/CONTENT-AUDIT.md` \u2014 this is a key input for the design handoff and content migration milestones.",
         "priority": "high",
         "milestone": "discovery",
         "assignTo": "engineer"
@@ -100,14 +109,14 @@
       },
       {
         "title": "Provide design assets",
-        "description": "Upload the design files from the external agency. Accepted formats:\n- **PDF** — design comps, style guides (will be visually analyzed page by page)\n- **PNG/SVG** — logos, icons, illustrations, page mockups\n- **ZIP** — archive containing any of the above\n- **URL** — link to a shared folder, Figma file, or hosted assets\n\nPlace files in the `designs/` directory of the project, or paste a download URL in a comment on this issue.\n\nThis issue blocks all implementation work.",
+        "description": "Upload the design files from the external agency. Accepted formats:\n- **PDF** \u2014 design comps, style guides (will be visually analyzed page by page)\n- **PNG/SVG** \u2014 logos, icons, illustrations, page mockups\n- **ZIP** \u2014 archive containing any of the above\n- **URL** \u2014 link to a shared folder, Figma file, or hosted assets\n\nPlace files in the `designs/` directory of the project, or paste a download URL in a comment on this issue.\n\nThis issue blocks all implementation work.",
         "priority": "critical",
         "milestone": "design-handoff",
         "assignTo": "user"
       },
       {
         "title": "Analyze design assets and create design spec",
-        "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1–5, then 6–10) to view each page visually. Do NOT use text extraction as primary method — design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens — colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory — recurring UI components\n3. Page layouts — grid system, responsive breakpoints\n4. Asset catalog — images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts.",
+        "description": "Process all design files in the `designs/` directory. Follow the `design-ingestion` skill for the full process.\n\n**How to read design files:**\n- **PDFs:** Use the Read tool with the `pages` parameter (e.g., pages 1\u20135, then 6\u201310) to view each page visually. Do NOT use text extraction as primary method \u2014 design PDFs are visual artifacts.\n- **PNG/SVG/JPG:** Use the Read tool directly to view each image.\n- **Fallback for precise values:** Use `markitdown` or `docling` (install via pip) to supplement visual analysis with extracted metadata. Use `pdffonts` for embedded font names.\n\n**Extract:**\n1. Design tokens \u2014 colors (hex/oklch), typography, spacing scale, border radii, shadows\n2. Component inventory \u2014 recurring UI components\n3. Page layouts \u2014 grid system, responsive breakpoints\n4. Asset catalog \u2014 images, icons, illustrations\n\nOutput: `docs/DESIGN-SPEC.md` with all extracted tokens, components, and layouts.",
         "priority": "critical",
         "milestone": "design-handoff",
         "assignTo": "engineer"

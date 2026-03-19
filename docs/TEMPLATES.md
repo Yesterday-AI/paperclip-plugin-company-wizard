@@ -1,0 +1,514 @@
+# Template Reference
+
+The plugin assembles company workspaces from composable templates stored in `templates/`. This document covers the architecture, available presets, modules, and roles, plus how to extend the system with your own.
+
+## Table of Contents
+
+- [What Gets Generated](#what-gets-generated)
+- [Gracefully Optimistic Architecture](#gracefully-optimistic-architecture)
+- [Presets](#presets)
+- [Modules](#modules)
+- [Roles](#roles)
+- [Extending](#extending)
+  - [Add a module](#add-a-module)
+  - [Add a role](#add-a-role)
+  - [Add a preset](#add-a-preset)
+
+---
+
+## What Gets Generated
+
+```text
+{company}/
+├── agents/
+│   ├── ceo/
+│   │   ├── AGENTS.md         # Identity + skill references
+│   │   ├── SOUL.md           # Persona and voice
+│   │   ├── HEARTBEAT.md      # Execution checklist
+│   │   ├── TOOLS.md          # Tool inventory
+│   │   └── skills/           # Assigned by capability resolution
+│   ├── engineer/
+│   │   └── ...
+│   ├── product-owner/        # ← if role selected
+│   ├── code-reviewer/        # ← if role selected
+│   └── ...
+└── docs/                     # Shared workflow docs from modules
+```
+
+Files are read live by Paperclip agents — edit anything on disk and it takes effect on the next heartbeat.
+
+---
+
+## Gracefully Optimistic Architecture
+
+Start with just a CEO. Everything works. Add roles and responsibilities shift automatically:
+
+| Capability | Primary Owner | Fallback | Module |
+| :--------- | :------------ | :------- | :----- |
+| `market-analysis` | UX Researcher → CMO → Product Owner | CEO | market-analysis |
+| `hiring-review` | Product Owner | CEO | hiring-review |
+| `backlog-health` | Product Owner | CEO | backlog |
+| `auto-assign` | Product Owner | CEO | auto-assign |
+| `user-testing` | QA → UX Researcher → Product Owner | CEO | user-testing |
+| `brand-identity` | UI Designer → CMO | CEO | brand-identity |
+| `ci-cd` | DevOps | Engineer | ci-cd |
+| `monitoring` | DevOps | Engineer | monitoring |
+| `tech-stack` | Engineer | CEO | tech-stack |
+| `architecture-plan` | Engineer | CEO | architecture-plan |
+| `design-system` | UI Designer | Engineer | architecture-plan |
+| `pr-review` | Code Reviewer / Product Owner / UI Designer / UX Researcher / QA / DevOps | — | pr-review |
+| `threat-model` | Security Engineer → DevOps | Engineer | security-audit |
+| `security-review` | Security Engineer → DevOps | Engineer | security-audit |
+| `project-docs` | Technical Writer → Engineer | CEO | documentation |
+| `competitive-tracking` | Customer Success → CMO → Product Owner | CEO | competitive-intel |
+| `accessibility-audit` | QA → UI Designer | Engineer | accessibility |
+| `codebase-audit` | Engineer | CEO | codebase-onboarding |
+| `issue-triage` | Product Owner → Engineer | CEO | triage |
+| `dependency-audit` | DevOps → Security Engineer | Engineer | dependency-management |
+| `release-process` | DevOps → Engineer | CEO | release-management |
+| `game-design` | Game Designer → Engineer | CEO | game-design |
+| `stall-detection` | CEO (always) | — | stall-detection |
+| `vision-workshop` | CEO (always) | — | vision-workshop |
+
+**How it works:** Primary owners get the full skill. Fallback owners get a safety-net variant that only activates when the primary is absent or stalled.
+
+> CEO only? The CEO handles everything — market analysis, backlog, auto-assign, and strategy. Add an Engineer and they take over implementation. Add a Product Owner and they take over backlog and auto-assign, with the CEO as fallback.
+
+---
+
+## Presets
+
+| Preset | Modules | Best for |
+| :----- | :------ | :------- |
+| **`fast`** | github-repo, backlog, auto-assign, stall-detection | Solo engineer, prototypes, MVPs |
+| **`quality`** | + pr-review, + Product Owner, + Code Reviewer | Teams, production systems |
+| **`rad`** | + tech-stack, + hiring-review | Rapid prototyping, formalize later |
+| **`startup`** | + vision, market, hiring, tech, architecture | Strategy-first, grow organically |
+| **`research`** | vision, market, tech, hiring (no repo/code) | Planning phase only |
+| **`full`** | All modules + Product Owner + Code Reviewer | Full planning + quality engineering |
+| **`secure`** | + security-audit, + Security Engineer + Code Reviewer + PO | Regulated industries, fintech, healthtech |
+| **`gtm`** | + competitive-intel, brand-identity, + CMO + Customer Success + PO | Market-facing products |
+| **`content`** | + documentation, accessibility, + Technical Writer + PO | Dev tools, documentation-heavy projects |
+| **`launch-mvp`** | launch-mvp, github-repo, backlog, auto-assign, stall-detection | Ship a first version end-to-end |
+| **`build-api`** | build-api, github-repo, backlog, auto-assign, ci-cd, stall-detection | Build a REST/GraphQL API from scratch |
+| **`website-relaunch`** | website-relaunch, github-repo, pr-review, backlog, auto-assign, stall-detection + UI Designer + PO | Relaunch a website |
+| **`repo-maintenance`** | triage, codebase-onboarding, dependency-management, release-management, github-repo, pr-review, backlog, auto-assign, stall-detection + Code Reviewer + PO | Maintain an existing repo |
+| **`build-game`** | game-design, tech-stack, github-repo, backlog, auto-assign, stall-detection + Game Designer + Game Artist + Audio Designer | Build a game |
+
+> `fast` is for a single engineer — multiple engineers without review will cause conflicts.
+>
+> `research` has no code workflow. Add `github-repo` and `backlog` when ready to build.
+
+<details>
+<summary><strong>Preset details</strong></summary>
+
+**fast** — Solo engineer, direct-to-main, automated backlog. No review, no planning phase.
+
+**quality** — Full review pipeline. Product Owner manages backlog and product alignment, Code Reviewer gates code quality. Feature branches with PR workflow.
+
+**rad** — Rapid Application Development. Pick a tech stack, start building, hire when you hit bottlenecks. No upfront market research or architecture formalization — prototype first, learn from what you build, formalize later.
+
+**startup** — Strategy-first. Starts with vision, market analysis, tech evaluation, and hiring review before any code. Grow the team through board approvals.
+
+**research** — Planning only. Vision, market research, tech evaluation, and team assessment. No repo, no code workflow. Upgrade to `startup` or `full` when ready to build.
+
+**full** — Everything. Full strategic planning, quality engineering with PR review, team growth via hiring review. Product Owner and Code Reviewer included.
+
+**secure** — Security-first. Threat modeling, security reviews, and quality gates on top of full planning and PR review. Security Engineer, Code Reviewer, and Product Owner included.
+
+**gtm** — Go-to-market focused. Competitive intelligence, market analysis, and brand identity. CMO for marketing strategy, Customer Success for competitive tracking, Product Owner for backlog.
+
+**content** — Content and documentation focused. Technical Writer for developer docs and guides, accessibility for inclusive design, market analysis for positioning.
+
+**website-relaunch** — Relaunch an existing website with external design assets. Site audit, design ingestion, implementation, content migration, QA, and go-live. Includes an inline goal with 5 milestones and 10 issues.
+
+**repo-maintenance** — Custodial maintenance for existing repositories. Agents review and merge open PRs, triage inbound GitHub issues, audit codebase health, manage dependencies, and handle releases. Inline goal bootstraps the team through onboarding, process setup, initial sweep, and steady-state maintenance.
+
+**build-game** — Game development from idea to playable release. Game Designer owns the GDD, mechanics, and balancing. Game Artist generates sprites, textures, and tilesets. Audio Designer creates sound effects and music. Inline goal with 5 milestones: concept, prototype, vertical slice, production, polish & ship.
+
+</details>
+
+---
+
+## Modules
+
+### Strategy & Planning
+
+| Module | What it does | Kickoff task |
+| :----- | :----------- | :----------- |
+| **`vision-workshop`** | Define vision, success metrics, strategic milestones | CEO defines vision |
+| **`market-analysis`** | Research market, competitors, positioning | Primary owner conducts analysis |
+| **`hiring-review`** | Evaluate team gaps, propose hires via board approval | Primary owner reviews team |
+| **`tech-stack`** | Evaluate and document technology choices | Primary owner evaluates stack |
+| **`architecture-plan`** | Design system architecture + design system | Engineer + Designer (if present) |
+| **`brand-identity`** | Brand book, visual identity, design guidelines | Primary owner defines brand |
+| **`user-testing`** | Usability evaluations and findings | Primary owner runs evaluations |
+| **`competitive-intel`** | Competitive landscape analysis and tracking | Primary owner builds landscape |
+| **`documentation`** | Project docs, API refs, onboarding guides | Primary owner creates docs |
+| **`security-audit`** | Threat modeling and security code review | Primary owner conducts audit |
+| **`accessibility`** | WCAG 2.2 compliance audit and remediation | Primary owner runs audit |
+| **`website-relaunch`** | Website relaunch: audit, design ingestion, implementation, migration | Engineer audits + analyzes designs |
+| **`launch-mvp`** | MVP lifecycle: scope, build core feature, deploy, iterate from feedback | CEO scopes, Engineer builds |
+| **`game-design`** | Game Design Document, core mechanics, progression, balancing | Primary owner creates GDD |
+
+### Maintenance & Operations
+
+| Module | What it does | Kickoff task |
+| :----- | :----------- | :----------- |
+| **`codebase-onboarding`** | Audit existing codebase, map architecture, track tech debt | Primary owner audits codebase |
+| **`triage`** | Classify, prioritize, and respond to inbound GitHub issues | Primary owner triages open issues |
+| **`dependency-management`** | Dependency audits, CVE scanning, safe patching, upgrade planning | Primary owner audits dependencies |
+| **`release-management`** | Semver, changelogs, git tagging, GitHub Releases, rollback procedures | Primary owner documents release process |
+
+### Engineering Workflow
+
+| Module | What it does | Kickoff task |
+| :----- | :----------- | :----------- |
+| **`github-repo`** | Git workflow and commit conventions | Engineer initializes repo |
+| **`pr-review`** | PR-based review workflow | Engineer sets up branch protection |
+| **`backlog`** | Auto-generate issues from goals when backlog runs low | Primary owner creates initial backlog |
+| **`auto-assign`** | Assign unassigned issues to idle agents | — |
+| **`stall-detection`** | Detect stuck handovers, nudge or escalate | — |
+| **`build-api`** | REST API: schema design, endpoints, auth, documentation | Engineer designs and implements |
+| **`ci-cd`** | Continuous integration and deployment pipeline | Primary owner sets up CI/CD |
+| **`monitoring`** | Observability, alerting, health checks | Primary owner sets up monitoring |
+
+<details>
+<summary><strong>Module details</strong></summary>
+
+#### vision-workshop
+Defines the strategic foundation. The CEO runs a vision workshop to refine the company goal into a vision statement, success metrics, and milestones.
+- **Doc:** `docs/vision-template.md`
+
+#### market-analysis
+Researches the target market, competitors, and positioning.
+- **Capability:** `market-analysis` — owners: `ux-researcher` → `cmo` → `product-owner` → `ceo`
+- **Fallback:** CMO focuses on positioning and competitive landscape; CEO creates a brief overview only
+- **Doc:** `docs/market-analysis-template.md`
+
+#### hiring-review
+Evaluates team composition against the goal and proposes hires through board approval.
+- **Capability:** `hiring-review` — owners: `product-owner` → `ceo`
+- **Fallback:** CEO proposes one urgent hire only
+
+#### tech-stack
+Evaluates technology options and documents decisions with rationale and trade-offs.
+- **Capability:** `tech-stack` — owners: `engineer` → `ceo`
+- **Fallback:** CEO makes pragmatic defaults, marks them provisional
+- **Doc:** `docs/tech-stack-template.md`
+
+#### architecture-plan
+Designs the system architecture. Requires `tech-stack`. Includes a `design-system` capability for UI Designers.
+- **Capability:** `architecture-plan` — owners: `engineer` → `ceo`
+- **Capability:** `design-system` — owners: `ui-designer` → `engineer`
+- **Docs:** `docs/architecture-template.md`, `docs/design-system-template.md`
+
+#### github-repo
+Git workflow and commit conventions.
+- **Task:** Engineer initializes repo
+- **Doc:** `docs/git-workflow.md`
+
+#### pr-review
+PR-based review workflow. Requires `github-repo`. Activates with `code-reviewer`, `product-owner`, `ui-designer`, `ux-researcher`, `qa`, or `devops`.
+- **Task:** Engineer sets up branch protection
+- **Doc:** `docs/pr-conventions.md`
+
+#### backlog
+Owns the product backlog lifecycle — from goal decomposition to a steady pipeline of actionable issues.
+- **Capability:** `backlog-health` — owners: `product-owner` → `ceo`
+- **Fallback:** CEO creates 1-2 issues only when backlog is critically empty
+- **Doc:** `docs/backlog-process.md`
+
+#### auto-assign
+Assigns unassigned issues to idle agents.
+- **Capability:** `auto-assign` — owners: `product-owner` → `ceo`
+- **Fallback:** CEO assigns only when agents are critically idle
+
+#### brand-identity
+Creates brand guidelines: logo usage, color palette, typography, iconography, and tone of voice.
+- **Capability:** `brand-identity` — owners: `ui-designer` → `cmo` → `ceo`
+- **Fallback:** CMO focuses on brand strategy and messaging; CEO creates minimal provisional placeholder
+- **Doc:** `docs/brand-identity-template.md`
+
+#### user-testing
+Designs and executes usability evaluations, documents findings with severity ratings.
+- **Capability:** `user-testing` — owners: `qa` → `ux-researcher` → `product-owner` → `ceo`
+- **Fallback:** QA adds test automation and edge case coverage; CEO creates a basic heuristic checklist
+- **Doc:** `docs/user-testing-template.md`
+
+#### ci-cd
+Continuous integration and deployment pipeline. Requires `github-repo`.
+- **Capability:** `ci-cd` — owners: `devops` → `engineer`
+- **Fallback:** Engineer sets up basic CI (lint, test, build); DevOps owns full pipeline lifecycle including CD
+- **Doc:** `docs/ci-cd-template.md`
+
+#### monitoring
+Observability, error tracking, logging, alerting, and health checks. Requires `github-repo`.
+- **Capability:** `monitoring` — owners: `devops` → `engineer`
+- **Fallback:** Engineer sets up basic health checks and structured logging; DevOps owns full observability stack
+- **Doc:** `docs/monitoring-template.md`
+
+#### security-audit
+Threat modeling and security code review.
+- **Capability:** `threat-model` — owners: `security-engineer` → `devops` → `engineer`
+- **Capability:** `security-review` — owners: `security-engineer` → `devops` → `engineer`
+- **Fallback:** DevOps focuses on infrastructure security; Engineer runs basic checks only
+
+#### documentation
+Project documentation: READMEs, API references, architecture overviews, onboarding guides.
+- **Capability:** `project-docs` — owners: `technical-writer` → `engineer` → `ceo`
+- **Fallback:** Engineer writes minimal README; CEO creates bare-bones project overview
+
+#### competitive-intel
+Living competitive landscape — competitor profiles that evolve over time.
+- **Capability:** `competitive-tracking` — owners: `customer-success` → `cmo` → `product-owner` → `ceo`
+- **Fallback:** CMO focuses on positioning angles; CEO creates brief overview only
+
+#### accessibility
+WCAG 2.2 compliance auditing: semantic HTML, keyboard navigation, color contrast, ARIA, screen reader compatibility.
+- **Capability:** `accessibility-audit` — owners: `qa` → `ui-designer` → `engineer`
+- **Fallback:** UI Designer focuses on visual accessibility; Engineer runs automated checks
+
+#### website-relaunch
+Full website relaunch lifecycle: audit, design ingestion, implementation, content migration, go-live.
+- **Capability:** `design-ingestion` — owners: `ui-designer` → `engineer` → `ceo`
+- **Capability:** `site-audit` — owners: `ui-designer` → `engineer` → `ceo`
+- **Goal:** Website Relaunch (5 milestones, 10 issues, includes a user-assigned "Provide design assets" issue)
+
+#### build-api
+REST API development from schema to documentation.
+- **Capability:** `api-design` — owners: `engineer` → `ceo`
+- **Requires:** `github-repo`
+- **Goal:** Build a REST API (4 milestones, 8 issues)
+
+#### launch-mvp
+MVP project lifecycle: define scope tightly, build the core feature, deploy, and iterate.
+- **Goal:** Launch MVP (4 milestones, 8 issues)
+
+#### codebase-onboarding
+Audit an existing codebase and maintain its health over time. Requires `github-repo`.
+- **Capability:** `codebase-audit` — owners: `engineer` → `ceo`
+- **Output:** `docs/CODEBASE-AUDIT.md`
+
+#### triage
+Processes inbound GitHub issues: classify, prioritize, respond, close duplicates. Requires `github-repo`.
+- **Capability:** `issue-triage` — owners: `product-owner` → `engineer` → `ceo`
+- **Fallback:** CEO triages P0/P1 only
+
+#### dependency-management
+Dependency lifecycle: vulnerability scanning, outdated package detection, safe patching. Requires `github-repo`.
+- **Capability:** `dependency-audit` — owners: `devops` → `security-engineer` → `engineer`
+- **Output:** `docs/DEPENDENCY-AUDIT.md`
+
+#### release-management
+Release lifecycle: semantic versioning, changelog generation, git tagging, GitHub Releases. Requires `github-repo`.
+- **Capability:** `release-process` — owners: `devops` → `engineer` → `ceo`
+- **Output:** `docs/RELEASE-PROCESS.md`
+
+#### game-design
+Game Design Document creation and ongoing mechanic design, progression, and balancing.
+- **Capability:** `game-design` — owners: `game-designer` → `engineer` → `ceo`
+- **Docs:** `docs/gdd-template.md`, `docs/engine-phaser.md`, `docs/engine-pixijs.md`, `docs/engine-threejs.md`
+
+#### stall-detection
+Detects issues stuck in `in_progress` or `in_review` with no recent activity. Nudges or escalates.
+- CEO-only capability
+
+</details>
+
+---
+
+## Roles
+
+Every company starts with just the **CEO** (the only base role). All other roles are optional:
+
+| Role | Paperclip role | Reports to | Enhances |
+| :--- | :------------- | :--------- | :------- |
+| **Product Owner** | `pm` | CEO | Takes over roadmap, auto-assign, hiring-review from CEO |
+| **Code Reviewer** | `general` | CEO | Enables pr-review activation |
+| **UI & Brand Designer** | `designer` | CEO | Takes over design-system and brand-identity |
+| **UX Researcher** | `researcher` | CEO | Takes over market-analysis and user-testing |
+| **CTO** | `cto` | CEO | Technical leadership, architecture oversight |
+| **CMO** | `cmo` | CEO | Marketing strategy, go-to-market, growth metrics |
+| **CFO** | `cfo` | CEO | Financial planning, budget tracking, cost analysis |
+| **DevOps Engineer** | `devops` | CEO | Takes over ci-cd and monitoring from Engineer |
+| **QA Engineer** | `qa` | CEO | Takes over user-testing, quality gates |
+| **Technical Writer** | `general` | CEO | Takes over documentation, adds doc review pass |
+| **Security Engineer** | `general` | CEO | Takes over security-audit, adds security review pass |
+| **Customer Success** | `general` | CEO | Takes over competitive-intel customer analysis |
+| **Game Designer** | `pm` | CEO | Takes over game-design from Engineer, playtesting focus |
+| **Level Designer** | `pm` | CEO | Takes over level-specific design from Game Designer |
+| **Game Artist** | `designer` | CEO | Takes over art asset creation from Engineer |
+| **Audio Designer** | `designer` | CEO | Takes over audio asset creation from Engineer |
+
+<details>
+<summary><strong>Role details</strong></summary>
+
+**Product Owner** — The voice of the user. Owns the backlog pipeline, validates engineering output against goals, manages scope discipline. Adds product-alignment review pass with pr-review module.
+
+**Code Reviewer** — Owns code quality. Reviews PRs for correctness, style, security, and test coverage. Never writes code — only reviews it.
+
+**UI & Brand Designer** — Owns visual identity, design systems, and brand consistency. Creates design specs that engineers implement. Outputs are design documents, not code. Adds design review pass with pr-review module.
+
+**UX Researcher** — Owns user experience research, usability analysis, and journey mapping. Grounds design and product decisions in evidence-based user insights. Adds UX review pass with pr-review module.
+
+**CTO** — Technical leadership and architecture oversight. Guides technology decisions, reviews system design, and ensures engineering quality at scale.
+
+**CMO** — Owns marketing strategy, brand positioning, go-to-market planning, and growth metrics.
+
+**CFO** — Owns financial planning, budget tracking, cost analysis, and resource allocation. Monitors agent cost events and budget utilization.
+
+**DevOps Engineer** — Owns infrastructure, CI/CD pipelines, deployment, monitoring, and platform reliability. Automation over manual work, infrastructure as code.
+
+**QA Engineer** — Owns test strategy, test automation, quality gates, and regression prevention.
+
+**Technical Writer** — Owns developer documentation, API references, READMEs, and onboarding guides. Accuracy over completeness.
+
+**Security Engineer** — Owns threat modeling, security code reviews, OWASP compliance. Security issues are always blocking.
+
+**Customer Success Manager** — Owns customer health monitoring, feedback synthesis, churn prevention, and competitive intelligence from the customer perspective.
+
+**Game Designer** — Owns the Game Design Document, core mechanics, game loop, progression systems, difficulty curves, and balancing.
+
+**Level Designer** — Owns level layout, pacing, difficulty curves, environmental storytelling, and spatial progression.
+
+**Game Artist** — Owns visual art production: sprites, textures, tilesets, UI elements, and visual effects via AI image generation and code-based approaches.
+
+**Audio Designer** — Owns audio production: sound effects, music, ambient soundscapes via AI generation, code-based synthesis (Web Audio API, procedural generation), and audio processing pipelines.
+
+</details>
+
+---
+
+## Extending
+
+### Add a module
+
+```text
+templates/modules/<name>/
+├── module.meta.json             # Name, capabilities, tasks, dependencies, permissions
+├── skills/                      # Shared skills (used by any primary owner)
+│   └── <skill>.md
+├── agents/<role>/
+│   ├── skills/                  # Role-specific overrides and fallbacks
+│   │   ├── <skill>.md           # Override (replaces shared for this role)
+│   │   └── <skill>.fallback.md  # Fallback (safety-net for non-primary)
+│   └── heartbeat-section.md     # Optional: injected into role's HEARTBEAT.md
+└── docs/                        # Shared docs (→ company/docs/)
+```
+
+**`module.meta.json` schema:**
+
+```json
+{
+  "name": "my-module",
+  "requires": ["other-module"],
+  "activatesWithRoles": ["my-role"],
+  "permissions": ["tasks:assign"],
+  "adapterOverrides": { "chrome": true },
+  "capabilities": [
+    {
+      "skill": "my-skill",
+      "owners": ["my-role", "ceo"],
+      "fallbackSkill": "my-skill.fallback"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Initial task",
+      "assignTo": "capability:my-skill",
+      "description": "Task description"
+    }
+  ],
+  "goal": {
+    "title": "My Goal",
+    "description": "What this goal achieves",
+    "project": true,
+    "milestones": [
+      { "id": "phase-1", "title": "Phase 1", "project": false }
+    ],
+    "issues": [
+      { "title": "First task", "milestone": "phase-1", "assignTo": "engineer", "priority": "high" }
+    ]
+  }
+}
+```
+
+| Field | Description |
+| :---- | :---------- |
+| `requires` | Other modules that must be selected |
+| `activatesWithRoles` | Module only applies if one of these roles is present |
+| `capabilities[].owners` | Priority order — first present role gets the primary skill |
+| `capabilities[].fallbackSkill` | Filename (without `.md`) of the fallback variant |
+| `tasks[].assignTo` | A role name or `"capability:<skill>"` to auto-resolve |
+| `adapterOverrides` | Adapter config keys merged into all capability owner agents during provisioning |
+| `goal` | Optional inline goal. When active, `tasks` are skipped. |
+| `goal.project` | If `true` (default), creates a dedicated Paperclip project for this goal |
+| `goal.issues[].assignTo` | Role name, `"capability:<skill>"`, or `"user"` (unassigned for human pickup) |
+
+**Skill resolution order** (per role + skill):
+
+1. `agents/<role>/skills/<skill>.md` — role-specific override (wins if present)
+2. `skills/<skill>.md` — shared skill (default for any primary owner)
+
+**Doc references in skills** — two kinds of docs end up in `{company}/docs/`:
+
+| Reference | Rule |
+| :--- | :--- |
+| Own template (`lowercase-kebab.md`) | Reference directly — assembly guarantees it exists if module is active |
+| Cross-module output (`UPPERCASE.md`) | Always conditional: "If `docs/TECH-STACK.md` exists, review it. Otherwise proceed." |
+
+### Add a role
+
+```text
+templates/roles/<name>/
+├── role.meta.json   # Name, title, base, paperclipRole, reportsTo, adapter
+├── AGENTS.md
+├── SOUL.md
+├── HEARTBEAT.md
+└── TOOLS.md
+```
+
+**`role.meta.json` schema:**
+
+```json
+{
+  "name": "my-role",
+  "title": "My Role",
+  "base": false,
+  "division": "engineering",
+  "tagline": "One-liner for wizard display and AI selection",
+  "paperclipRole": "general",
+  "description": "What this role does",
+  "reportsTo": "ceo",
+  "enhances": ["Takes over X from CEO"],
+  "adapter": {
+    "model": "claude-sonnet-4-6"
+  }
+}
+```
+
+| Field | Description |
+| :---- | :---------- |
+| `base` | `true` for always-present roles (ceo only). Omit or `false` for optional. |
+| `division` | Functional grouping: `leadership`, `engineering`, `design`, `product`. Used for display and AI selection. |
+| `tagline` | One-liner personality summary for wizard UX and AI wizard selection. |
+| `paperclipRole` | Paperclip enum: `ceo`, `engineer`, `pm`, `qa`, `designer`, `cto`, `cmo`, `cfo`, `devops`, `researcher`, `general` |
+| `adapter` | Passed to `adapterConfig` during provisioning. |
+
+### Add a preset
+
+Create `templates/presets/<name>/preset.meta.json`:
+
+```json
+{
+  "name": "my-preset",
+  "description": "What this preset is for",
+  "constraints": [],
+  "roles": ["product-owner"],
+  "modules": ["github-repo", "backlog"],
+  "goals": []
+}
+```
+
+The `goals` array follows the same inline goal schema as `module.meta.json` — see the module schema above.

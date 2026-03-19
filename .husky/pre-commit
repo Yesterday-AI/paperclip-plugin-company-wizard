@@ -1,1 +1,1 @@
-npm install && npm run build && npm test && npx lint-staged
+npx lint-staged

@@ -1,6 +1,7 @@
 {
   "name": "launch-mvp",
   "title": "Launch MVP",
+  "description": "Ships a minimal viable product with defined scope, core build, deployment, and feedback loop. Goal-driven: creates milestones and issues automatically.",
   "goal": {
     "title": "Launch MVP",
     "description": "Ship a minimal viable product. Define scope tightly, build the core feature, deploy it, and iterate based on feedback. The goal is a working product in users' hands, not a polished one.",
@@ -9,7 +10,7 @@
       {
         "id": "define-scope",
         "title": "Define scope",
-        "description": "Agree on what the MVP includes and — critically — what it does not.",
+        "description": "Agree on what the MVP includes and \u2014 critically \u2014 what it does not.",
         "completionCriteria": "A written scope document exists with explicit in/out-of-scope lists, approved by the team."
       },
       {
@@ -48,7 +49,7 @@
       },
       {
         "title": "Set up CI pipeline",
-        "description": "Add a CI workflow (GitHub Actions or equivalent) that runs lint and tests on every push. Keep it simple — single job, no matrix builds.",
+        "description": "Add a CI workflow (GitHub Actions or equivalent) that runs lint and tests on every push. Keep it simple \u2014 single job, no matrix builds.",
         "priority": "medium",
         "milestone": "build-core",
         "assignTo": "engineer"
@@ -69,7 +70,7 @@
       },
       {
         "title": "Write basic user documentation",
-        "description": "Create a getting-started guide that covers the core user journey. Keep it short — one page maximum. Include screenshots or examples where helpful.",
+        "description": "Create a getting-started guide that covers the core user journey. Keep it short \u2014 one page maximum. Include screenshots or examples where helpful.",
         "priority": "medium",
         "milestone": "deploy",
         "assignTo": "engineer"

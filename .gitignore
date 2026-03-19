@@ -1,4 +1,18 @@
-# Company workspace folders
+# Install & Build artifacts
+dist/
+node_modules/
+
+# Paperclip SDK
+.paperclip-sdk
+
+# Secrets
+.env*
+!.env*.example
+
+# Build artifacts
+*.tsbuildinfo
+
+# Company workspace folders (runtime data, not version-controlled)
 companies/
 
 # Draft files & folders
@@ -8,16 +22,7 @@ companies/
 # System files
 .DS_Store
 
-# Secrets
-.env*
-!.env*.example
-
-# Install & Build artifacts
-web/dist/
-node_modules/
-*.tsbuildinfo
-
-# Claude user settings (local only)
+# Claude local settings
 .claude/settings.local.json
 .mcp.json
 

@@ -1,9 +1,14 @@
 {
   "name": "accessibility",
+  "description": "Adds accessibility auditing to the team's workflow. Surfaces WCAG violations and keeps the product usable by everyone.",
   "capabilities": [
     {
       "skill": "accessibility-audit",
-      "owners": ["qa", "ui-designer", "engineer"],
+      "owners": [
+        "qa",
+        "ui-designer",
+        "engineer"
+      ],
       "fallbackSkill": "accessibility-audit.fallback"
     }
   ],

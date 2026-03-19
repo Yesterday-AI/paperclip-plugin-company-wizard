@@ -1,6 +1,6 @@
 {
   "name": "startup",
-  "description": "Strategy-first bootstrapping. Vision, market analysis, and team evaluation before building. CEO + Engineer with hiring review to grow the team organically.",
+  "description": "Strategy-first bootstrapping. Vision, market analysis, and team evaluation before building. Grow the team organically through hiring review.",
   "constraints": [],
   "modules": [
     "vision-workshop",
@@ -12,5 +12,8 @@
     "backlog",
     "auto-assign",
     "stall-detection"
+  ],
+  "roles": [
+    "engineer"
   ]
 }

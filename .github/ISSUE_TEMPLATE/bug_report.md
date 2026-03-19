@@ -18,4 +18,4 @@ labels: bug
 
 - Node.js version:
 - OS:
-- Clipper version (`npm ls @yesterday-ai/paperclipper`):
+- Plugin version (from `package.json`):

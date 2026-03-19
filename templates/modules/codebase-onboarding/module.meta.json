@@ -1,10 +1,16 @@
 {
   "name": "codebase-onboarding",
-  "requires": ["github-repo"],
+  "description": "Audits an existing codebase and maps its architecture. Gets agents up to speed fast on any inherited code.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "codebase-audit",
-      "owners": ["engineer", "ceo"],
+      "owners": [
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "codebase-audit.fallback"
     }
   ],

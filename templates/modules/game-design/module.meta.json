@@ -1,9 +1,14 @@
 {
   "name": "game-design",
+  "description": "Creates the game design document defining core mechanics, game loop, and player experience. Foundation for any game project.",
   "capabilities": [
     {
       "skill": "game-design",
-      "owners": ["game-designer", "engineer", "ceo"],
+      "owners": [
+        "game-designer",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "game-design.fallback"
     }
   ],

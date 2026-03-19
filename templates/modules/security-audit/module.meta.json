@@ -1,14 +1,23 @@
 {
   "name": "security-audit",
+  "description": "Runs a threat model and security review of the codebase. Identifies vulnerabilities before they ship.",
   "capabilities": [
     {
       "skill": "threat-model",
-      "owners": ["security-engineer", "devops", "engineer"],
+      "owners": [
+        "security-engineer",
+        "devops",
+        "engineer"
+      ],
       "fallbackSkill": "threat-model.fallback"
     },
     {
       "skill": "security-review",
-      "owners": ["security-engineer", "devops", "engineer"],
+      "owners": [
+        "security-engineer",
+        "devops",
+        "engineer"
+      ],
       "fallbackSkill": "security-review.fallback"
     }
   ],

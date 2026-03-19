@@ -1,88 +1,89 @@
-# Contributing to Clipper
+# Contributing to Company Wizard
 
-Thanks for your interest in contributing! Clipper is a template system and CLI for bootstrapping [Paperclip](https://github.com/paperclipai/paperclip) company workspaces.
+Thanks for your interest in contributing! Company Wizard is a [Paperclip](https://github.com/paperclipai/paperclip) plugin that bootstraps agent company workspaces from composable templates.
 
 ## Getting Started
 
 ```sh
-git clone https://github.com/Yesterday-AI/paperclipper.git
-cd paperclipper
-npm install
-npm run build
+git clone <repo-url>
+cd clipper
+pnpm install
+pnpm build
 ```
 
 ## Development
 
 ```sh
-npm run build          # esbuild: src/cli.jsx → dist/cli.mjs
-npm test               # node --test src/logic/*.test.js
-node dist/cli.mjs      # run the CLI (interactive wizard, requires TTY)
-
-# Headless mode — no TTY required, works in scripts and CI
-node dist/cli.mjs --name "TestCo" --preset fast
-node dist/cli.mjs --name "TestCo" --preset quality --goal "Ship MVP" --api
+pnpm build           # esbuild: worker + manifest + UI → dist/
+pnpm dev             # watch mode (rebuilds on change)
+pnpm test            # vitest: tests/**/*.spec.ts
+pnpm test:logic      # node --test: src/logic/*.test.js
+pnpm typecheck       # tsc --noEmit
 ```
 
-The interactive wizard uses Ink (React for terminals) and requires a TTY — it won't work in piped or non-interactive contexts. Headless mode (`--name` + `--preset`) bypasses Ink entirely and uses plain stdout, so it works anywhere.
+Load the plugin in Paperclip by pointing to this directory (the `paperclipPlugin` field in `package.json` tells Paperclip where to find the built artifacts). After `pnpm build`, reload the plugin in the Paperclip UI — no reinstall required.
 
 ## Project Structure
 
 ```text
 src/
-├── cli.jsx              # Entry point, flag parsing
-├── app.jsx              # Wizard state machine
-├── components/          # One component per wizard step
-├── logic/               # Pure functions (assembly, resolution)
-├── api/                 # Paperclip API client and provisioning
-└── shims/               # Build shims (react-devtools-core)
+├── worker.ts             # Plugin worker: actions (preview-files, start-provision, check-auth)
+├── manifest.ts           # Plugin manifest (id, displayName, slots)
+├── logic/                # Pure functions (assembly, resolution, template loading)
+├── api/                  # Paperclip REST API client and provisioning
+└── ui/
+    ├── main.tsx          # UI entry point
+    ├── context/          # WizardContext (state machine + reducer)
+    └── components/       # React components (WizardShell, step components, ConfigReview)
 
 templates/
-├── base/                # Always-present roles (CEO, Engineer)
-├── roles/               # Optional roles (Product Owner, Code Reviewer, etc.)
-├── modules/             # Composable capabilities with skills and docs
-└── presets/             # Curated module+role combinations
+├── roles/                # All roles with role.meta.json (base: true for always-present)
+├── modules/              # Composable capabilities with module.meta.json
+└── presets/              # Curated module+role combinations with preset.meta.json
 ```
 
 ## Adding Templates
 
 ### New module
 
-See [Extending → Add a module](README.md#add-a-module) in the README. Key points:
+See [docs/TEMPLATES.md](docs/TEMPLATES.md) for the full module schema. Key points:
 
 - Every capability needs a shared skill in `skills/<skill>.md`
 - Role-specific overrides go in `agents/<role>/skills/<skill>.md` (only when genuinely different)
-- Fallback variants are always role-specific
-- Add tests in `src/logic/assemble.test.js` if the module has non-trivial resolution logic
+- Fallback variants are always role-specific (`.fallback.md`)
+- Add `node --test` tests in `src/logic/` if the module has non-trivial resolution logic
 
 ### New role
 
-See [Extending → Add a role](README.md#add-a-role). Map `paperclipRole` to a valid Paperclip enum value.
+See [docs/TEMPLATES.md](docs/TEMPLATES.md). Map `paperclipRole` to a valid Paperclip enum value. Set `base: true` only for roles that belong in every company (only the CEO currently has `base: true`).
 
 ### New preset
 
-See [Extending → Add a preset](README.md#add-a-preset). Test that the module combination works end-to-end.
+See [docs/TEMPLATES.md](docs/TEMPLATES.md). Test that the module combination resolves correctly. Presets can include inline `goals[]` arrays with milestones and issues.
 
 ## Pull Requests
 
 - Keep PRs focused — one feature or fix per PR
 - Add or update tests for logic changes
-- Run `npm test` before submitting
-- Update the README if you add modules, roles, or presets
+- Run `pnpm test && pnpm test:logic` before submitting
+- Update `docs/TEMPLATES.md` if you add modules, roles, or presets
+- Update `CHANGELOG.md` with your changes
 
 ## Code Style
 
+- TypeScript for plugin infrastructure (`src/worker.ts`, `src/manifest.ts`, `src/ui/`)
 - ESM only (`type: "module"`)
-- JSX with React 19 automatic runtime
-- No TypeScript — plain JS with JSDoc where helpful
-- Prefer pure functions in `src/logic/`
+- Plain JS for logic/API modules (`src/logic/`, `src/api/`) — JSDoc where helpful
+- Prettier via pre-commit hook (lint-staged)
 
 ## Reporting Issues
 
-Use [GitHub Issues](https://github.com/Yesterday-AI/paperclipper/issues). Include:
+Use GitHub Issues. Include:
 
 - What you expected vs what happened
+- Plugin version (from `package.json`)
 - Node.js version (`node --version`)
-- OS and terminal
+- OS
 
 ## License
 

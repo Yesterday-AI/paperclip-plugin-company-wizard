@@ -1,9 +1,14 @@
 {
   "name": "documentation",
+  "description": "Maintains project documentation: guides, API references, and architecture notes.",
   "capabilities": [
     {
       "skill": "project-docs",
-      "owners": ["technical-writer", "engineer", "ceo"],
+      "owners": [
+        "technical-writer",
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": "project-docs.fallback"
     }
   ],

@@ -1,9 +1,15 @@
 {
   "name": "user-testing",
+  "description": "Designs and runs user tests to validate product decisions with real feedback.",
   "capabilities": [
     {
       "skill": "user-testing",
-      "owners": ["qa", "ux-researcher", "product-owner", "ceo"],
+      "owners": [
+        "qa",
+        "ux-researcher",
+        "product-owner",
+        "ceo"
+      ],
       "fallbackSkill": "user-testing.fallback"
     }
   ],

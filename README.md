@@ -1,39 +1,40 @@
 <p align="center">
-  <h1 align="center">Clipper</h1>
+  <img src="https://raw.githubusercontent.com/Yesterday-AI/plugin-paperclip-company-wizard/main/web/public/favicon.svg" alt="Company Wizard" width="48" height="48">
+  <h1 align="center">Company Wizard</h1>
   <p align="center">
     <strong>Bootstrap AI agent teams from modular templates.</strong>
   </p>
   <p align="center">
-    <a href="https://www.npmjs.com/package/@yesterday-ai/paperclipper"><img src="https://img.shields.io/npm/v/@yesterday-ai/paperclipper?color=cb3837&label=npm" alt="npm version"></a>
-    <a href="https://github.com/Yesterday-AI/paperclipper/actions/workflows/ci.yml"><img src="https://github.com/Yesterday-AI/paperclipper/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+    <a href="https://www.npmjs.com/package/@yesterday-ai/plugin-paperclip-company-wizard"><img src="https://img.shields.io/npm/v/@yesterday-ai/plugin-paperclip-company-wizard?color=cb3837&label=npm" alt="npm version"></a>
+    <a href="https://github.com/Yesterday-AI/plugin-paperclip-company-wizard/actions/workflows/ci.yml"><img src="https://github.com/Yesterday-AI/plugin-paperclip-company-wizard/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
     <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen" alt="Node.js"></a>
   </p>
 </p>
 
-> **Development Preview:** A Paperclip plugin version of Clipper with a web UI is in active development. See [`web/README.md`](web/README.md) for details.
-
 ---
 
-Clipper is a CLI and template system for [Paperclip](https://github.com/paperclipai/paperclip) — the control plane for AI-agent companies. It assembles ready-to-run company workspaces by combining a base org (CEO + Engineer) with composable modules and optional specialist roles.
+**Company Wizard** is a [Paperclip](https://github.com/paperclipai/paperclip) plugin that bootstraps an AI agent company for your project — roles, workflows, skills, and tasks — in a few clicks. Open it from the sidebar, answer a few questions (or just describe your project), and it assembles the workspace files and creates the company + CEO in Paperclip. The CEO then hires the team and sets up the backlog on its first heartbeat.
 
-> **Gracefully optimistic:** capabilities extend, they don't require. The system works with just two roles and gets better as you add more. Adding a Product Owner shifts backlog management away from the CEO automatically. Adding a UX Researcher makes them the primary market analyst. No config changes needed.
+<br>
+
+**npm package installation (Paperclip > Settings > Plugins > Install Plugin):**
+
+```bash
+@yesterday-ai/plugin-paperclip-company-wizard
+```
 
 <br>
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [Install](#install)
-- [Usage](#usage)
-    - [Non-interactive mode](#non-interactive-mode)
-    - [AI wizard mode](#ai-wizard-mode)
-- [What You Get](#what-you-get)
-- [Architecture](#gracefully-optimistic-architecture)
+- [Two Ways to Start](#two-ways-to-start)
+- [How Roles Work](#how-roles-work)
 - [Presets](#presets)
 - [Modules](#modules)
 - [Roles](#roles)
-- [After Clipper](#after-clipper)
+- [Configuration](#configuration)
+- [Development](#development)
 - [Extending](#extending)
 - [How It Works](#how-it-works)
 - [Changelog](#changelog)
@@ -41,232 +42,79 @@ Clipper is a CLI and template system for [Paperclip](https://github.com/papercli
 
 <br>
 
-## Quick Start
+## Two Ways to Start
 
-```sh
-npx @yesterday-ai/paperclipper
-```
+### AI mode
 
-That's it. The interactive wizard handles the rest. Add `--api` to auto-provision in your local Paperclip instance.
+Describe your project in plain language. The wizard analyzes it and picks the right preset, modules, and roles automatically.
 
-<br>
+> *"A fintech startup building a payment API, security is critical"*
+> → selects `secure` preset, Security Engineer + Product Owner roles, provisions everything
 
-## Install
+Great for getting started fast when you're not sure which template fits.
 
-```sh
-npx @yesterday-ai/paperclipper           # run directly (no install)
-npm i -g @yesterday-ai/paperclipper      # or install globally → clipper
-```
+### Manual mode
 
-Requires **Node.js 20+**.
+Walk through the steps yourself: name your company, set a goal, pick a preset, add modules, choose roles. Each step shows descriptions and hover-card previews so you know what you're getting.
+
+Before provisioning, you can **open any generated file and edit it inline** — tweak a persona, adjust a workflow, or add role-specific context.
 
 <br>
 
-## Usage
+## How Roles Work
 
-The interactive wizard walks through these steps:
+Every company starts with just the **CEO** — and that's already a functional team. Add roles and responsibilities shift automatically:
 
-```text
-$ clipper --api
+- Add an **Engineer** → they take over implementation, git workflow, and technical decisions
+- Add a **Product Owner** → they take over backlog management and auto-assignment from the CEO
+- Add a **UX Researcher** → they become the primary market analyst
+- Add **DevOps** → they own CI/CD and monitoring (instead of Engineer or CEO)
 
-  ╭──────────────╮
-  │   Clipper    │
-  ╰──────────────╯
+No role is ever truly missing. When a specialist isn't present, the next best available person steps in. The CEO is always the final fallback.
 
-  Company name: Acme Corp
-  Company goal: Build the best widgets in the world
-  Description:  Ship v1 with core features and onboard first 10 customers
+<details>
+<summary><strong>Full capability ownership table</strong></summary>
 
-  Project name: Acme Corp
-  GitHub repo URL: https://github.com/acme/widgets
-
-  Select a preset:
-  ❯ fast — Speed-optimized for solo engineer...
-    quality — Quality-optimized with PR review...
-    rad — Rapid development with tech evaluation...
-    startup — Strategy-first bootstrapping...
-    research — Research and planning only...
-    full — Full company setup with everything...
-    custom — Pick modules manually
-
-  ✓ Company "Acme Corp" created
-  ✓ Goal created
-  ✓ Project created (workspace: companies/AcmeCorp/projects/AcmeCorp)
-  ✓ CEO agent created
-  ✓ Engineer agent created
-  ✓ 4 issues created
-  ✓ CEO heartbeat started
-```
-
-### Options
-
-#### Company options
-
-| Flag | Description | Default |
-| :--- | :---------- | :------ |
-| `--name <name>` | Company name | _(wizard prompt)_ |
-| `--goal <title>` | Company goal title | _(wizard prompt)_ |
-| `--goal-description <desc>` | Goal description | _(wizard prompt)_ |
-| `--project <name>` | Project name | company name |
-| `--project-description <desc>` | Project description | _(wizard prompt)_ |
-| `--repo <url>` | GitHub repository URL | _(wizard prompt)_ |
-| `--preset <name>` | Preset: `fast`, `quality`, `rad`, `startup`, `research`, `full`, `secure`, `gtm`, `content`, `repo-maintenance`, `build-game` | _(wizard prompt)_ |
-| `--modules <a,b,c>` | Comma-separated module names (merged with preset) | _(wizard prompt)_ |
-| `--roles <a,b>` | Comma-separated extra role names (merged with preset) | _(wizard prompt)_ |
-
-#### Infrastructure options
-
-| Flag | Description | Default |
-| :--- | :---------- | :------ |
-| `--output <dir>` | Output directory for company workspaces | `./companies/` |
-| `--dry-run` | Show summary and exit without writing files | off |
-| `--api` | Provision via Paperclip API after file assembly | off |
-| `--api-url <url>` | Paperclip API URL (implies `--api`) | `http://localhost:3100` |
-| `--api-email <email>` | Board login email (for authenticated instances) | `PAPERCLIP_EMAIL` env var |
-| `--api-password <pass>` | Board login password | `PAPERCLIP_PASSWORD` env var |
-| `--api-workspace-root <path>` | Workspace root as seen by the API server (for Docker) | local path |
-| `--model <model>` | Default LLM model for all agents | adapter default |
-| `--start` | Start CEO heartbeat after provisioning (implies `--api`) | off |
-| `--ai` | AI interview: 3 guided questions, then auto-config | — |
-| `--ai <desc>` | AI single-shot: describe company, auto-config | — |
-| `--ai-model <model>` | Model for AI wizard | `claude-opus-4-6` |
-
-> Company directories use PascalCase: `"Black Mesa"` becomes `companies/BlackMesa/`
-
-### Non-interactive mode
-
-Pass `--name` and `--preset` to skip the wizard entirely. No TTY required.
-
-```sh
-# Minimal — assemble files only
-clipper --name "Acme" --preset fast
-
-# Full provisioning
-clipper --name "Acme" --goal "Build widgets" --preset startup --api --start
-
-# Custom composition
-clipper --name "Acme" --preset fast --roles product-owner --modules pr-review
-
-# Preset with overrides
-clipper --name "Acme" --preset custom --modules github-repo,auto-assign,stall-detection
-
-# In a CI/CD pipeline or script
-clipper --name "$COMPANY" --preset "$PRESET" --api --api-url "$API_URL" --start
-```
-
-`--modules` and `--roles` are additive — they merge with whatever the preset includes.
-
-> **Goal generation:** [Paperize](https://www.npmjs.com/package/paperize) distills notes, ideas, research, or Obsidian vaults into actionable goals via AI. Use it to generate goals for Clipper programmatically: `npx paperize --source ~/notes`.
-
-### AI wizard mode
-
-Let Claude figure out the best setup. Two sub-modes — **interview** (3 guided questions) and **single-shot** (one description).
-
-Requires `ANTHROPIC_API_KEY` — pass it inline or export it:
-
-```sh
-# Inline
-ANTHROPIC_API_KEY=sk-ant-... clipper --ai
-
-# Or export once
-export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-```sh
-# Interview — AI asks 3 questions, each building on previous answers
-clipper --ai
-
-# Single-shot — describe everything upfront
-clipper --ai "A fintech startup building a payment processing API, focus on security"
-
-# Override AI choices with explicit flags
-clipper --ai --name "PixelForge" --api
-clipper --ai "Enterprise SaaS with CI/CD" --preset quality
-```
-
-The AI selects the best preset, modules, and roles based on your input. Explicit flags (`--name`, `--preset`, `--modules`, `--roles`) always override AI choices.
-
-#### One-liner: description to running company
-
-Combine single-shot with `--api` and `--start` for full programmatic integration — describe a company in natural language, assemble files, provision via API, and start the CEO heartbeat in one command:
-
-```sh
-ANTHROPIC_API_KEY=sk-ant-... clipper --ai "A dev agency that builds React apps" --api --start
-```
-
-No prompts, no interaction, no TTY required — fully scriptable.
-
-AI wizard prompts are stored in `templates/ai-wizard/` and can be edited to customize the wizard's behavior.
-
-<br>
-
-## What You Get
-
-```text
-companies/AcmeCorp/
-├── BOOTSTRAP.md              # Setup guide (goal, project, agents, tasks)
-├── agents/
-│   ├── ceo/
-│   │   ├── AGENTS.md         # Identity + skill references
-│   │   ├── SOUL.md           # Persona and voice
-│   │   ├── HEARTBEAT.md      # Execution checklist
-│   │   ├── TOOLS.md          # Tool inventory
-│   │   └── skills/           # Assigned by capability resolution
-│   ├── engineer/
-│   │   └── ...
-│   ├── product-owner/        # ← if role selected
-│   ├── code-reviewer/        # ← if role selected
-│   ├── ui-designer/          # ← if role selected
-│   └── ux-researcher/        # ← if role selected
-├── projects/
-│   └── AcmeCorp/             # Agent workspace (cwd)
-└── docs/                     # Shared workflows from modules
-```
-
-With `--api`, everything is provisioned automatically. Without it, `BOOTSTRAP.md` has step-by-step instructions for manual setup.
-
-> Files are read live by Paperclip agents — edit anything on disk and it takes effect on the next heartbeat.
-
-<br>
-
-## Gracefully Optimistic Architecture
-
-Start with CEO + Engineer. Everything works. Add specialists and responsibilities shift automatically:
+Start with just a CEO. Everything works. Add roles and responsibilities shift automatically:
 
 | Capability | Primary Owner | Fallback | Module |
 | :--------- | :------------ | :------- | :----- |
-| `market-analysis` | UX Researcher &rarr; CMO &rarr; Product Owner | CEO | market-analysis |
+| `market-analysis` | UX Researcher → CMO → Product Owner | CEO | market-analysis |
 | `hiring-review` | Product Owner | CEO | hiring-review |
 | `backlog-health` | Product Owner | CEO | backlog |
 | `auto-assign` | Product Owner | CEO | auto-assign |
-| `user-testing` | QA &rarr; UX Researcher &rarr; Product Owner | CEO | user-testing |
-| `brand-identity` | UI Designer &rarr; CMO | CEO | brand-identity |
+| `user-testing` | QA → UX Researcher → Product Owner | CEO | user-testing |
+| `brand-identity` | UI Designer → CMO | CEO | brand-identity |
 | `ci-cd` | DevOps | Engineer | ci-cd |
 | `monitoring` | DevOps | Engineer | monitoring |
 | `tech-stack` | Engineer | CEO | tech-stack |
 | `architecture-plan` | Engineer | CEO | architecture-plan |
 | `design-system` | UI Designer | Engineer | architecture-plan |
 | `pr-review` | Code Reviewer / Product Owner / UI Designer / UX Researcher / QA / DevOps | — | pr-review |
-| `threat-model` | Security Engineer &rarr; DevOps | Engineer | security-audit |
-| `security-review` | Security Engineer &rarr; DevOps | Engineer | security-audit |
-| `project-docs` | Technical Writer &rarr; Engineer | CEO | documentation |
-| `competitive-tracking` | Customer Success &rarr; CMO &rarr; Product Owner | CEO | competitive-intel |
-| `accessibility-audit` | QA &rarr; UI Designer | Engineer | accessibility |
+| `threat-model` | Security Engineer → DevOps | Engineer | security-audit |
+| `security-review` | Security Engineer → DevOps | Engineer | security-audit |
+| `project-docs` | Technical Writer → Engineer | CEO | documentation |
+| `competitive-tracking` | Customer Success → CMO → Product Owner | CEO | competitive-intel |
+| `accessibility-audit` | QA → UI Designer | Engineer | accessibility |
 | `codebase-audit` | Engineer | CEO | codebase-onboarding |
-| `issue-triage` | Product Owner &rarr; Engineer | CEO | triage |
-| `dependency-audit` | DevOps &rarr; Security Engineer | Engineer | dependency-management |
-| `release-process` | DevOps &rarr; Engineer | CEO | release-management |
-| `game-design` | Game Designer &rarr; Engineer | CEO | game-design |
+| `issue-triage` | Product Owner → Engineer | CEO | triage |
+| `dependency-audit` | DevOps → Security Engineer | Engineer | dependency-management |
+| `release-process` | DevOps → Engineer | CEO | release-management |
+| `game-design` | Game Designer → Engineer | CEO | game-design |
 | `stall-detection` | CEO (always) | — | stall-detection |
 | `vision-workshop` | CEO (always) | — | vision-workshop |
 
 **How it works:** Primary owners get the full skill. Fallback owners get a safety-net variant that only activates when the primary is absent or stalled.
 
-> **Example:** CEO + Engineer only? The CEO handles market analysis, hiring review, and backlog management alongside strategy. Add a Product Owner and those responsibilities shift automatically — the CEO keeps a fallback safety net but steps back from day-to-day.
+> **Example:** CEO only? They handle everything — strategy, backlog, auto-assign. Add an Engineer and they take over implementation. Add a Product Owner and they take over backlog management, with the CEO as fallback.
+
+</details>
 
 <br>
 
 ## Presets
+
+Presets are curated starting points that bundle a set of modules and optional roles for a specific use case. Pick one in the wizard and you're ready to go — or use it as a base and add modules on top.
 
 | Preset | Modules | Best for |
 | :----- | :------ | :------- |
@@ -284,6 +132,7 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`website-relaunch`** | website-relaunch, github-repo, pr-review, backlog, auto-assign, stall-detection + UI Designer + PO | Relaunch a website with external design assets |
 | **`repo-maintenance`** | triage, codebase-onboarding, dependency-management, release-management, github-repo, pr-review, backlog, auto-assign, stall-detection + Code Reviewer + PO | Maintain an existing repository |
 | **`build-game`** | game-design, tech-stack, github-repo, backlog, auto-assign, stall-detection + Game Designer + Game Artist + Audio Designer | Build a game from idea to release |
+| **`launch-pack`** | vision-workshop, market-analysis, competitive-intel, brand-identity, tech-stack, architecture-plan, launch-mvp, github-repo, backlog, auto-assign, stall-detection + CTO + CMO | Full executive team launch: strategy, tech, and marketing from day one |
 
 > **`fast`** is for a single engineer — multiple engineers without review will cause conflicts.
 >
@@ -298,7 +147,7 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 
 **rad** — Rapid Application Development. Pick a tech stack, start building, hire when you hit bottlenecks. No upfront market research or architecture formalization — prototype first, learn from what you build, formalize later.
 
-**startup** — Strategy-first. Starts with vision, market analysis, tech evaluation, and hiring review before any code. CEO and Engineer grow the team through board approvals.
+**startup** — Strategy-first. Starts with vision, market analysis, tech evaluation, and hiring review before any code. Grow the team through board approvals.
 
 **research** — Planning only. Vision, market research, tech evaluation, and team assessment. No repo, no code workflow. Upgrade to `startup` or `full` when ready to build.
 
@@ -322,6 +171,8 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 
 ## Modules
 
+Modules are composable capabilities you layer on top of the base team. Each module adds skills, tasks, and optionally heartbeat sections to the relevant roles. Modules are additive — you can combine them freely and they degrade gracefully when a role they extend isn't present.
+
 ### Strategy & Planning
 
 | Module | What it does | Kickoff task |
@@ -337,8 +188,8 @@ Start with CEO + Engineer. Everything works. Add specialists and responsibilitie
 | **`documentation`** | Project docs, API refs, onboarding guides | Primary owner creates docs |
 | **`security-audit`** | Threat modeling and security code review | Primary owner conducts audit |
 | **`accessibility`** | WCAG 2.2 compliance audit and remediation | Primary owner runs audit |
-| **`website-relaunch`** | Website relaunch: audit, design ingestion, implementation, migration | Engineer audits + analyzes designs |
-| **`launch-mvp`** | MVP lifecycle: scope, build core feature, deploy, iterate from feedback | CEO scopes, Engineer builds |
+| **`website-relaunch`** | Website relaunch: audit, design ingestion, implementation, migration | Primary owner audits + analyzes designs |
+| **`launch-mvp`** | MVP lifecycle: scope, build core feature, deploy, iterate from feedback | CEO scopes, primary owner builds |
 | **`game-design`** | Game Design Document, core mechanics, progression, balancing | Primary owner creates GDD |
 
 ### Maintenance & Operations
@@ -378,7 +229,7 @@ Defines the strategic foundation. The CEO runs a vision workshop to refine the c
 
 Researches the target market, competitors, and positioning.
 
-- **Capability:** `market-analysis` — owners: `ux-researcher` &rarr; `cmo` &rarr; `product-owner` &rarr; `ceo`
+- **Capability:** `market-analysis` — owners: `ux-researcher` → `cmo` → `product-owner` → `ceo`
 - **Fallback:** CMO focuses on positioning and competitive landscape; CEO creates a brief overview only
 - **Doc:** `docs/market-analysis-template.md`
 
@@ -386,14 +237,14 @@ Researches the target market, competitors, and positioning.
 
 Evaluates team composition against the goal and proposes hires through board approval.
 
-- **Capability:** `hiring-review` — owners: `product-owner` &rarr; `ceo`
+- **Capability:** `hiring-review` — owners: `product-owner` → `ceo`
 - **Fallback:** CEO proposes one urgent hire only
 
 #### tech-stack
 
 Evaluates technology options and documents decisions with rationale and trade-offs.
 
-- **Capability:** `tech-stack` — owners: `engineer` &rarr; `ceo`
+- **Capability:** `tech-stack` — owners: `engineer` → `ceo`
 - **Fallback:** CEO makes pragmatic defaults, marks them provisional
 - **Doc:** `docs/tech-stack-template.md`
 
@@ -401,8 +252,8 @@ Evaluates technology options and documents decisions with rationale and trade-of
 
 Designs the system architecture. Requires `tech-stack`. Includes a `design-system` capability for UI Designers.
 
-- **Capability:** `architecture-plan` — owners: `engineer` &rarr; `ceo`
-- **Capability:** `design-system` — owners: `ui-designer` &rarr; `engineer`
+- **Capability:** `architecture-plan` — owners: `engineer` → `ceo`
+- **Capability:** `design-system` — owners: `ui-designer` → `engineer`
 - **Docs:** `docs/architecture-template.md`, `docs/design-system-template.md`
 
 #### github-repo
@@ -423,7 +274,7 @@ PR-based review workflow. Requires `github-repo`. Activates with `code-reviewer`
 
 Owns the product backlog lifecycle — from goal decomposition to a steady pipeline of actionable issues.
 
-- **Capability:** `backlog-health` — owners: `product-owner` &rarr; `ceo`
+- **Capability:** `backlog-health` — owners: `product-owner` → `ceo`
 - **Fallback:** CEO creates 1-2 issues only when backlog is critically empty
 - **Doc:** `docs/backlog-process.md`
 
@@ -431,14 +282,14 @@ Owns the product backlog lifecycle — from goal decomposition to a steady pipel
 
 Assigns unassigned issues to idle agents.
 
-- **Capability:** `auto-assign` — owners: `product-owner` &rarr; `ceo`
+- **Capability:** `auto-assign` — owners: `product-owner` → `ceo`
 - **Fallback:** CEO assigns only when agents are critically idle
 
 #### brand-identity
 
 Creates brand guidelines: logo usage, color palette, typography, iconography, and tone of voice.
 
-- **Capability:** `brand-identity` — owners: `ui-designer` &rarr; `cmo` &rarr; `ceo`
+- **Capability:** `brand-identity` — owners: `ui-designer` → `cmo` → `ceo`
 - **Fallback:** CMO focuses on brand strategy and messaging; CEO creates minimal provisional placeholder
 - **Doc:** `docs/brand-identity-template.md`
 
@@ -446,7 +297,7 @@ Creates brand guidelines: logo usage, color palette, typography, iconography, an
 
 Designs and executes usability evaluations, documents findings with severity ratings.
 
-- **Capability:** `user-testing` — owners: `qa` &rarr; `ux-researcher` &rarr; `product-owner` &rarr; `ceo`
+- **Capability:** `user-testing` — owners: `qa` → `ux-researcher` → `product-owner` → `ceo`
 - **Fallback:** QA adds test automation and edge case coverage; CEO creates a basic heuristic checklist
 - **Doc:** `docs/user-testing-template.md`
 
@@ -454,7 +305,7 @@ Designs and executes usability evaluations, documents findings with severity rat
 
 Continuous integration and deployment pipeline. Requires `github-repo`.
 
-- **Capability:** `ci-cd` — owners: `devops` &rarr; `engineer`
+- **Capability:** `ci-cd` — owners: `devops` → `engineer`
 - **Fallback:** Engineer sets up basic CI (lint, test, build); DevOps owns full pipeline lifecycle including CD
 - **Doc:** `docs/ci-cd-template.md`
 
@@ -462,7 +313,7 @@ Continuous integration and deployment pipeline. Requires `github-repo`.
 
 Observability, error tracking, logging, alerting, and health checks. Requires `github-repo`.
 
-- **Capability:** `monitoring` — owners: `devops` &rarr; `engineer`
+- **Capability:** `monitoring` — owners: `devops` → `engineer`
 - **Fallback:** Engineer sets up basic health checks and structured logging; DevOps owns full observability stack
 - **Doc:** `docs/monitoring-template.md`
 
@@ -470,90 +321,85 @@ Observability, error tracking, logging, alerting, and health checks. Requires `g
 
 Threat modeling and security code review. Identifies attack surfaces, OWASP Top 10 vulnerabilities, and dependency CVEs.
 
-- **Capability:** `threat-model` — owners: `security-engineer` &rarr; `devops` &rarr; `engineer`
-- **Capability:** `security-review` — owners: `security-engineer` &rarr; `devops` &rarr; `engineer`
+- **Capability:** `threat-model` — owners: `security-engineer` → `devops` → `engineer`
+- **Capability:** `security-review` — owners: `security-engineer` → `devops` → `engineer`
 - **Fallback:** DevOps focuses on infrastructure security; Engineer runs basic checks only
 
 #### documentation
 
 Project documentation: READMEs, API references, architecture overviews, onboarding guides.
 
-- **Capability:** `project-docs` — owners: `technical-writer` &rarr; `engineer` &rarr; `ceo`
+- **Capability:** `project-docs` — owners: `technical-writer` → `engineer` → `ceo`
 - **Fallback:** Engineer writes minimal README; CEO creates bare-bones project overview
 
 #### competitive-intel
 
 Living competitive landscape — competitor profiles that evolve over time with positioning, strengths, and differentiation insights.
 
-- **Capability:** `competitive-tracking` — owners: `customer-success` &rarr; `cmo` &rarr; `product-owner` &rarr; `ceo`
+- **Capability:** `competitive-tracking` — owners: `customer-success` → `cmo` → `product-owner` → `ceo`
 - **Fallback:** CMO focuses on positioning angles; CEO creates brief overview only
 
 #### accessibility
 
 WCAG 2.2 compliance auditing: semantic HTML, keyboard navigation, color contrast, ARIA, screen reader compatibility.
 
-- **Capability:** `accessibility-audit` — owners: `qa` &rarr; `ui-designer` &rarr; `engineer`
+- **Capability:** `accessibility-audit` — owners: `qa` → `ui-designer` → `engineer`
 - **Fallback:** UI Designer focuses on visual accessibility; Engineer runs automated checks
 
 #### website-relaunch
 
-Full website relaunch lifecycle: audit the current site, ingest design assets from an external agency, implement the new design, migrate content, and go live. Includes an inline goal with 5 milestones (discovery, design handoff, implementation, content migration, QA & launch) and 10 issues.
+Full website relaunch lifecycle: audit the current site, ingest design assets from an external agency, implement the new design, migrate content, and go live. Includes an inline goal with 5 milestones and 10 issues.
 
-- **Capability:** `design-ingestion` — owners: `ui-designer` &rarr; `engineer` &rarr; `ceo`
-- **Capability:** `site-audit` — owners: `ui-designer` &rarr; `engineer` &rarr; `ceo` (designer brings design/content lens; engineer fallback focuses on technical audit)
+- **Capability:** `design-ingestion` — owners: `ui-designer` → `engineer` → `ceo`
+- **Capability:** `site-audit` — owners: `ui-designer` → `engineer` → `ceo`
 - **Goal:** Website Relaunch (with dedicated project, 5 milestones, 10 issues)
 
 #### build-api
 
-REST API development from schema to documentation. Includes an `api-design` skill covering resource-oriented URL design, HTTP conventions, input validation, pagination, authentication, and OpenAPI documentation. Inline goal with 4 milestones and 8 issues.
+REST API development from schema to documentation. Inline goal with 4 milestones and 8 issues.
 
-- **Capability:** `api-design` — owners: `engineer` &rarr; `ceo`
+- **Capability:** `api-design` — owners: `engineer` → `ceo`
 - **Requires:** `github-repo`
 - **Goal:** Build a REST API (with dedicated project, 4 milestones, 8 issues)
 
 #### launch-mvp
 
-MVP project lifecycle: define scope tightly, build the core feature, deploy, and iterate from user feedback. No capabilities or skills — this module is a structured goal with milestones and issues that guide the team through the MVP process.
+MVP project lifecycle: define scope tightly, build the core feature, deploy, and iterate from user feedback. No capabilities or skills — structured goal with milestones and issues.
 
 - **Goal:** Launch MVP (with dedicated project, 4 milestones, 8 issues)
 
 #### codebase-onboarding
 
-Audit an existing codebase and maintain its health over time. Initial pass maps architecture, identifies tech debt hotspots, and assesses test coverage. Ongoing heartbeat-driven health checks find refactoring opportunities, remove dead code, and create focused cleanup PRs. Requires `github-repo`.
+Audit an existing codebase and maintain its health over time. Requires `github-repo`.
 
-- **Capability:** `codebase-audit` — owners: `engineer` &rarr; `ceo`
-- **Fallback:** CEO writes high-level architecture overview only
+- **Capability:** `codebase-audit` — owners: `engineer` → `ceo`
 - **Output:** `docs/CODEBASE-AUDIT.md`
 
 #### triage
 
-Processes inbound GitHub issues: classify by type (bug, feature, enhancement, question, duplicate, invalid) and priority (P0–P3), respond to reporters, close duplicates, and convert actionable items into Paperclip tasks. Requires `github-repo`.
+Processes inbound GitHub issues: classify by type and priority, respond to reporters, close duplicates, convert actionable items into Paperclip tasks. Requires `github-repo`.
 
-- **Capability:** `issue-triage` — owners: `product-owner` &rarr; `engineer` &rarr; `ceo`
-- **Fallback:** CEO triages P0/P1 only, skips product decisions on feature requests
+- **Capability:** `issue-triage` — owners: `product-owner` → `engineer` → `ceo`
 
 #### dependency-management
 
 Dependency lifecycle: vulnerability scanning, outdated package detection, safe patch-level updates, and major version migration planning. Requires `github-repo`.
 
-- **Capability:** `dependency-audit` — owners: `devops` &rarr; `security-engineer` &rarr; `engineer`
-- **Fallback:** Engineer runs audit and applies safe patches only
+- **Capability:** `dependency-audit` — owners: `devops` → `security-engineer` → `engineer`
 - **Output:** `docs/DEPENDENCY-AUDIT.md`
 
 #### release-management
 
 Release lifecycle: semantic versioning, changelog generation, git tagging, GitHub Releases, and rollback documentation. Requires `github-repo`.
 
-- **Capability:** `release-process` — owners: `devops` &rarr; `engineer` &rarr; `ceo`
-- **Fallback:** Engineer documents current process and sets up basic semver
+- **Capability:** `release-process` — owners: `devops` → `engineer` → `ceo`
 - **Output:** `docs/RELEASE-PROCESS.md`
 
 #### game-design
 
-Game Design Document creation and ongoing mechanic design, progression, and balancing. Ships a GDD template covering concept, core mechanic, three-layer game loop, progression, win/lose, controls, art/audio direction, and tuning parameters. Game Designer gets a deep role-specific skill with balancing workflows and design experiments.
+Game Design Document creation and ongoing mechanic design, progression, and balancing. Ships a GDD template and engine reference docs (Phaser, PixiJS, Three.js).
 
-- **Capability:** `game-design` — owners: `game-designer` &rarr; `engineer` &rarr; `ceo`
-- **Fallback:** CEO writes minimal GDD with concept and core mechanic only
+- **Capability:** `game-design` — owners: `game-designer` → `engineer` → `ceo`
 - **Docs:** `docs/gdd-template.md`, `docs/engine-phaser.md`, `docs/engine-pixijs.md`, `docs/engine-threejs.md`
 
 #### stall-detection
@@ -568,7 +414,7 @@ Detects issues stuck in `in_progress` or `in_review` with no recent activity. Nu
 
 ## Roles
 
-Every company starts with **CEO** and **Engineer** (base roles). These optional roles extend the team:
+Every company starts with just the **CEO** (the only base role). All other roles are optional:
 
 | Role | Paperclip role | Reports to | Enhances |
 | :--- | :------------- | :--------- | :------- |
@@ -630,75 +476,64 @@ Owns test strategy, test automation, quality gates, and regression prevention. P
 
 #### Technical Writer
 
-Owns developer documentation, API references, READMEs, and onboarding guides. Keeps docs accurate as the codebase evolves. Accuracy over completeness.
+Owns developer documentation, API references, READMEs, and onboarding guides. Keeps docs accurate as the codebase evolves.
 
 #### Security Engineer
 
-Owns threat modeling, security code reviews, OWASP compliance, and secure coding standards. Finds vulnerabilities before attackers do. Security issues are always blocking.
+Owns threat modeling, security code reviews, OWASP compliance, and secure coding standards. Security issues are always blocking.
 
 #### Customer Success Manager
 
-Owns customer health monitoring, feedback synthesis, churn prevention, and competitive intelligence from the customer perspective. Empathy-driven, data-backed.
+Owns customer health monitoring, feedback synthesis, churn prevention, and competitive intelligence from the customer perspective.
 
 #### Game Designer
 
-Owns the Game Design Document, core mechanics, game loop, progression systems, difficulty curves, and balancing. Defines what the game is and how it plays. Runs design experiments and iterates based on playtest data.
+Owns the Game Design Document, core mechanics, game loop, progression systems, difficulty curves, and balancing. Runs design experiments and iterates based on playtest data.
 
 #### Level Designer
 
-Owns level layout, pacing, difficulty curves, environmental storytelling, and spatial progression. Translates game design into playable spaces and encounters.
+Owns level layout, pacing, difficulty curves, environmental storytelling, and spatial progression.
 
 #### Game Artist
 
-Owns visual art production: sprites, textures, tilesets, UI elements, and visual effects. Creates assets using AI image generation tools, code-based approaches (SVG, procedural generation, pixel art scripts), and asset pipeline tools.
+Owns visual art production: sprites, textures, tilesets, UI elements, and visual effects. Creates assets using AI image generation tools, code-based approaches, and asset pipeline tools.
 
 #### Audio Designer
 
-Owns audio production: sound effects, music, ambient soundscapes, and audio systems design. Creates audio using AI generation tools, code-based synthesis (Web Audio API, procedural generation), and audio processing pipelines.
+Owns audio production: sound effects, music, ambient soundscapes, and audio systems design. Creates audio using AI generation tools, code-based synthesis, and audio processing pipelines.
 
 </details>
 
 <br>
 
-## After Clipper
+## Configuration
 
-### With `--api` (recommended)
+Configure the plugin via **Settings → Plugins → Company Wizard** in the Paperclip UI.
 
-For `local_trusted` instances, `--api` works without credentials. For authenticated instances, provide board login credentials via env vars or flags:
+| Field | Required | Description |
+| --- | --- | --- |
+| `companiesDir` | No | Where assembled company workspaces are written. Defaults to `~/.paperclip/instances/default/companies`. Override for Docker setups. |
+| `templatesPath` | No | Path to the templates directory. Defaults to `~/.paperclip/plugin-templates` (auto-downloaded from `templatesRepoUrl` if missing). |
+| `templatesRepoUrl` | No | GitHub tree URL to pull templates from when the templates directory does not exist. Defaults to the official @Yesterday-AI/plugin-paperclip-company-wizard templates. |
+| `paperclipUrl` | No | Paperclip instance URL. Defaults to `http://localhost:3100` or `PAPERCLIP_PUBLIC_URL` env var. |
+| `paperclipEmail` | No | Board login email. Required for authenticated (non-`local_trusted`) instances. |
+| `paperclipPassword` | No | Board login password. Stored as a secret ref. |
+| `anthropicApiKey` | No | Anthropic API key for AI wizard mode. Stored as a secret ref. Required to use the AI-powered setup path. |
 
-```sh
-# Env vars (set once)
-export PAPERCLIP_EMAIL="you@example.com"
-export PAPERCLIP_PASSWORD="yourpassword"
-clipper --name "Acme" --preset fast --api
+<br>
 
-# Or inline flags
-clipper --name "Acme" --preset fast --api \
-  --api-email you@example.com --api-password yourpassword
+## Development
+
+```bash
+pnpm install
+pnpm build          # esbuild: worker + manifest + UI → dist/
+pnpm dev            # watch mode
+pnpm test           # vitest: tests/**/*.spec.ts
+pnpm test:logic     # node --test: src/logic/*.test.js
+pnpm typecheck      # tsc --noEmit
 ```
 
-Clipper auto-detects whether authentication is needed — no configuration change required for `local_trusted` instances.
-
-For Docker deployments where the workspace is mounted at a different path, use `--api-workspace-root` to remap paths:
-
-```sh
-# Local: companies/ is mounted into Docker at /data/companies/
-clipper --name "Acme" --preset fast --api \
-  --api-workspace-root /data/companies
-```
-
-Clipper provisions everything in the Paperclip instance automatically:
-
-1. **Company** — created with the name you entered
-2. **Goal** — company-level goal, set to `active`
-3. **Project** — workspace pointing to `companies/<Name>/projects/<ProjectName>/`
-4. **Agents** — one per role, with `cwd`, `instructionsFilePath`, model, and adapter config
-5. **Issues** — initial tasks from modules, linked to goal and project
-6. **CEO heartbeat** — optionally started with `--start`
-
-### Without `--api`
-
-Follow the `BOOTSTRAP.md` file generated in the company directory. It lists every resource to create manually in the Paperclip UI.
+After `pnpm build`, reload the plugin in the Paperclip UI — no reinstall required.
 
 <br>
 
@@ -718,24 +553,6 @@ templates/modules/<name>/
 │   └── heartbeat-section.md     # Optional: injected into role's HEARTBEAT.md
 └── docs/                        # Shared docs (→ docs/)
 ```
-
-<details>
-<summary><strong>Doc references in skills</strong></summary>
-
-Two kinds of docs end up in `{company}/docs/`:
-
-- **Templates** (`lowercase-kebab.md`) — Shipped by modules, copied at assembly time. Guaranteed to exist if the module is active.
-- **Agent output** (`UPPERCASE.md`) — Created by agents during execution. May or may not exist yet.
-
-| Reference | Rule | Example |
-| :--- | :--- | :--- |
-| Define own output | Name the path directly | "Document in `docs/TECH-STACK.md`" |
-| Read own template | Reference directly (assembly guarantees it) | "Follow conventions in `docs/pr-conventions.md`" |
-| Read cross-module output | **Always conditional** with graceful fallback | "If `docs/TECH-STACK.md` exists, review it. Otherwise, proceed based on project context." |
-
-The naming convention is the contract: `UPPERCASE.md` from another module → always wrap in "if exists". `lowercase.md` from own module → safe to reference directly.
-
-</details>
 
 <details>
 <summary><strong>module.meta.json schema</strong></summary>
@@ -782,10 +599,10 @@ The naming convention is the contract: `UPPERCASE.md` from another module → al
 | `capabilities[].owners` | Priority order — first present role gets the primary skill |
 | `capabilities[].fallbackSkill` | Filename (without `.md`) of the fallback variant |
 | `tasks[].assignTo` | A role name or `"capability:<skill>"` to auto-resolve |
-| `adapterOverrides` | Adapter config keys merged into all capability owner agents during provisioning (e.g., `{ "chrome": true }`) |
-| `goal` | Optional inline goal with milestones and issues. When active, `tasks` are skipped. |
+| `adapterOverrides` | Adapter config keys merged into all capability owner agents during provisioning |
+| `goal` | Optional inline goal. When active, `tasks` are skipped. |
 | `goal.project` | If `true` (default), creates a dedicated Paperclip project for this goal |
-| `goal.issues[].assignTo` | Role name, `"capability:<skill>"`, or `"user"` (unassigned for human pickup) |
+| `goal.issues[].assignTo` | Role name, `"capability:<skill>"`, or `"user"` (human pickup) |
 
 </details>
 
@@ -797,7 +614,7 @@ When assembling a capability's primary skill, the system checks in order:
 1. **Role-specific override:** `agents/<role>/skills/<skill>.md`
 2. **Shared skill:** `skills/<skill>.md`
 
-First match wins. Most capabilities only need a shared skill. Role-specific overrides exist only when a role brings a genuinely different approach. Fallback variants are always role-specific.
+First match wins. Most capabilities only need a shared skill. Role-specific overrides exist only when a role brings a genuinely different approach.
 
 ```text
 Example: market-analysis module
@@ -810,10 +627,25 @@ Example: market-analysis module
 │       └── market-analysis.fallback.md       # Fallback: brief overview
 ```
 
-- **UX Researcher** present &rarr; gets role-specific override (user-focused)
-- **Product Owner** primary &rarr; gets shared skill
-- **CEO** primary &rarr; gets shared skill
-- **CEO** as fallback &rarr; gets fallback variant
+- **UX Researcher** present → gets role-specific override (user-focused)
+- **Product Owner** primary → gets shared skill
+- **CEO** as fallback → gets fallback variant
+
+</details>
+
+<details>
+<summary><strong>Doc references in skills</strong></summary>
+
+Two kinds of docs end up in `{company}/docs/`:
+
+- **Templates** (`lowercase-kebab.md`) — Shipped by modules, copied at assembly time. Guaranteed to exist if the module is active.
+- **Agent output** (`UPPERCASE.md`) — Created by agents during execution. May or may not exist yet.
+
+| Reference | Rule | Example |
+| :--- | :--- | :--- |
+| Define own output | Name the path directly | "Document in `docs/TECH-STACK.md`" |
+| Read own template | Reference directly | "Follow conventions in `docs/pr-conventions.md`" |
+| Read cross-module output | **Always conditional** | "If `docs/TECH-STACK.md` exists, review it. Otherwise, proceed based on project context." |
 
 </details>
 
@@ -850,11 +682,11 @@ templates/roles/<name>/
 
 | Field | Description |
 | :---- | :---------- |
-| `base` | `true` for always-present roles (ceo, engineer). Omit or `false` for optional roles. |
-| `division` | Functional grouping: `leadership`, `engineering`, `design`, `product`. Used for wizard display and AI selection. |
-| `tagline` | One-liner personality summary for wizard UX and AI wizard selection. |
+| `base` | `true` for always-present roles (ceo only) |
+| `division` | Grouping: `leadership`, `engineering`, `design`, `product` |
+| `tagline` | One-liner for wizard UX and AI selection |
 | `paperclipRole` | Paperclip enum: `ceo`, `engineer`, `pm`, `qa`, `designer`, `cto`, `cmo`, `cfo`, `devops`, `researcher`, `general` |
-| `adapter` | Passed to `adapterConfig` during provisioning. `--model` CLI flag is fallback. |
+| `adapter` | Passed to `adapterConfig` during provisioning |
 
 </details>
 
@@ -876,10 +708,10 @@ Create `templates/presets/<name>/preset.meta.json`:
 
 ## How It Works
 
-```
+```text
 ┌─────────────┐     ┌──────────────┐     ┌──────────────────┐
 │   Wizard    │────▶│   Assembly   │────▶│   Provisioning   │
-│  (prompts)  │     │  (files)     │     │   (API, --api)   │
+│   (UI)      │     │  (files)     │     │   (Paperclip API)│
 └─────────────┘     └──────────────┘     └──────────────────┘
 ```
 
@@ -891,14 +723,14 @@ Create `templates/presets/<name>/preset.meta.json`:
 4. Injects module heartbeat sections into each role's `HEARTBEAT.md`
 5. Generates `BOOTSTRAP.md` with goal, project, agent paths, and initial tasks
 
-**Provisioning** (with `--api`):
+**Provisioning** (Review → Provision step):
 
-1. Connects to Paperclip API (auto-detects `local_trusted` vs authenticated, resolves board user ID)
-2. Creates company &rarr; goal &rarr; project (with workspace) &rarr; agents (with adapter config from role + module `adapterOverrides`) &rarr; module task issues
-3. For each inline goal (from preset/modules): sub-goal &rarr; optional project &rarr; milestones &rarr; issues
-4. Issues with `assignTo: "user"` are assigned to the board user; agent issues are assigned to the matching agent
-5. Wires `reportsTo` hierarchy (CEO first, then other agents)
-6. Optionally starts CEO heartbeat (`--start`)
+1. Connects to Paperclip API (auto-detects `local_trusted` vs authenticated)
+2. Creates the **company** in Paperclip
+3. Creates the **CEO agent** with adapter config (cwd, instructionsFilePath, model)
+4. Creates a **Bootstrap task** assigned to the CEO
+
+The CEO then sets up the rest of the team on its first heartbeat: hiring the other roles from disk, creating the goal, project, and initial backlog issues. If provisioning fails after the company is created, the partial company is automatically deleted.
 
 <br>
 
@@ -912,4 +744,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## License
 
-[MIT](LICENSE) &mdash; [Yesterday](https://yesterday-ai.de)
+[MIT](LICENSE)

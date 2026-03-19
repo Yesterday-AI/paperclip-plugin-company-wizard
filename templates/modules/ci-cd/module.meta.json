@@ -1,10 +1,16 @@
 {
   "name": "ci-cd",
-  "requires": ["github-repo"],
+  "description": "Sets up continuous integration and deployment pipelines. Automates testing, building, and shipping on every push.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "ci-cd",
-      "owners": ["devops", "engineer"],
+      "owners": [
+        "devops",
+        "engineer"
+      ],
       "fallbackSkill": "ci-cd.fallback"
     }
   ],
@@ -48,7 +54,7 @@
     "issues": [
       {
         "title": "Add linter and configure lint rules",
-        "description": "Install and configure a linter (ESLint, Ruff, golangci-lint, etc. depending on the stack). Use sensible defaults — focus on catching bugs, not style wars. Add a `lint` script to the project.",
+        "description": "Install and configure a linter (ESLint, Ruff, golangci-lint, etc. depending on the stack). Use sensible defaults \u2014 focus on catching bugs, not style wars. Add a `lint` script to the project.",
         "priority": "high",
         "milestone": "linting",
         "assignTo": "engineer"
@@ -69,7 +75,7 @@
       },
       {
         "title": "Add test step to CI workflow",
-        "description": "Add a testing step to the CI pipeline that runs the full test suite. Report results clearly — developers should know exactly what failed and why.",
+        "description": "Add a testing step to the CI pipeline that runs the full test suite. Report results clearly \u2014 developers should know exactly what failed and why.",
         "priority": "high",
         "milestone": "testing",
         "assignTo": "engineer"

@@ -1,9 +1,13 @@
 {
   "name": "backlog",
+  "description": "Monitors and maintains backlog health. Surfaces stale issues and blocked work so the queue stays actionable.",
   "capabilities": [
     {
       "skill": "backlog-health",
-      "owners": ["product-owner", "ceo"],
+      "owners": [
+        "product-owner",
+        "ceo"
+      ],
       "fallbackSkill": "backlog-health.fallback"
     }
   ],

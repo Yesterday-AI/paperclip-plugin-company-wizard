@@ -1,11 +1,17 @@
 {
   "name": "build-api",
   "title": "Build REST API",
-  "requires": ["github-repo"],
+  "description": "Designs and documents the API before implementation. Defines contracts, endpoints, and data shapes upfront.",
+  "requires": [
+    "github-repo"
+  ],
   "capabilities": [
     {
       "skill": "api-design",
-      "owners": ["engineer", "ceo"],
+      "owners": [
+        "engineer",
+        "ceo"
+      ],
       "fallbackSkill": null
     }
   ],

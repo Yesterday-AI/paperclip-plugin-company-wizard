@@ -198,6 +198,14 @@ export async function assembleCompany({
           if (cap) {
             assignee = cap.owners.find((r) => allRoles.has(r)) || assignee;
           }
+        } else if (
+          assignee &&
+          assignee !== 'ceo' &&
+          assignee !== 'user' &&
+          !allRoles.has(assignee)
+        ) {
+          // Named role not in this team — fall back to CEO
+          assignee = 'ceo';
         }
         initialTasks.push({ ...task, assignTo: assignee, module: moduleName });
       }
@@ -473,7 +481,7 @@ export async function assembleCompany({
 
   // Get started
   bootstrap += `## Get Started\n\n`;
-  bootstrap += `If using \`clipper --api\`, all of the above is created automatically.\n\n`;
+  bootstrap += `If using the Company Wizard plugin's "Provision" step, all of the above is created automatically.\n\n`;
   bootstrap += `Otherwise, create manually in the Paperclip UI:\n`;
   bootstrap += `1. Create the company "${companyName}"\n`;
   bootstrap += `2. Create the project "${projectName}" with workspace → \`${projectCwd}\`\n`;

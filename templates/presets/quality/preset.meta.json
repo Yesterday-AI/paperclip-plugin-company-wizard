@@ -3,6 +3,7 @@
   "description": "Quality-optimized with PR review. CEO + Engineer + Code Reviewer + Product Owner. Feature branches, PR-based review with validation and verification passes.",
   "constraints": [],
   "roles": [
+    "engineer",
     "product-owner",
     "code-reviewer"
   ],

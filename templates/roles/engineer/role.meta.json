@@ -1,7 +1,7 @@
 {
   "name": "engineer",
   "title": "Software Engineer",
-  "base": true,
+  "base": false,
   "division": "engineering",
   "tagline": "Builds the product, one commit at a time",
   "paperclipRole": "engineer",
