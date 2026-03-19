@@ -31,11 +31,6 @@
   ],
   "author": "@lx-0 <https://github.com/lx-0>",
   "license": "MIT",
-  "pnpm": {
-    "overrides": {
-      "@paperclipai/shared": "file:.paperclip-sdk/paperclipai-shared-0.3.1.tgz"
-    }
-  },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -43,8 +38,8 @@
     "tailwind-merge": "^3.4.1"
   },
   "devDependencies": {
-    "@paperclipai/plugin-sdk": "file:.paperclip-sdk/paperclipai-plugin-sdk-1.0.0.tgz",
-    "@paperclipai/shared": "file:.paperclip-sdk/paperclipai-shared-0.3.1.tgz",
+    "@paperclipai/plugin-sdk": "2026.318.0",
+    "@paperclipai/shared": "2026.318.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "@tailwindcss/postcss": "^4.0.7",
