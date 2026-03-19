@@ -6,7 +6,31 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
+  secret-scan:
+    name: Gitleaks Secret Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Gitleaks
+        run: |
+          VERSION=$(curl -sI https://github.com/gitleaks/gitleaks/releases/latest | grep -i '^location:' | sed 's/.*tag\/v//' | tr -d '\r')
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" | tar xz
+          chmod +x gitleaks
+      - name: Scan for secrets
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            ./gitleaks detect --source . --log-opts "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" --verbose
+          else
+            ./gitleaks detect --source . --log-opts "${{ github.event.before }}..${{ github.sha }}" --verbose
+          fi
+
   test:
     runs-on: ubuntu-latest
     strategy:
