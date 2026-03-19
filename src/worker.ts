@@ -449,7 +449,8 @@ const plugin = definePlugin({
       const adapterConfig: Record<string, unknown> = {
         // Module-derived adapter overrides (e.g. chrome: true from website-relaunch)
         ...(assembleResult.roleAdapterOverrides?.get('ceo') ?? {}),
-        ...(userCwd ? { cwd: userCwd } : {}),
+        cwd: userCwd || companyDir,
+        instructionsFilePath: path.join(companyDir, 'agents', 'ceo', 'AGENTS.md'),
         ...(userModel ? { model: userModel } : {}),
       };
 
