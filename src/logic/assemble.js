@@ -477,8 +477,16 @@ export async function assembleCompany({
 
   let bootstrap = `# Bootstrap: ${companyName}\n\n`;
 
+  // Instructions from template
+  const instructionsPath = join(templatesDir, 'bootstrap-instructions.md');
+  if (await exists(instructionsPath)) {
+    const instructions = await readFile(instructionsPath, 'utf-8');
+    bootstrap += `${instructions.trim()}\n\n`;
+  }
+
   // Company description
   if (companyDescription) {
+    bootstrap += `## Company\n\n`;
     bootstrap += `${companyDescription}\n\n`;
   }
 
@@ -491,7 +499,7 @@ export async function assembleCompany({
       bootstrap += renderMeta([
         ['level', g.level || 'company'],
         ['status', 'active'],
-        ['parentGoal', g.parentGoal],
+        ['parentId', g.parentGoal ? `→ "${g.parentGoal}"` : undefined],
       ]);
       if (g.description) {
         bootstrap += `${escapeBody(g.description)}\n\n`;
@@ -510,7 +518,10 @@ export async function assembleCompany({
       bootstrap += `### ${proj.name}\n\n`;
       bootstrap += renderMeta([
         ['workspace', projCwd],
-        ['goals', proj.goals?.length > 0 ? proj.goals.join(', ') : undefined],
+        [
+          'goalIds',
+          proj.goals?.length > 0 ? proj.goals.map((g) => `"${g}"`).join(', ') : undefined,
+        ],
       ]);
       if (proj.description) {
         bootstrap += `${escapeBody(proj.description)}\n\n`;
@@ -535,9 +546,9 @@ export async function assembleCompany({
     for (const issue of initialIssues) {
       bootstrap += `### ${issue.title}\n\n`;
       bootstrap += renderMeta([
-        ['assignee', issue.assignTo],
-        ['priority', issue.priority && issue.priority !== 'medium' ? issue.priority : undefined],
-        ['project', mainProjectName],
+        ['assigneeAgentId', issue.assignTo ? `→ "${issue.assignTo}"` : undefined],
+        ['priority', issue.priority || 'medium'],
+        ['projectId', `→ "${mainProjectName}"`],
       ]);
       if (issue.description) {
         bootstrap += `${escapeBody(issue.description)}\n\n`;
@@ -551,14 +562,11 @@ export async function assembleCompany({
     for (const routine of initialRoutines) {
       bootstrap += `### ${routine.title}\n\n`;
       bootstrap += renderMeta([
-        ['assignee', routine.assignTo],
+        ['assigneeAgentId', routine.assignTo ? `→ "${routine.assignTo}"` : undefined],
         ['schedule', routine.schedule],
-        [
-          'priority',
-          routine.priority && routine.priority !== 'medium' ? routine.priority : undefined,
-        ],
-        ['concurrencyPolicy', routine.concurrencyPolicy],
-        ['project', mainProjectName],
+        ['priority', routine.priority || 'medium'],
+        ['concurrencyPolicy', routine.concurrencyPolicy || 'skip_if_active'],
+        ['projectId', `→ "${mainProjectName}"`],
       ]);
       if (routine.description) {
         bootstrap += `${escapeBody(routine.description)}\n\n`;

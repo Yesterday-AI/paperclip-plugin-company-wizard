@@ -3,7 +3,7 @@ import type { PaperclipPluginManifestV1 } from '@paperclipai/plugin-sdk';
 const manifest: PaperclipPluginManifestV1 = {
   id: 'yesterday-ai.paperclip-plugin-company-wizard',
   apiVersion: 1,
-  version: '0.1.10',
+  version: '0.1.11',
   displayName: 'Company Wizard',
   description: 'AI-powered wizard to bootstrap agent companies from composable templates',
   author: 'Yesterday',

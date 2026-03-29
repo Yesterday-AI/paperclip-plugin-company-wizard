@@ -6,11 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [0.1.10] — 2026-03-29
+## [0.1.11] — 2026-03-29
+
+### Added
+
+- Bootstrap instructions loaded from `templates/bootstrap-instructions.md` — editable without code changes
+
+### Changed
+
+- BOOTSTRAP.md field names now match Paperclip API exactly: `parentId` (was `parentGoal`), `assigneeAgentId` (was `assignee`), `projectId` (was `project`), `goalIds` (was `goals`)
+- References use `→ "name"` syntax to signal the CEO must resolve names to UUIDs
+- Company description rendered under `## Company` heading
 
 ### Fixed
 
-- BOOTSTRAP.md metadata switched from `<!-- -->` HTML comments to visible `- **key**: value` bullet lists — HTML comments were stripped by Paperclip's markdown renderer, so the CEO agent never saw `parentGoal`, `level`, or other metadata
+- BOOTSTRAP.md metadata switched from `<!-- -->` HTML comments to visible `- **key**: value` bullet lists — HTML comments were stripped by Paperclip's markdown renderer
 
 ---
 
