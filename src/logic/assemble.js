@@ -461,11 +461,11 @@ export async function assembleCompany({
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
 
-  // --- Helper: render frontmatter code block ---
-  const renderFrontmatter = (fields) => {
+  // --- Helper: render metadata as visible bullet list ---
+  const renderMeta = (fields) => {
     const lines = fields.filter(([, v]) => v !== undefined && v !== null && v !== '');
     if (lines.length === 0) return '';
-    return '<!--\n' + lines.map(([k, v]) => `${k}: ${v}`).join('\n') + '\n-->\n\n';
+    return lines.map(([k, v]) => `- **${k}**: ${v}`).join('\n') + '\n\n';
   };
 
   // --- Helper: escape # in description body ---
@@ -488,7 +488,7 @@ export async function assembleCompany({
     bootstrap += `## Goals\n\n`;
     for (const g of allGoals) {
       bootstrap += `### ${g.title}\n\n`;
-      bootstrap += renderFrontmatter([
+      bootstrap += renderMeta([
         ['level', g.level || 'company'],
         ['status', 'active'],
         ['parentGoal', g.parentGoal],
@@ -508,7 +508,7 @@ export async function assembleCompany({
     for (const proj of resolvedProjects) {
       const projCwd = join(companyDir, 'projects', toPascalCase(proj.name));
       bootstrap += `### ${proj.name}\n\n`;
-      bootstrap += renderFrontmatter([
+      bootstrap += renderMeta([
         ['workspace', projCwd],
         ['goals', proj.goals?.length > 0 ? proj.goals.join(', ') : undefined],
       ]);
@@ -522,7 +522,7 @@ export async function assembleCompany({
   bootstrap += `## Agents\n\n`;
   for (const role of rolesList) {
     bootstrap += `### ${formatRole(role)}\n\n`;
-    bootstrap += renderFrontmatter([
+    bootstrap += renderMeta([
       ['role', role],
       ['instructionsFilePath', `${companyDir}/agents/${role}/AGENTS.md`],
     ]);
@@ -534,7 +534,7 @@ export async function assembleCompany({
     bootstrap += `## Issues\n\n`;
     for (const issue of initialIssues) {
       bootstrap += `### ${issue.title}\n\n`;
-      bootstrap += renderFrontmatter([
+      bootstrap += renderMeta([
         ['assignee', issue.assignTo],
         ['priority', issue.priority && issue.priority !== 'medium' ? issue.priority : undefined],
         ['project', mainProjectName],
@@ -550,7 +550,7 @@ export async function assembleCompany({
     bootstrap += `## Routines\n\n`;
     for (const routine of initialRoutines) {
       bootstrap += `### ${routine.title}\n\n`;
-      bootstrap += renderFrontmatter([
+      bootstrap += renderMeta([
         ['assignee', routine.assignTo],
         ['schedule', routine.schedule],
         [

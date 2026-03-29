@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.1.10] — 2026-03-29
+
+### Fixed
+
+- BOOTSTRAP.md metadata switched from `<!-- -->` HTML comments to visible `- **key**: value` bullet lists — HTML comments were stripped by Paperclip's markdown renderer, so the CEO agent never saw `parentGoal`, `level`, or other metadata
+
+---
+
 ## [0.1.9] — 2026-03-29
 
 ### Added
