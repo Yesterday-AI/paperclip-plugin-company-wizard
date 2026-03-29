@@ -6,6 +6,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.1.6] — 2026-03-29
+
+### Changed
+
+- Bootstrap issue now uses BOOTSTRAP.md content directly as its description — the CEO gets the full company spec, goals, projects, agents, issues, and provisioning steps instead of a generic "set up workspace" message
+
+### Removed
+
+- `generateBootstrapDescription()` — redundant; BOOTSTRAP.md IS the bootstrap issue
+
+---
+
 ## [0.1.5] — 2026-03-29
 
 ### Added

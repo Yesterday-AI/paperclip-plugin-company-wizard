@@ -91,11 +91,15 @@ Check each documentation file against the actual codebase. For each file, read i
 
 ## Phase 4: Bump Version
 
+**You MUST bump the version. Do NOT skip this phase. Do NOT leave the version unchanged.**
+
 1. **Read** `package.json` to get the current version.
 2. **Check for recent version-bump commits** — run `git log --oneline -5 -- package.json` to ensure you're not colliding with a version that was already bumped externally. If the current version was bumped by a recent commit you haven't accounted for, increment from that version instead.
-3. **Increment the version** (e.g., `0.1.3` → `0.1.4`). Use minor for new features, patch for fixes and enhancements.
-4. **Edit** `package.json` to update the `"version"` field.
-5. **Also check** if the version appears in any other files (manifest, README badges, etc.) and update those too.
+3. **Increment the patch version** (e.g., `0.1.5` → `0.1.6`). Always patch. Never minor or major unless the user explicitly says so.
+4. **Edit** `package.json` — change the `"version"` field to the new version.
+5. **Edit** `src/manifest.ts` — change the `version` field to the same new version.
+6. **Verify both files match** — grep both files to confirm the version is identical.
+7. **Also check** if the version appears in any other files (README badges, etc.) and update those too.
 
 ## Phase 5: Build and Verify
 

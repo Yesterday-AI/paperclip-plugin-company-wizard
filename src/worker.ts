@@ -156,65 +156,6 @@ function formatRoleName(role: string): string {
     .join(' ');
 }
 
-function generateBootstrapDescription({
-  companyName,
-  generatedFilesPath,
-  userCwd,
-  goal,
-}: {
-  companyName: string;
-  generatedFilesPath: string;
-  userCwd: string;
-  goal: { title?: string; description?: string };
-}): string {
-  const lines: string[] = [];
-  lines.push(`# Bootstrap ${companyName}`);
-  lines.push('');
-  lines.push(
-    'Your company has been created. Your agent personas, skills, and documentation have been generated.',
-  );
-  lines.push(`Generated files are at: \`${generatedFilesPath}\``);
-  lines.push('');
-
-  if (goal?.title) {
-    lines.push('## Company goal');
-    lines.push(`**${goal.title}**`);
-    if (goal.description) lines.push(goal.description);
-    lines.push('');
-  }
-
-  lines.push('## Step 1: Set up your workspace');
-  lines.push('');
-  lines.push(
-    `Copy your persona files from \`${generatedFilesPath}/agents/ceo/\` to your permanent workspace.`,
-  );
-  if (userCwd) {
-    lines.push(`Your working directory is already configured as: \`${userCwd}\``);
-  } else {
-    lines.push('Choose a permanent directory for your workspace and copy the files there.');
-  }
-  lines.push('Then register your instructions file so future heartbeats load your identity:');
-  lines.push('```');
-  lines.push('PATCH /api/agents/me/instructions-path');
-  lines.push(`{"path": "${userCwd ? userCwd + '/AGENTS.md' : '{your-workspace}/AGENTS.md'}"}`);
-  lines.push('```');
-  lines.push('');
-
-  lines.push('## Step 2: Follow your AGENTS.md');
-  lines.push('');
-  lines.push('Once your workspace is set up, your `AGENTS.md` contains everything you need:');
-  lines.push(
-    'your identity, skills, heartbeat checklist, and instructions for bootstrapping the company.',
-  );
-  lines.push('Follow it to create the goal, project, hire your team, and kick off the roadmap.');
-  lines.push('');
-
-  lines.push('## Done');
-  lines.push('');
-  lines.push('Mark this task done once your workspace is set up and your first heartbeat has run.');
-  return lines.join('\n');
-}
-
 // --- Plugin definition ---
 
 const plugin = definePlugin({
@@ -502,12 +443,11 @@ const plugin = definePlugin({
         log(`✓ CEO agent created (${ceoAgentId})`);
 
         // Step 7: Create bootstrap issue (SDK: ctx.issues.create ✓)
-        const bootstrapDescription = generateBootstrapDescription({
-          companyName,
-          generatedFilesPath: companyDir,
-          userCwd,
-          goal: userGoals[0] || {},
-        });
+        // BOOTSTRAP.md IS the bootstrap issue — read it directly.
+        const bootstrapDescription = fs.readFileSync(
+          path.join(companyDir, 'BOOTSTRAP.md'),
+          'utf-8',
+        );
 
         log('Creating bootstrap task for CEO...');
         const issue = await ctx.issues.create({

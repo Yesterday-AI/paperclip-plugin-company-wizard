@@ -37,8 +37,7 @@ After `pnpm build`, reload the plugin in the Paperclip UI. No reinstall required
 - `src/logic/resolve.js` — Capability resolution, role formatting, module dependency expansion
 - `src/logic/load-templates.js` — Loads presets, modules, roles. Exports `collectGoals()` and `modulesWithActiveGoals()`
 - `src/logic/ai-wizard.js` — AI wizard: calls Claude API to analyze description and select config
-- `src/api/client.js` — Paperclip REST API client (auto-detects auth: no-op for local_trusted, Better Auth sign-in for authenticated)
-- `src/api/provision.js` — Provisioning orchestration: Company → Goal → Project → Agents → Issues → Inline goals → CEO heartbeat
+- `src/api/client.js` — Paperclip REST API client (auto-detects auth: no-op for local_trusted, Better Auth sign-in for authenticated). Methods: `createCompany`, `createAgent`, `createGoal`, `createProject`, `createIssue`, `triggerHeartbeat`
 - `src/ui/context/WizardContext.tsx` — State machine + reducer. Key state: `goals: Goal[]`, `projects: WizardProject[]`, `fileOverrides: Record<string,string>`
 - `src/ui/components/ConfigReview.tsx` — Review step: calls `preview-files`, shows collapsible `FileEntry` components with inline edit. Overrides dispatched via `SET_FILE_OVERRIDE`/`DELETE_FILE_OVERRIDE`
 - `src/ui/components/steps/StepProvision.tsx` — Passes `fileOverrides` to `start-provision`
@@ -107,7 +106,7 @@ Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assi
 
 ### Paperclip API Flow (start-provision)
 
-Connects to Paperclip API (auto-detects auth mode, resolves `boardUserId`). Creates in order: Company → Goal → Project (with workspace cwd + goalIds) → Agents (with absolute instructionsFilePath, adapter config incl. chrome/model) → Module task issues (main project, skipping modules with active goals) → Inline goals (sub-goal + optional dedicated project + milestones + issues with hierarchical project resolution) → optional CEO heartbeat.
+Connects to Paperclip API (auto-detects auth mode). Creates three things: Company (with `companyDescription`) → CEO Agent (with `instructionsFilePath`, adapter config) → Bootstrap Issue (assigned to CEO, description = BOOTSTRAP.md content). The CEO then reads the bootstrap issue and creates goals, projects, agents, and issues as described in BOOTSTRAP.md.
 
 ## Test Suites
 
