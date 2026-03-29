@@ -6,6 +6,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.1.12] — 2026-03-30
+
+### Added
+
+- Label creation instructions in bootstrap — CEO creates labels before issues, attaches `labelIds`, maintains labels in heartbeat
+- `assigneeUserId: → board user` for human-assigned issues (was incorrectly using `assigneeAgentId: → "user"`)
+
+### Changed
+
+- Bootstrap instructions expanded: "How to read the metadata" section explains direct values vs `→` references, documents `assigneeUserId` for board user assignment
+
+---
+
 ## [0.1.11] — 2026-03-29
 
 ### Added

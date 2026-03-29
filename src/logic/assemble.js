@@ -545,8 +545,13 @@ export async function assembleCompany({
     bootstrap += `## Issues\n\n`;
     for (const issue of initialIssues) {
       bootstrap += `### ${issue.title}\n\n`;
+      const isUserAssignment = issue.assignTo === 'user';
       bootstrap += renderMeta([
-        ['assigneeAgentId', issue.assignTo ? `→ "${issue.assignTo}"` : undefined],
+        [
+          'assigneeAgentId',
+          !isUserAssignment && issue.assignTo ? `→ "${issue.assignTo}"` : undefined,
+        ],
+        ['assigneeUserId', isUserAssignment ? '→ board user' : undefined],
         ['priority', issue.priority || 'medium'],
         ['projectId', `→ "${mainProjectName}"`],
       ]);
