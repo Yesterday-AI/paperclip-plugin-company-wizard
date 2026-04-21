@@ -43,6 +43,7 @@ export function StepProvision() {
       selectedRoles: state.selectedRoles,
       allRoles,
       fileOverrides: Object.keys(state.fileOverrides).length > 0 ? state.fileOverrides : undefined,
+      existingCompanyId: state.existingCompanyId.trim() || undefined,
     })
       .then((result: any) => {
         // Action returns result directly with logs

@@ -453,7 +453,7 @@ function FileEntry({
 
 // --- Main component ---
 
-type EditingField = 'name' | 'goal' | 'goalDesc' | null;
+type EditingField = 'name' | 'goal' | 'goalDesc' | 'existingCompanyId' | null;
 
 export function ConfigReview() {
   const state = useWizard();
@@ -566,6 +566,36 @@ export function ConfigReview() {
                     → {toPascalCase(state.companyName || 'Company')}/
                   </span>
                 </>
+              )}
+            </SummaryRow>
+          </div>
+
+          {/* Target company */}
+          <div className="px-4">
+            <SummaryRow
+              icon={ArrowUpRight}
+              label="Target"
+              onEdit={() => setEditing('existingCompanyId')}
+            >
+              {editing === 'existingCompanyId' ? (
+                <InlineEdit
+                  value={state.existingCompanyId}
+                  onSave={(v) => {
+                    dispatch({ type: 'SET_EXISTING_COMPANY_ID', value: v.trim() });
+                    setEditing(null);
+                  }}
+                  onCancel={() => setEditing(null)}
+                  placeholder="Leave empty to create a new company, or paste existing company ID"
+                />
+              ) : state.existingCompanyId ? (
+                <>
+                  <span className="font-medium">Existing company</span>
+                  <span className="text-muted-foreground ml-2 font-mono text-xs">
+                    {state.existingCompanyId}
+                  </span>
+                </>
+              ) : (
+                <span className="text-muted-foreground">Create a new company</span>
               )}
             </SummaryRow>
           </div>

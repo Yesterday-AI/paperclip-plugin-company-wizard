@@ -53,6 +53,7 @@ export interface WizardState {
   goals: Goal[];
   projects: WizardProject[];
   ceoAdapter: CeoAdapter;
+  existingCompanyId: string;
   presetName: string;
   selectedModules: string[];
   selectedRoles: string[];
@@ -87,6 +88,7 @@ type Action =
   | { type: 'SET_GOALS'; goals: Goal[] }
   | { type: 'SET_PROJECTS'; projects: WizardProject[] }
   | { type: 'SET_CEO_ADAPTER'; adapter: Partial<CeoAdapter> }
+  | { type: 'SET_EXISTING_COMPANY_ID'; value: string }
   | { type: 'SET_PRESET'; name: string }
   | { type: 'SET_MODULES'; modules: string[] }
   | { type: 'SET_ROLES'; roles: string[] }
@@ -173,6 +175,7 @@ const initialState: WizardState = {
   goals: [],
   projects: [],
   ceoAdapter: { type: 'claude_local', cwd: '', model: '' },
+  existingCompanyId: '',
   presetName: '',
   selectedModules: [],
   selectedRoles: [],
@@ -208,6 +211,8 @@ function reducer(state: WizardState, action: Action): WizardState {
       return { ...state, projects: action.projects };
     case 'SET_CEO_ADAPTER':
       return { ...state, ceoAdapter: { ...state.ceoAdapter, ...action.adapter } };
+    case 'SET_EXISTING_COMPANY_ID':
+      return { ...state, existingCompanyId: action.value };
     case 'SET_PRESET': {
       const preset = state.presets.find((p) => p.name === action.name);
       return {

@@ -149,27 +149,90 @@ export class PaperclipClient {
     });
   }
 
+  async updateCompany(companyId, updates) {
+    return this._fetch(`/api/companies/${companyId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  }
+
   async deleteCompany(companyId) {
     return this._fetch(`/api/companies/${companyId}`, { method: 'DELETE' });
+  }
+
+  async getCompany(companyId) {
+    return this._fetch(`/api/companies/${companyId}`, { method: 'GET' });
+  }
+
+  async listAgents(companyId) {
+    return this._fetch(`/api/companies/${companyId}/agents`, { method: 'GET' });
+  }
+
+  async getAgent(agentId) {
+    return this._fetch(`/api/agents/${agentId}`, { method: 'GET' });
   }
 
   async createAgent(
     companyId,
     { name, role, title, reportsTo, adapterType, adapterConfig, runtimeConfig, permissions },
   ) {
-    return this._fetch(`/api/companies/${companyId}/agents`, {
-      method: 'POST',
-      body: JSON.stringify({
-        name,
-        role,
-        title: title || null,
-        reportsTo: reportsTo || null,
-        adapterType: adapterType || 'claude_local',
-        adapterConfig: adapterConfig || {},
-        ...(runtimeConfig ? { runtimeConfig } : {}),
-        ...(permissions ? { permissions } : {}),
-      }),
-    });
+    const payload = {
+      name,
+      role,
+      title: title || null,
+      reportsTo: reportsTo || null,
+      adapterType: adapterType || 'claude_local',
+      adapterConfig: adapterConfig || {},
+      ...(runtimeConfig ? { runtimeConfig } : {}),
+      ...(permissions ? { permissions } : {}),
+    };
+
+    try {
+      return await this._fetch(`/api/companies/${companyId}/agents`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const requiresApproval =
+        message.includes('Direct agent creation requires board approval') ||
+        message.includes('/agent-hires');
+      if (!requiresApproval) throw err;
+
+      const hireResult = await this._fetch(`/api/companies/${companyId}/agent-hires`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      const hiredAgent = hireResult?.agent || null;
+      const approvalId = hireResult?.approval?.id || null;
+      if (!hiredAgent) {
+        throw new Error('Agent hire endpoint returned no agent.');
+      }
+
+      if (approvalId) {
+        try {
+          await this._fetch(`/api/approvals/${approvalId}/approve`, {
+            method: 'POST',
+            body: JSON.stringify({ decisionNote: 'Auto-approved by Company Wizard provisioning' }),
+          });
+          try {
+            return await this._fetch(`/api/agents/${hiredAgent.id}`, { method: 'GET' });
+          } catch {
+            return hiredAgent;
+          }
+        } catch (approveErr) {
+          return {
+            ...hiredAgent,
+            _pendingApprovalId: approvalId,
+            _approvalAutoApproveError:
+              approveErr instanceof Error ? approveErr.message : String(approveErr),
+          };
+        }
+      }
+
+      return hiredAgent;
+    }
   }
 
   async createProject(companyId, { name, description, goalIds, workspace }) {

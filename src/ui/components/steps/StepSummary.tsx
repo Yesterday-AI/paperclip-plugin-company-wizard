@@ -66,7 +66,7 @@ export function StepSummary() {
           Back
         </Button>
         <Button onClick={() => dispatch({ type: 'GO_TO', step: 'provision' })}>
-          Create Company
+          {state.existingCompanyId ? 'Provision into Existing Company' : 'Create Company'}
         </Button>
       </div>
     </div>
