@@ -17,7 +17,9 @@ export function StepDone() {
         <div>
           <h2 className="text-xl font-semibold tracking-tight">{state.companyName}</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Company has been assembled and registered with Paperclip.
+            {state.existingCompanyId
+              ? 'Workspace has been assembled and bootstrap tasks were added to the existing Paperclip company.'
+              : 'Company has been assembled and registered with Paperclip.'}
           </p>
         </div>
       </div>

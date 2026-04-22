@@ -363,8 +363,18 @@ const plugin = definePlugin({
           cfg.paperclipUrl || process.env.PAPERCLIP_PUBLIC_URL || 'http://localhost:3100';
         const paperclipEmail = cfg.paperclipEmail || '';
         const paperclipPassword = cfg.paperclipPassword || '';
+        const rawDisableBoardApproval = (cfg as Record<string, unknown>)
+          .disableBoardApprovalOnNewCompanies;
+        const disableBoardApprovalOnNewCompanies =
+          rawDisableBoardApproval === true ||
+          (typeof rawDisableBoardApproval === 'string' &&
+            rawDisableBoardApproval.toLowerCase() === 'true');
 
-        const companyName = typeof params.companyName === 'string' ? params.companyName : '';
+        const companyName = typeof params.companyName === 'string' ? params.companyName.trim() : '';
+        const existingCompanyId =
+          typeof params.existingCompanyId === 'string' && params.existingCompanyId.trim()
+            ? params.existingCompanyId.trim()
+            : '';
         if (!companyName) return { error: 'companyName is required', logs };
 
         const templatesDir = await ensureTemplatesDir(cfg);
@@ -444,20 +454,49 @@ const plugin = definePlugin({
         log('Connected.');
         log('');
 
-        // Step 5: Create company (SDK: companies.read only → HTTP client)
-        log('Creating company...');
-        const company = await client.createCompany({
-          name: companyName,
-          description: companyDescription || undefined,
-        });
-        const companyId = company.id;
-        log(`✓ Company "${companyName}" created`);
+        // Step 5: Resolve target company (create new, or reuse existing)
+        let company: any;
+        let companyId: string;
+        let createdCompany = false;
 
-        // Steps 6-7 are wrapped so we can delete the company on partial failure.
+        if (existingCompanyId) {
+          log(`Using existing company: ${existingCompanyId}`);
+          company = await client.getCompany(existingCompanyId);
+          companyId = company.id;
+          log(`✓ Target company "${company.name}" selected`);
+          log('Keeping company hire policy as configured (board approvals may be required).');
+        } else {
+          log('Creating company...');
+          company = await client.createCompany({
+            name: companyName,
+            description: companyDescription || undefined,
+          });
+          companyId = company.id;
+          createdCompany = true;
+          log(`✓ Company "${companyName}" created`);
+
+          if (disableBoardApprovalOnNewCompanies) {
+            // Optional compatibility mode: disable mandatory board-approval hiring on new companies.
+            // Useful when users want legacy fully-autonomous bootstrap behavior.
+            try {
+              await client.updateCompany(companyId, { requireBoardApprovalForNewAgents: false });
+              log('✓ Disabled board-approval hiring policy for this new company');
+            } catch (err) {
+              log(
+                `⚠ Could not disable board-approval hiring for new agents: ${err instanceof Error ? err.message : String(err)}`,
+              );
+              log('  Continuing — agent creation will use an approval-aware fallback if required.');
+            }
+          } else {
+            log('Keeping company hire policy as configured (board approvals may be required).');
+          }
+        }
+
+        // Steps 6-7 are wrapped so we can delete only newly-created companies on partial failure.
         let ceoAgentId: string;
         let bootstrapIssue: { id: string; identifier?: string };
         try {
-          // Step 6: Create CEO agent (SDK: agents.read only → HTTP client)
+          // Step 6: Resolve or create CEO agent
           const userCeoAdapter = (params.ceoAdapter as any) || {};
           const adapterType =
             typeof userCeoAdapter.type === 'string' ? userCeoAdapter.type.trim() : 'claude_local';
@@ -478,21 +517,62 @@ const plugin = definePlugin({
             adapterConfig.dangerouslyBypassApprovalsAndSandbox = true;
           }
 
-          log('Creating CEO agent...');
-          const ceoAgent = await client.createAgent(companyId, {
-            name: 'CEO',
-            role: 'ceo',
-            title: 'CEO',
-            reportsTo: null,
-            adapterType,
-            adapterConfig,
-            runtimeConfig: {
-              heartbeat: { enabled: true, intervalSec: 3600 },
-            },
-            permissions: { canCreateAgents: true },
-          });
-          ceoAgentId = ceoAgent.id;
-          log(`✓ CEO agent created (${ceoAgentId})`);
+          const logPendingApproval = (agent: any) => {
+            if (!agent?._pendingApprovalId) return;
+            log(
+              `⚠ CEO hire is pending approval: ${agent._pendingApprovalId}. Approve it in the board before the bootstrap heartbeat can run.`,
+            );
+            if (agent._approvalAutoApproveError) {
+              log(`  Auto-approve failed: ${agent._approvalAutoApproveError}`);
+            }
+          };
+
+          if (existingCompanyId) {
+            log('Looking for an existing CEO agent...');
+            const agents = await client.listAgents(companyId);
+            const existingCeo = Array.isArray(agents)
+              ? agents.find((agent: any) => agent?.role === 'ceo' && agent?.status !== 'terminated')
+              : null;
+
+            if (existingCeo?.id) {
+              ceoAgentId = existingCeo.id;
+              log(`✓ Reusing existing CEO agent (${ceoAgentId})`);
+            } else {
+              log('No active CEO found — creating CEO agent...');
+              const ceoAgent = await client.createAgent(companyId, {
+                name: 'CEO',
+                role: 'ceo',
+                title: 'CEO',
+                reportsTo: null,
+                adapterType,
+                adapterConfig,
+                runtimeConfig: {
+                  heartbeat: { enabled: true, intervalSec: 3600 },
+                },
+                permissions: { canCreateAgents: true },
+              });
+              ceoAgentId = ceoAgent.id;
+              log(`✓ CEO agent created (${ceoAgentId})`);
+              logPendingApproval(ceoAgent);
+            }
+          } else {
+            log('Creating CEO agent...');
+            const ceoAgent = await client.createAgent(companyId, {
+              name: 'CEO',
+              role: 'ceo',
+              title: 'CEO',
+              reportsTo: null,
+              adapterType,
+              adapterConfig,
+              runtimeConfig: {
+                heartbeat: { enabled: true, intervalSec: 3600 },
+              },
+              permissions: { canCreateAgents: true },
+            });
+            ceoAgentId = ceoAgent.id;
+            log(`✓ CEO agent created (${ceoAgentId})`);
+            logPendingApproval(ceoAgent);
+          }
 
           // Step 7: Create bootstrap issue (SDK: ctx.issues.create ✓)
           // BOOTSTRAP.md IS the bootstrap issue — read it directly.
@@ -504,7 +584,7 @@ const plugin = definePlugin({
           log('Creating bootstrap task for CEO...');
           const issue = await ctx.issues.create({
             companyId,
-            title: `Bootstrap ${companyName}`,
+            title: `Bootstrap ${company.name || companyName}`,
             description: bootstrapDescription,
             assigneeAgentId: ceoAgentId,
           });
@@ -512,17 +592,20 @@ const plugin = definePlugin({
           bootstrapIssue = issue as { id: string; identifier?: string };
           log(`✓ Bootstrap task created: ${bootstrapIssue.identifier || bootstrapIssue.id}`);
         } catch (err) {
-          // Compensate: delete the company so the user isn't left with a partial stub.
           log(`✗ Provisioning failed: ${err instanceof Error ? err.message : String(err)}`);
-          log(`Cleaning up — deleting partially created company (${companyId})...`);
-          try {
-            await client.deleteCompany(companyId);
-            log('✓ Company deleted.');
-          } catch (cleanupErr) {
-            log(
-              `⚠ Could not delete company ${companyId}: ${cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr)}`,
-            );
-            log(`  Delete it manually in the Paperclip UI to clean up.`);
+          if (createdCompany) {
+            log(`Cleaning up — deleting partially created company (${companyId})...`);
+            try {
+              await client.deleteCompany(companyId);
+              log('✓ Company deleted.');
+            } catch (cleanupErr) {
+              log(
+                `⚠ Could not delete company ${companyId}: ${cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr)}`,
+              );
+              log(`  Delete it manually in the Paperclip UI to clean up.`);
+            }
+          } else {
+            log('Skipping cleanup because provisioning targeted an existing company.');
           }
           throw err;
         }
@@ -530,7 +613,9 @@ const plugin = definePlugin({
         log('');
         log('Provisioning complete!');
         log(
-          'The CEO agent is ready. Trigger its first heartbeat to hire the rest of the team and create the initial backlog.',
+          existingCompanyId
+            ? 'Bootstrap task created in existing company. Trigger the CEO heartbeat to continue setup.'
+            : 'The CEO agent is ready. Trigger its first heartbeat to hire the rest of the team and create the initial backlog.',
         );
 
         return {

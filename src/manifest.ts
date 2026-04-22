@@ -63,6 +63,12 @@ const manifest: PaperclipPluginManifestV1 = {
         format: 'secret-ref',
         description: 'Board login password.',
       },
+      disableBoardApprovalOnNewCompanies: {
+        type: 'boolean',
+        default: false,
+        description:
+          'Optional. If true, the wizard will PATCH new companies to set requireBoardApprovalForNewAgents=false during provisioning. Leave false to preserve approval-gated hiring policies.',
+      },
     },
   },
   entrypoints: {
