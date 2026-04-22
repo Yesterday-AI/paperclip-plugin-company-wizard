@@ -41,8 +41,8 @@ All worker actions return errors as `{ error }` instead of throwing, so the plug
 - `src/logic/assemble.js` — File assembly: copies templates, resolves capabilities, generates BOOTSTRAP.md
 - `src/logic/resolve.js` — Capability resolution, role formatting, module dependency expansion
 - `src/logic/load-templates.js` — Loads presets, modules, roles. Exports `collectGoals()`, `validateGoal()`
-- `src/api/client.js` — Paperclip REST API client (auto-detects auth: no-op for local_trusted, Better Auth sign-in for authenticated). Network errors wrapped with actionable messages. Methods: `createCompany`, `createAgent`, `createGoal`, `createProject`, `createIssue`, `createRoutine`, `createRoutineTrigger`, `triggerHeartbeat`
-- `src/ui/context/WizardContext.tsx` — State machine + reducer. Key state: `goals: Goal[]`, `projects: WizardProject[]`, `fileOverrides: Record<string,string>`
+- `src/api/client.js` — Paperclip REST API client (auto-detects auth: no-op for local_trusted, Better Auth sign-in for authenticated). Network errors wrapped with actionable messages. Methods: `createCompany`, `getCompany`, `updateCompany`, `deleteCompany`, `listAgents`, `getAgent`, `createAgent` (approval-aware: falls back to `/agent-hires` + auto-approve when board approval is required), `createGoal`, `createProject`, `createIssue`, `createRoutine`, `createRoutineTrigger`, `triggerHeartbeat`
+- `src/ui/context/WizardContext.tsx` — State machine + reducer. Key state: `goals: Goal[]`, `projects: WizardProject[]`, `fileOverrides: Record<string,string>`, `existingCompanyId: string` (when set, provisioning targets this company instead of creating a new one)
 - `src/ui/components/ConfigReview.tsx` — Review step: calls `preview-files`, shows collapsible `FileEntry` components with inline edit. Overrides dispatched via `SET_FILE_OVERRIDE`/`DELETE_FILE_OVERRIDE`
 - `src/ui/components/steps/StepProvision.tsx` — Passes `fileOverrides` to `start-provision`
 
@@ -111,7 +111,9 @@ Currently 3 modules have heartbeat sections: `stall-detection` (CEO), `auto-assi
 
 ### Paperclip API Flow (start-provision)
 
-Connects to Paperclip API (auto-detects auth mode). Creates three things: Company (with `companyDescription`) → CEO Agent (with `instructionsFilePath`, adapter config) → Bootstrap Issue (assigned to CEO, description = BOOTSTRAP.md content). The CEO then reads the bootstrap issue and creates goals, projects, agents, and issues as described in BOOTSTRAP.md.
+Connects to Paperclip API (auto-detects auth mode). Resolves the target company: creates a new one (with `companyDescription`) or, when `existingCompanyId` is passed, loads it via `getCompany` (existing-company runs skip company creation and skip cleanup on error). Resolves the CEO: reuses an active CEO on existing companies, otherwise creates one (with `instructionsFilePath`, adapter config). If direct agent creation is rejected because board approval is required, `createAgent` hires via `/agent-hires` and auto-approves. Finally creates a Bootstrap Issue (assigned to CEO, description = BOOTSTRAP.md content, title uses the resolved company name). The CEO then reads the bootstrap issue and creates goals, projects, agents, and issues as described in BOOTSTRAP.md.
+
+Optional setting `disableBoardApprovalOnNewCompanies` (default `false`): when `true`, new companies are PATCHed to `requireBoardApprovalForNewAgents=false` right after creation for legacy fully-autonomous bootstrap behavior. Ignored for existing-company runs.
 
 ## Test Suites
 

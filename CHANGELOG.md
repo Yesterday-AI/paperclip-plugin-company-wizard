@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.1.16] — 2026-04-22
+
+### Added
+
+- **Existing-company provisioning** — the wizard can target an existing Paperclip company instead of creating a new one. New `existingCompanyId` state field and `SET_EXISTING_COMPANY_ID` action in `WizardContext`, a "Target" row in `ConfigReview` with inline edit for pasting a company ID, and a summary button label that adapts ("Provision into Existing Company" vs "Create Company")
+- **Approval-aware agent hiring** — `PaperclipClient.createAgent()` now detects when direct creation requires board approval, falls back to `POST /api/companies/{id}/agent-hires`, and auto-approves via `/api/approvals/{id}/approve`. If auto-approve fails, the pending approval ID and error are surfaced in the provisioning log so the board can approve it manually
+- **`disableBoardApprovalOnNewCompanies` plugin setting** (boolean, default `false`) — when enabled, new companies are PATCHed to `requireBoardApprovalForNewAgents=false` during provisioning for legacy fully-autonomous bootstrap behavior. Leave off to preserve approval-gated hiring policies
+- **`PaperclipClient` methods** — `updateCompany`, `getCompany`, `listAgents`, `getAgent` to support existing-company flows
+
+### Changed
+
+- **CEO resolution for existing companies** — when `existingCompanyId` is set, `start-provision` reuses an active CEO agent if one exists on the company; otherwise it hires a new CEO through the approval-aware path. The bootstrap task title now uses the resolved company name
+- **Partial-failure cleanup** — provisioning only deletes companies that were created in the same run. Existing companies are never deleted on error; the log explicitly notes the skipped cleanup
+- **`StepDone` messaging** adapts to existing-company mode ("Workspace has been assembled and bootstrap tasks were added to the existing Paperclip company")
+
+---
+
 ## [0.1.15] — 2026-04-05
 
 ### Added

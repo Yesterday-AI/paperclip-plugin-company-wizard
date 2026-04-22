@@ -519,6 +519,7 @@ Configure the plugin via **Settings → Plugins → Company Wizard** in the Pape
 | `paperclipEmail` | No | Board login email. Required for authenticated (non-`local_trusted`) instances. |
 | `paperclipPassword` | No | Board login password. Stored as a secret ref. |
 | `anthropicApiKey` | No | Anthropic API key for AI wizard mode. Stored as a secret ref. Required to use the AI-powered setup path. |
+| `disableBoardApprovalOnNewCompanies` | No | If `true`, the wizard PATCHes new companies to set `requireBoardApprovalForNewAgents=false` during provisioning. Leave `false` to preserve approval-gated hiring. Defaults to `false`. |
 
 <br>
 
@@ -726,11 +727,11 @@ Create `templates/presets/<name>/preset.meta.json`:
 **Provisioning** (Review → Provision step):
 
 1. Connects to Paperclip API (auto-detects `local_trusted` vs authenticated)
-2. Creates the **company** in Paperclip
-3. Creates the **CEO agent** with adapter config (cwd, instructionsFilePath, model)
+2. Creates a new **company** in Paperclip — or targets an existing one if `existingCompanyId` is set in the review step
+3. Creates the **CEO agent** with adapter config (cwd, instructionsFilePath, model), or reuses the existing active CEO when targeting an existing company. If board approval is required, the wizard hires via `/agent-hires` and auto-approves
 4. Creates a **Bootstrap task** assigned to the CEO
 
-The CEO then sets up the rest of the team on its first heartbeat: hiring the other roles from disk, creating the goal, project, and initial backlog issues. If provisioning fails after the company is created, the partial company is automatically deleted.
+The CEO then sets up the rest of the team on its first heartbeat: hiring the other roles from disk, creating the goal, project, and initial backlog issues. If provisioning fails after a **new** company is created, the partial company is automatically deleted — existing target companies are never deleted on error.
 
 <br>
 

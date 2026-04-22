@@ -53,6 +53,9 @@
 - Routines in templates — 6 modules define `routines[]` with cron schedules (stall-detection, auto-assign, backlog, ci-cd, build-api, website-relaunch)
 - `createRoutine()` + `createRoutineTrigger()` API client methods
 - Graceful error handling — all worker actions return `{ error }` instead of throwing, preventing generic 502s. `PaperclipClient` wraps network errors with actionable messages (wrong port, connection refused). AI wizard shows API key warning on mount.
+- Existing-company provisioning — wizard can target an existing Paperclip company via `existingCompanyId` (paste in ConfigReview). Reuses an active CEO if present, otherwise hires one. Partial-failure cleanup no longer deletes existing companies.
+- Approval-aware agent hiring — `createAgent()` falls back to `POST /agent-hires` when direct creation requires board approval, then auto-approves via `/approvals/{id}/approve`. Pending approval IDs surfaced in logs on auto-approve failure.
+- `disableBoardApprovalOnNewCompanies` plugin setting — optional compatibility mode that PATCHes new companies to disable mandatory board approval for new agents (default `false`, preserves approval-gated policies).
 
 ## In Progress
 
