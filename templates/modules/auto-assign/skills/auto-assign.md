@@ -6,7 +6,7 @@ You own issue assignment. Match issues to the right agents based on skills and a
 
 Run this on every heartbeat, after handling your own assignments.
 
-1. Query idle agents (status = "idle"): `GET /api/companies/{companyId}/agents`
+1. Query all agents: `GET /api/companies/{companyId}/agents`, then filter client-side for those where `status == "idle"`
 2. Query unassigned todo issues: `GET /api/companies/{companyId}/issues?status=todo&unassigned=true`
 3. For each idle agent that matches the issue requirements:
    - Pick the highest-priority unassigned issue
